@@ -9,6 +9,7 @@ from assets.scripts.swinging_axe import *
 from assets.scripts.firebox import *
 class LevelRenderer:
     def __init__(self, levels : tuple, tilesheet : pygame.Surface, tilesheet_size : tuple, spike_images : tuple, colors : tuple, background : pygame.Surface, coin_image):
+        tilesheet.set_colorkey([255, 255, 255])
         self.spikes = []
         if not web:
             self.spike_image = pygame.image.load("assets\Spritesheets\spikes.png").convert()

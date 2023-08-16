@@ -2,7 +2,6 @@ from assets.scripts.core_funcs import *
 class Player:
     def __init__(self, position, spritesheet, sheet_size):
         self.pos = position
-        self.spritesheet = SpriteSheet(spritesheet, sheet_size)
         self.frame = [0, 0]
         self.tile = 115
         self.is_alive = True
@@ -17,7 +16,7 @@ class Player:
         self.cycles = 0
         self.just_col = []
         self.collided = False
-        self.cur_row = [5, 4]
+        self.cur_row = [3, 2]
         self.shapeshifting = False
         self.jumping = False
         self.coins = 0
@@ -30,20 +29,35 @@ class Player:
         self.fell = False
         self.harmful = ["Crusher"]
         self.spinning = False
+        self.dir = 0
         if not web:
+            sheets = [pygame.image.load("assets\Spritesheets\\right_sheet.png").convert(), pygame.image.load("assets\Spritesheets\\left_sheet.png").convert()]
+            [s.set_colorkey([255, 255, 255]) for s in sheets]
+            sheets = [scale_image(s) for s in sheets]
             pygame.mixer.music.load("assets\Audio\land.ogg")
             self.sounds.append(pygame.mixer.Sound("assets\Audio\land.ogg"))
             pygame.mixer.music.load("assets\Audio\jump.ogg")
             self.sounds.append(pygame.mixer.Sound("assets\Audio\jump.ogg"))
             pygame.mixer.music.load("assets\Audio\crusher_death.ogg")
             self.sounds.append(pygame.mixer.Sound("assets\Audio\crusher_death.ogg"))
+            self.spritesheet = SpriteSheet(sheets[0], [4, 11])
+            spritesheet_ = SpriteSheet(sheets[1], [4, 11])
+            for sheet in spritesheet_.sheet:
+                self.spritesheet.sheet.append(sheet)
         else:
+            sheets = [pygame.image.load("assets/Spritesheets/right_sheet.png").convert(), pygame.image.load("assets/Spritesheets/left_sheet.png").convert()]
+            [s.set_colorkey([255, 255, 255]) for s in sheets]
+            sheets = [scale_image(s) for s in sheets]
             pygame.mixer.music.load("assets/Audio/land.ogg")
             self.sounds.append(pygame.mixer.Sound("assets/Audio/land.ogg"))
             pygame.mixer.music.load("assets/Audio/jump.ogg")
             self.sounds.append(pygame.mixer.Sound("assets/Audio/jump.ogg"))
             pygame.mixer.music.load("assets/Audio/crusher_death.ogg")
             self.sounds.append(pygame.mixer.Sound("assets/Audio/crusher_death.ogg"))
+            self.spritesheet = SpriteSheet(sheets[0], [4, 11])
+            spritesheet_ = SpriteSheet(sheets[1], [4, 11])
+            for sheet in spritesheet_.sheet:
+                self.spritesheet.sheet.append(sheet)
     def update_animation(self, row, delay_wait, dt):
         if dt != 0:
             if round(delay_wait/(dt)) != 0:
@@ -55,7 +69,8 @@ class Player:
                         self.frame[0] += 1
                     
                     if self.frame[0] > 3:
-                        self.frame[0] = 3
+                        self.frame[1] = 0
+                        self.frame[0] = 0
                         self.just_spawned = False
                         if not self.channel.get_busy():
                             self.channel.play(self.sounds[self.sounds_dict["land"]])
@@ -94,12 +109,12 @@ class Player:
             if not self.standing:
                 self.cycles += 1
             self.mask = pygame.mask.from_surface(self.spritesheet.get(self.frame))
-            if self.frame[1] == self.cur_row[1]:
-                self.rect = pygame.Rect(self.pos[0]+(22*2)-1.5-3, self.pos[1]+(17*3), (12*4)+3, (16*4)-3)
-                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-1.5-3, self.pos[1]+(17*3), (12*4)+3, 1)
+            if self.frame[1] == 1:
+                self.rect = pygame.Rect(self.pos[0]+(22*2)-8-3, self.pos[1]-20+(17*3), (12*4)+15, (16*4)+17)
+                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-3, self.pos[1]-20+(17*3), (12*4)+15, 1)
             else:
-                self.rect = pygame.Rect(self.pos[0]+(22*2)-1.5-5, self.pos[1]+(17*3), (12*4)+3, (16*4)-3)
-                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-1.5-5, self.pos[1]+(17*3), (12*4)+3, 1)
+                self.rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, (16*4)+17)
+                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, 1)
             for double_list in renderer.standing_masks:
                     if (self.mask.overlap(double_list[0], (double_list[1][0]-self.pos[0], double_list[1][1]-self.pos[1])) == None):
                         pass
@@ -135,7 +150,7 @@ class Player:
                     if not self.just_jumped:
                         if pygame.key.get_pressed()[pygame.K_SPACE] or pygame.key.get_pressed()[pygame.K_UP]:
                             self.vel[1] = 0-(find_u(128, self.gravity*(dt)))
-                            self.update_animation(self.cur_row[1], 17.7/2, dt)
+                            self.update_animation(1, 17.7/2, dt)
                             self.jumping = True
                             self.standing = False
                             renderer.coin_channel.play(self.sounds[self.sounds_dict["jump"]])
@@ -145,14 +160,15 @@ class Player:
                             self.vel[0] = (0-(self.speed*(dt)))
                         else:
                             self.vel[0] = 0.85*(0-(find_u(25, self.gravity*(dt))))
-                        self.update_animation(self.cur_row[0], 8.75, dt)
+                        self.update_animation(12, 17.7/2, dt)
+                        self.dir = 0
                     elif pygame.key.get_pressed()[pygame.K_d] or pygame.key.get_pressed()[pygame.K_RIGHT]:
                         if not self.jumping:
                             self.vel[0] = (self.speed*(dt))
                         else:
                             self.vel[0] = 0.85*((find_u(25, self.gravity*(dt))))
-                        self.update_animation(self.cur_row[1], 17.7/2, dt)
-
+                        self.update_animation(1, 17.7/2, dt)
+                        self.dir = 1
                     else:
                         self.vel[0] = 0
                 else:
@@ -174,12 +190,12 @@ class Player:
             if not self.standing:
                 self.cycles += 1
             self.mask = pygame.mask.from_surface(self.spritesheet.get(self.frame))
-            if self.frame[1] == self.cur_row[1]:
-                self.rect = pygame.Rect(self.pos[0]+(22*2)-1.5-3, self.pos[1]+(17*3), (12*4)+3, (16*4)-3)
-                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-1.5-3, self.pos[1]+(17*3), (12*4)+3, 1)
+            if self.frame[1] == 1:
+                self.rect = pygame.Rect(self.pos[0]+(22*2)-8-3, self.pos[1]-20+(17*3), (12*4)+15, (16*4)+17)
+                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-3, self.pos[1]-20+(17*3), (12*4)+15, 1)
             else:
-                self.rect = pygame.Rect(self.pos[0]+(22*2)-1.5-5, self.pos[1]+(17*3), (12*4)+3, (16*4)-3)
-                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-1.5-5, self.pos[1]+(17*3), (12*4)+3, 1)
+                self.rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, (16*4)+17)
+                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, 1)
             for double_list in renderer.standing_masks:
                     if (self.mask.overlap(double_list[0], (double_list[1][0]-self.pos[0], double_list[1][1]-self.pos[1])) == None):
                         pass
@@ -215,7 +231,7 @@ class Player:
                     if not self.just_jumped:
                         if pygame.key.get_pressed()[pygame.K_SPACE] or pygame.key.get_pressed()[pygame.K_UP]:
                             self.vel[1] = 0-(find_u(128, self.gravity*(dt)))
-                            self.update_animation(self.cur_row[1], 17.7/2, dt)
+                            self.update_animation(1, 17.7/2, dt)
                             self.jumping = True
                             self.standing = False
                             renderer.coin_channel.play(self.sounds[self.sounds_dict["jump"]])
@@ -225,14 +241,15 @@ class Player:
                             self.vel[0] = (0-(self.speed*(dt)))
                         else:
                             self.vel[0] = 0.85*(0-(find_u(25, self.gravity*(dt))))
-                        self.update_animation(self.cur_row[0], 8.75, dt)
+                        self.update_animation(12, 17.7/2, dt)
+                        self.dir = 0
                     elif pygame.key.get_pressed()[pygame.K_d] or pygame.key.get_pressed()[pygame.K_RIGHT]:
                         if not self.jumping:
                             self.vel[0] = (self.speed*(dt))
                         else:
                             self.vel[0] = 0.85*((find_u(25, self.gravity*(dt))))
-                        self.update_animation(self.cur_row[1], 17.7/2, dt)
-
+                        self.update_animation(1, 17.7/2, dt)
+                        self.dir = 1
                     else:
                         self.vel[0] = 0
                 else:
@@ -244,33 +261,48 @@ class Player:
                 self.vel[1] += (self.gravity*(dt))    
             self.pos[0]+=self.vel[0]
             self.pos[1]+=self.vel[1]
-            if self.frame[1] == self.cur_row[1]:
-                self.rect = pygame.Rect(self.pos[0]+(22*2)-1.5-3, self.pos[1]+(17*3), (12*4)+3, (16*4)-3)
-                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-1.5-3, self.pos[1]+(17*3), (12*4)+3, 1)
+            if self.frame[1] == 1:
+                self.rect = pygame.Rect(self.pos[0]+(22*2)-8-3, self.pos[1]-20+(17*3), (12*4)+15, (16*4)+17)
+                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-3, self.pos[1]-20+(17*3), (12*4)+15, 1)
             else:
-                self.rect = pygame.Rect(self.pos[0]+(22*2)-1.5-5, self.pos[1]+(17*3), (12*4)+3, (16*4)-3)
-                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-1.5-5, self.pos[1]+(17*3), (12*4)+3, 1)
+                self.rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, (16*4)+17)
+                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, 1)
+        if pygame.key.get_pressed()[pygame.K_d] or pygame.key.get_pressed()[pygame.K_RIGHT]:
+            self.dir = 1
+        elif pygame.key.get_pressed()[pygame.K_a] or pygame.key.get_pressed()[pygame.K_LEFT]:
+            self.dir = 0
         """
         pygame.draw.rect(win, (255, 0, 0), self.rect)
-        if self.frame[1] == self.cur_row[1]:
-                pygame.draw.rect(win, (0, 0, 255), pygame.Rect(self.pos[0]+(22*2)-1.5, self.pos[1]-20, (12*4)+3, (16*4)-3))
-                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-1.5, self.pos[1]+(17*3), (12*4)+3, 1)
+        if self.frame[1] == 1:
+                pygame.draw.rect(win, (0, 0, 255), pygame.Rect(self.pos[0]+(22*2)-8, self.pos[1]-20, (12*4)+15, (16*4)+17))
+                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8, self.pos[1]-20+(17*3), (12*4)+15, 1)
         else:
-            pygame.draw.rect(win, (0, 0, 255), pygame.Rect(self.pos[0]+(22*2)-1.5-8,  self.pos[1]-20, (12*4)+3, (16*4)-3))
-            self.top_rect = pygame.Rect(self.pos[0]+(22*2)-1.5-8, self.pos[1]+(17*3), (12*4)+3, 1)
+            pygame.draw.rect(win, (0, 0, 255), pygame.Rect(self.pos[0]+(22*2)-8-8,  self.pos[1]-20, (12*4)+15, (16*4)+17))
+            self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-8, self.pos[1]-20+(17*3), (12*4)+15, 1)
         """
     def update(self, renderer):
         if renderer.clock.get_fps() != 0:
             if self.just_spawned:
-                    self.update_animation(0, 15/2, renderer.dt)
+                    self.update_animation(7, 15/2, renderer.dt)
+            
             self.standing = False
             #if renderer.clock.get_fps() != 0:
             self.update_physics(renderer, renderer.dt)
-            if self.frame[1] == self.cur_row[1]:
-                self.rect = pygame.Rect(self.pos[0]+(22*2)-1.5-3, self.pos[1]+(17*3), (12*4)+3, (16*4)-3)
-                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-1.5-3, self.pos[1]+(17*3), (12*4)+3, 1)
+            if self.standing and not (pygame.key.get_pressed()[pygame.K_a] or pygame.key.get_pressed()[pygame.K_LEFT]) and not (pygame.key.get_pressed()[pygame.K_d] or pygame.key.get_pressed()[pygame.K_RIGHT]):
+                if self.dir == 1:
+                    self.update_animation(0, 15/2, renderer.dt)
+                else:
+                    self.update_animation(11, 15/2, renderer.dt)
+            if self.jumping:
+                if self.dir == 1:
+                    self.update_animation(3, 60/2, renderer.dt)
+                else:
+                    self.update_animation(14, 60/2, renderer.dt)
+            if self.frame[1] == 1:
+                self.rect = pygame.Rect(self.pos[0]+(22*2)-8-3, self.pos[1]-20+(17*3), (12*4)+15, (16*4)+17)
+                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-3, self.pos[1]-20+(17*3), (12*4)+15, 1)
             else:
-                self.rect = pygame.Rect(self.pos[0]+(22*2)-1.5-5, self.pos[1]+(17*3), (12*4)+3, (16*4)-3)
-                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-1.5-5, self.pos[1]+(17*3), (12*4)+3, 1)
+                self.rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, (16*4)+17)
+                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, 1)
             #pygame.draw.rect(win, [255, 0, 0], self.rect)
             win.blit(self.spritesheet.get(self.frame), self.pos)

@@ -15,6 +15,7 @@ def start(args):
 def back_to_game(args):
     args.screen = 1
     args.playing = True
+    args.renderer.bullet_manager.remove = True
 def back_to_menu(args):
     args.screen = 1
 def settings(args):
@@ -87,6 +88,7 @@ class Game:
         self.back_button = Button([center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]+(3*self.button_sprites.get([0, 0]).get_height())], self.button_sprites.sheet[0], [back_to_menu, self], win)
         self.back_button_2 = Button([center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]+(-1*self.button_sprites.get([0, 0]).get_height())], self.button_sprites.sheet[0], [back_to_game, self], win)
         self.back = Button([center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]-(self.button_sprites.get([0, 0]).get_height())+(3*self.button_sprites.get([0, 0]).get_height())], self.button_sprites.sheet[0], [back, self], win)
+        self.renderer.button = self.small_menu_button
     def update(self):
         self.cycles += 1
         cursor_pos = pygame.mouse.get_pos()
@@ -109,7 +111,7 @@ class Game:
                                 pass
                             else:
                                 if double_list[2] != 122:
-                                    if pygame.mouse.get_pressed()[0]:
+                                    if pygame.mouse.get_pressed()[2]:
                                             self.renderer.levels[self.renderer.level][int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1]))][int((double_list[1][0]-self.camera.cam_change[0])/self.renderer.tile_size[0])] = self.renderer.queue[0].tile
                                     pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
                                     win.blit(self.rect_surf, [double_list[1][0]+8, double_list[1][1]+8])

@@ -7,6 +7,7 @@ from assets.scripts.button import *
 from assets.scripts.moving_platform import *
 from assets.scripts.swinging_axe import *
 from assets.scripts.firebox import *
+from assets.scripts.bullet_manager import *
 class LevelRenderer:
     def __init__(self, levels : tuple, tilesheet : pygame.Surface, tilesheet_size : tuple, spike_images : tuple, colors : tuple, background : pygame.Surface, coin_image):
         tilesheet.set_colorkey([255, 255, 255])
@@ -20,6 +21,7 @@ class LevelRenderer:
         self.spikesheet = SpriteSheet(scale_image(self.spike_image, 8).convert(), [4, 1], [236, 28, 36])
         self.attr_dict = {"pos":0, "delay":1, "just_spawned":2, "rect_surf":3, "is_hovered":4, "played":5}
         self.frame = [0, 0]
+        self.button = None
         #self.pos = pos
         #self.delay = 0
         self.def_frame = 60
@@ -78,6 +80,7 @@ class LevelRenderer:
         self.camera = None
         self.exceptions = [60, 116, 117, 118, 119, 120, 121, 122, 129, 135, 136, 137, 138, 139]
         self.ground = ["SpikeBall", "MovingPlatform", "FireBox"]
+        self.bullet_manager = BulletManager(self)
     def spawn_animation(self, delay_wait, spike):
         renderer = self
         if (renderer.clock.get_fps()) != 0 and spike[self.attr_dict["just_spawned"]]:
@@ -142,7 +145,7 @@ class LevelRenderer:
                                 else:
                                     spike[self.attr_dict["is_hovered"]] = False
                 if spike[self.attr_dict["is_hovered"]]:
-                    if pygame.mouse.get_pressed()[0]:
+                    if pygame.mouse.get_pressed()[2]:
                         renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int((spike[self.attr_dict["pos"]][0]-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
                         self.spikes = [sp for sp in self.spikes if sp != spike]
                     if self.rect_surf.get_alpha() != 50:
@@ -373,6 +376,7 @@ class LevelRenderer:
                     if not (obj.__class__.__name__ in self.ground):
                         obj.update(self)
             self.spike_update()
+        self.bullet_manager.update(self)
         if not web:
             print(self.clock.get_fps())
 

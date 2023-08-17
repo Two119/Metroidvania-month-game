@@ -38,7 +38,7 @@ class Coin:
         if not self.shiftable:
             self.is_hovered = False
         if self.is_hovered:
-            if pygame.mouse.get_pressed()[0]:
+            if pygame.mouse.get_pressed()[2]:
                     renderer.levels[renderer.level][int(self.pos[1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int((self.pos[0]-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
                     renderer.queue = [ob for ob in renderer.queue if ob != self]
                     del self

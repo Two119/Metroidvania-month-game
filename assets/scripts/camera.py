@@ -21,6 +21,8 @@ class Camera:
                         for obj in renderer.queue:
                             if obj != None:
                                 obj.pos[0] -= (win_size[0]-self.spawn_pos[renderer.level][0])
+                        for fireball in renderer.bullet_manager.bullets:
+                            fireball[0][0]-= (win_size[0]-self.spawn_pos[renderer.level][0])
                         for spike in renderer.spikes:
                             spike[renderer.attr_dict["pos"]][0] -= (win_size[0]-self.spawn_pos[renderer.level][0])
                         self.cam_change[0] -= (win_size[0]-self.spawn_pos[renderer.level][0])
@@ -29,6 +31,8 @@ class Camera:
                         for obj in renderer.queue:
                             if obj != None:
                                 obj.pos[0] += (win_size[0]-self.spawn_pos[renderer.level][0])
+                        for fireball in renderer.bullet_manager.bullets:
+                            fireball[0][0]+=(win_size[0]-self.spawn_pos[renderer.level][0])
                         for spike in renderer.spikes:
                             spike[renderer.attr_dict["pos"]][0] += (win_size[0]-self.spawn_pos[renderer.level][0])
                         self.cam_change[0] += (win_size[0]-self.spawn_pos[renderer.level][0])
@@ -39,6 +43,8 @@ class Camera:
                         renderer.init_render_pos[renderer.level][1] -= ((win_size[1])/64)
                         for obj in renderer.queue:
                                 obj.pos[1] -= (win_size[1])
+                        for fireball in renderer.bullet_manager.bullets:
+                            fireball[0][1] -= (win_size[1])
                         for spike in renderer.spikes:
                             spike[renderer.attr_dict["pos"]][1] -= (win_size[1])
                         self.cam_change[1] -= (win_size[1])
@@ -46,6 +52,8 @@ class Camera:
                         renderer.init_render_pos[renderer.level][1] += ((win_size[1])/64)
                         for obj in renderer.queue:
                             obj.pos[1] += (win_size[1])
+                        for fireball in renderer.bullet_manager.bullets:
+                            fireball[0][1] += (win_size[1])
                         for spike in renderer.spikes:
                             spike[renderer.attr_dict["pos"]][1] += (win_size[1])
                         self.cam_change[1] += (win_size[1])

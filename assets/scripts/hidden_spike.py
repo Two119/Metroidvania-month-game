@@ -80,21 +80,21 @@ class HiddenSpike:
             if self.is_hovered and not(self.just_spawned):
                 if not self.ang == 0:
                     if self.ang == 90:
-                        if pygame.mouse.get_pressed()[0]:
+                        if pygame.mouse.get_pressed()[2]:
                             renderer.levels[renderer.level][int((self.pos[1]-28)/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int(((self.pos[0]-32)-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
                             renderer.queue = [ob for ob in renderer.queue if ob != self]
                             return
                         pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
                         win.blit(self.rect_surf, [self.pos[0]-32, self.pos[1]-28])
                     else:
-                        if pygame.mouse.get_pressed()[0]:
+                        if pygame.mouse.get_pressed()[2]:
                             renderer.levels[renderer.level][int((self.pos[1]-28)/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int(((self.pos[0]-36)-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
                             renderer.queue = [ob for ob in renderer.queue if ob != self]
                             return
                         pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
                         win.blit(self.rect_surf, [self.pos[0]-36, self.pos[1]-28])
                 else:
-                    if pygame.mouse.get_pressed()[0]:
+                    if pygame.mouse.get_pressed()[2]:
                         renderer.levels[renderer.level][int((self.pos[1]+8)/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int(((self.pos[0]+8)-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
                         renderer.queue = [ob for ob in renderer.queue if ob != self]
                         return

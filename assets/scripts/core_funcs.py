@@ -22,7 +22,7 @@ global win_size
 win_size = [win.get_width(), win.get_height()]
 pygame.display.set_caption("Shiftania")
 global spawn_positions
-spawn_positions = [[64, 5*64], [64, 4.5*64]]
+spawn_positions = [[64, 3*64], [64, 4.5*64]]
 
 def max_height_vertical(u, g):
     return (u*u)/(2*g)
@@ -37,8 +37,8 @@ def swap_color(img, col1, col2):
 def scale_image(img, factor=4.0):
     size = round(img.get_width() * factor), round(img.get_height() * factor)
     return pygame.transform.scale(img, size).convert()
-def angle_to(points):
-    return math.atan2(points[1][1] - points[0][1], points[1][0] - points[0][0])
+def angle_between(points):
+    return math.atan2(points[1][1] - points[0][1], points[1][0] - points[0][0])*180/math.pi
 #clip function from daflufflyportato
 def clip(surf,x,y,x_size,y_size):
     handle_surf = surf.copy()
@@ -100,3 +100,4 @@ def reset(player, renderer, fell=False):
         player.jumping = False
         player.moving = True
         player.just_jumped = False
+        renderer.bullet_manager.bullets = []

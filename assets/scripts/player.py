@@ -2,6 +2,7 @@ from assets.scripts.core_funcs import *
 class Player:
     def __init__(self, position, spritesheet, sheet_size):
         self.pos = position
+        self.staff_pos = [position[0], position[1]]
         self.frame = [0, 0]
         self.tile = 115
         self.is_alive = True
@@ -30,6 +31,7 @@ class Player:
         self.harmful = ["Crusher"]
         self.spinning = False
         self.dir = 0
+        self.shots = []
         if not web:
             sheets = [pygame.image.load("assets\Spritesheets\\right_sheet.png").convert(), pygame.image.load("assets\Spritesheets\\left_sheet.png").convert()]
             [s.set_colorkey([255, 255, 255]) for s in sheets]
@@ -44,6 +46,7 @@ class Player:
             spritesheet_ = SpriteSheet(sheets[1], [4, 11])
             for sheet in spritesheet_.sheet:
                 self.spritesheet.sheet.append(sheet)
+            self.staff = scale_image(pygame.image.load("assets\Spritesheets\\staff.png").convert())
         else:
             sheets = [pygame.image.load("assets/Spritesheets/right_sheet.png").convert(), pygame.image.load("assets/Spritesheets/left_sheet.png").convert()]
             [s.set_colorkey([255, 255, 255]) for s in sheets]
@@ -58,6 +61,10 @@ class Player:
             spritesheet_ = SpriteSheet(sheets[1], [4, 11])
             for sheet in spritesheet_.sheet:
                 self.spritesheet.sheet.append(sheet)
+            self.staff = scale_image(pygame.image.load("assets/Spritesheets/staff.png").convert())
+        self.staff.set_colorkey([255, 255, 255])
+        self.orig_staff = self.staff.copy()
+        self.just_shot = False
     def update_animation(self, row, delay_wait, dt):
         if dt != 0:
             if round(delay_wait/(dt)) != 0:
@@ -280,6 +287,16 @@ class Player:
             pygame.draw.rect(win, (0, 0, 255), pygame.Rect(self.pos[0]+(22*2)-8-8,  self.pos[1]-20, (12*4)+15, (16*4)+17))
             self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-8, self.pos[1]-20+(17*3), (12*4)+15, 1)
         """
+        self.staff_pos = [self.pos[0]+(self.spritesheet.get(self.frame).get_width()/1.2), self.pos[1]+(self.spritesheet.get(self.frame).get_height()/1.9)]
+        ang = 315-angle_between([self.staff_pos, pygame.mouse.get_pos()])
+        self.staff = pygame.transform.rotate(self.orig_staff, ang)
+        self.staff_pos = [self.staff_pos[0]-(self.staff.get_width()/2), self.staff_pos[1]-(self.staff.get_height()/2)]
+        if pygame.mouse.get_pressed()[0] and not self.just_shot and not renderer.button.rect.collidepoint(pygame.mouse.get_pos()) and self.shapeshifting:
+            self.shots.append(len(renderer.bullet_manager.bullets))
+            renderer.bullet_manager.add_bullet(self.staff_pos, 315-ang)
+            self.just_shot = True
+        if not pygame.mouse.get_pressed()[0]:
+            self.just_shot = False
     def update(self, renderer):
         if renderer.clock.get_fps() != 0:
             if self.just_spawned:
@@ -306,3 +323,4 @@ class Player:
                 self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, 1)
             #pygame.draw.rect(win, [255, 0, 0], self.rect)
             win.blit(self.spritesheet.get(self.frame), self.pos)
+            win.blit(self.staff, self.staff_pos)

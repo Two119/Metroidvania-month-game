@@ -1,9 +1,9 @@
 from assets.scripts.core_funcs import *
 class Coin:
     def __init__(self, pos : tuple, spritesheet : pygame.Surface, sheet_size : tuple):
-        img = scale_image(spritesheet, 8)
+        img = scale_image(spritesheet)
         img.set_colorkey((21, 20, 19))
-        self.spritesheet = SpriteSheet(img, sheet_size)
+        self.spritesheet = SpriteSheet(img, [12, 1])
         self.frame = [0, 0]
         self.pos = pos
         self.delay = 0
@@ -26,7 +26,7 @@ class Coin:
                     self.delay += 1
                     if self.delay % round(delay_wait/(renderer.dt)) == 0:
                         self.frame[0] += 1
-                    if self.frame[0] > 3:
+                    if self.frame[0] > 11:
                         self.frame[0] = 0
     def update_physics(self, renderer):
         if hasattr(renderer.queue[0], "mask") and hasattr(renderer.queue[0], "pos"):
@@ -44,10 +44,10 @@ class Coin:
                     del self
                     return
             pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
-            win.blit(self.rect_surf, [self.pos[0]+8, self.pos[1]+8])
+            win.blit(self.rect_surf, [self.pos[0]+4, self.pos[1]+4])
     def update(self, renderer):
         if not self.collected:
-            self.update_animation(0, 15, renderer)
+            self.update_animation(0, 10, renderer)
             self.mask = pygame.mask.from_surface(self.spritesheet.get(self.frame))
             win.blit(self.spritesheet.get(self.frame), self.pos)
             self.update_physics(renderer)

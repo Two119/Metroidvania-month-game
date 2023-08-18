@@ -22,23 +22,23 @@ class BulletManager:
     def remove_bullet(self, index):
         self.bullets.pop(index)
     def update(self, renderer):
-        self.delay += 1
         if hasattr(renderer, "dt"):
             if renderer.dt != 0:
+                self.delay += 1
                 if round(8/(renderer.dt)) != 0:
                     if self.delay % round(8/(renderer.dt)) == 0:
                         self.frame += 1
                         if self.frame > 3:
                             self.frame = 0
-        if self.remove:
-            self.bullets.pop(len(self.bullets)-1)
-            self.remove = False
-        for bullet in self.bullets:
-            bullet[0][0] += self.bullet_vel*math.cos(radians(bullet[1]))
-            bullet[0][1] += self.bullet_vel*math.sin(radians(bullet[1]))
-            bullet_sprite = pygame.transform.rotate(self.bullet_spritesheet.get([self.frame, 0]), 360-bullet[1])
-            bullet[2] = bullet_sprite.get_rect(topleft=[bullet[0][0]-(bullet_sprite.get_width()/2), bullet[0][1]-(bullet_sprite.get_height()/2)])
-            win.blit(bullet_sprite, [bullet[0][0]-(bullet_sprite.get_width()/2), bullet[0][1]-(bullet_sprite.get_height()/2)])
-            if bullet[2] != None:
-                if not renderer.camera.rect.colliderect(bullet[2]):
-                    self.bullets.remove(bullet)
+                if self.remove:
+                    self.bullets.pop(len(self.bullets)-1)
+                    self.remove = False
+                for bullet in self.bullets:
+                    bullet[0][0] += self.bullet_vel*math.cos(radians(bullet[1]))*renderer.dt
+                    bullet[0][1] += self.bullet_vel*math.sin(radians(bullet[1]))*renderer.dt
+                    bullet_sprite = pygame.transform.rotate(self.bullet_spritesheet.get([self.frame, 0]), 360-bullet[1])
+                    bullet[2] = bullet_sprite.get_rect(topleft=[bullet[0][0]-(bullet_sprite.get_width()/2), bullet[0][1]-(bullet_sprite.get_height()/2)])
+                    win.blit(bullet_sprite, [bullet[0][0]-(bullet_sprite.get_width()/2), bullet[0][1]-(bullet_sprite.get_height()/2)])
+                    if bullet[2] != None:
+                        if not renderer.camera.rect.colliderect(bullet[2]):
+                            self.bullets.remove(bullet)

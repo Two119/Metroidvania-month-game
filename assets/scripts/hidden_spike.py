@@ -27,8 +27,9 @@ class HiddenSpike:
         if (renderer.clock.get_fps()) != 0 and self.just_spawned:
             self.frame[1] = row
             self.delay += 1
-            if self.delay % round(delay_wait/renderer.dt) == 0:
-                self.frame[0] += 1
+            if round(delay_wait/renderer.dt) != 0:
+                if self.delay % round(delay_wait/renderer.dt) == 0:
+                    self.frame[0] += 1
             if self.frame[0] > 3:
                 self.frame[0] = 3
                 self.just_spawned = False
@@ -95,7 +96,7 @@ class HiddenSpike:
                         win.blit(self.rect_surf, [self.pos[0]-36, self.pos[1]-28])
                 else:
                     if pygame.mouse.get_pressed()[2]:
-                        renderer.levels[renderer.level][int((self.pos[1]+8)/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int(((self.pos[0]+8)-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
+                        renderer.levels[renderer.level][int((self.pos[1]+4)/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int(((self.pos[0]+8)-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
                         renderer.queue = [ob for ob in renderer.queue if ob != self]
                         return
                     pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))

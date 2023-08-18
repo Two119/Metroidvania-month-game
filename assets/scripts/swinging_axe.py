@@ -10,7 +10,7 @@ class SwingingAxe:
             self.image = scale_image(img, 6).convert()
             self.sound = pygame.mixer.Sound("assets/Audio/spike_spawn.ogg")
         self.image.set_colorkey([236, 28, 36])
-        self.pos = [pos[0], pos[1]+8]
+        self.pos = [pos[0], pos[1]+4]
         self.angle = 0
         self.adder = 1.2
         self.shifted = False

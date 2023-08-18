@@ -35,6 +35,7 @@ class Player:
         if not web:
             sheets = [pygame.image.load("assets\Spritesheets\\right_sheet.png").convert(), pygame.image.load("assets\Spritesheets\\left_sheet.png").convert()]
             [s.set_colorkey([255, 255, 255]) for s in sheets]
+            [swap_color(s, [53, 53, 64], [1, 1, 1])  for s in sheets]
             sheets = [scale_image(s) for s in sheets]
             pygame.mixer.music.load("assets\Audio\land.ogg")
             self.sounds.append(pygame.mixer.Sound("assets\Audio\land.ogg"))
@@ -50,6 +51,7 @@ class Player:
         else:
             sheets = [pygame.image.load("assets/Spritesheets/right_sheet.png").convert(), pygame.image.load("assets/Spritesheets/left_sheet.png").convert()]
             [s.set_colorkey([255, 255, 255]) for s in sheets]
+            [swap_color(s, [53, 53, 64], [1, 1, 1])  for s in sheets]
             sheets = [scale_image(s) for s in sheets]
             pygame.mixer.music.load("assets/Audio/land.ogg")
             self.sounds.append(pygame.mixer.Sound("assets/Audio/land.ogg"))
@@ -131,7 +133,7 @@ class Player:
                             if not self.channel.get_busy():
                                 self.channel.play(self.sounds[self.sounds_dict["land"]])
                         if not double_list[2] in renderer.queue:
-                            self.pos[1] = double_list[1][1]-100
+                            self.pos[1] = double_list[1][1]-self.spritesheet.get(self.frame).get_height()+24
                         self.jumping = False
                         
             for rect in renderer.side_rects:
@@ -212,7 +214,7 @@ class Player:
                             if not self.channel.get_busy():
                                 self.channel.play(self.sounds[self.sounds_dict["land"]])
                         if not double_list[2] in renderer.queue:
-                            self.pos[1] = double_list[1][1]-100
+                            self.pos[1] = double_list[1][1]-self.spritesheet.get(self.frame).get_height()+24
                         self.jumping = False
       
             for rect in renderer.side_rects:

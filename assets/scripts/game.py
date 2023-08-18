@@ -114,7 +114,7 @@ class Game:
                                     if pygame.mouse.get_pressed()[2]:
                                             self.renderer.levels[self.renderer.level][int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1]))][int((double_list[1][0]-self.camera.cam_change[0])/self.renderer.tile_size[0])] = self.renderer.queue[0].tile
                                     pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
-                                    win.blit(self.rect_surf, [double_list[1][0]+8, double_list[1][1]+8])
+                                    win.blit(self.rect_surf, [double_list[1][0]+4, double_list[1][1]+4])
                     for obj in self.renderer.queue:
                         if not obj.__class__.__name__ in ["Player", "SpikeManager"] and hasattr(obj, "mask"):
                             if (self.cursor_mask.overlap(obj.mask, (obj.pos[0]-cursor_pos[0], obj.pos[1]-cursor_pos[1])) == None):

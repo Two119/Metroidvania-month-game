@@ -10,6 +10,7 @@ from assets.scripts.firebox import *
 from assets.scripts.bullet_manager import *
 class LevelRenderer:
     def __init__(self, levels : tuple, tilesheet : pygame.Surface, tilesheet_size : tuple, spike_images : tuple, colors : tuple, background : pygame.Surface, coin_image):
+        background.set_colorkey([255, 255, 255])
         tilesheet.set_colorkey([255, 255, 255])
         self.spikes = []
         if not web:
@@ -45,7 +46,7 @@ class LevelRenderer:
         self.tilesheet_size = tilesheet_size
         for i in range(self.tilesheet_size[1]):
             for j in range(self.tilesheet_size[0]):
-                img = scale_image(self.tilesheet.get([j, i]), 8)
+                img = scale_image(self.tilesheet.get([j, i]), 4)
                 for color in self.colorkeys:
                     pygame.transform.threshold(img,img, color, (10, 10 ,10), (0, 0, 0), 1, None, True)
                 img.set_colorkey((0, 0, 0))
@@ -85,8 +86,9 @@ class LevelRenderer:
         renderer = self
         if (renderer.clock.get_fps()) != 0 and spike[self.attr_dict["just_spawned"]]:
                 spike[self.attr_dict["delay"]] += 1
-                if spike[self.attr_dict["delay"]] % round(delay_wait/renderer.dt) == 0:
-                    self.frame[0] += 1
+                if round(delay_wait/renderer.dt) != 0:
+                    if spike[self.attr_dict["delay"]] % round(delay_wait/renderer.dt) == 0:
+                        self.frame[0] += 1
                 if self.frame[0] > 3:
                     self.frame[0] = 3
                     spike[self.attr_dict["just_spawned"]] = False
@@ -151,9 +153,9 @@ class LevelRenderer:
                     if self.rect_surf.get_alpha() != 50:
                         self.rect_surf.set_alpha(50)
                     if spike[7]==0:
-                        win.blit(self.rect_surf, [spike[self.attr_dict["pos"]][0]+8, spike[self.attr_dict["pos"]][1]+8])
+                        win.blit(self.rect_surf, [spike[self.attr_dict["pos"]][0]+4, spike[self.attr_dict["pos"]][1]+8])
                     elif spike[7]==90:
-                        win.blit(self.rect_surf, [spike[self.attr_dict["pos"]][0]+8, spike[self.attr_dict["pos"]][1]])
+                        win.blit(self.rect_surf, [spike[self.attr_dict["pos"]][0]+4, spike[self.attr_dict["pos"]][1]])
                     elif spike[7]==-90:
                         win.blit(self.rect_surf, [spike[self.attr_dict["pos"]][0], spike[self.attr_dict["pos"]][1]+6])
                 if spike[7]==0:
@@ -193,9 +195,9 @@ class LevelRenderer:
                         renderer.coin_channel.play(pygame.mixer.Sound("assets/Audio/spike_spawn.ogg"))
                 self.played = True
     def add_spike_u(self, pos):
-        self.spikes.append([pos, 0, True, 0, False, False, False, 0])
+        self.spikes.append([[pos[0], pos[1]-4], 0, True, 0, False, False, False, 0])
     def add_spike_d(self, pos):
-        self.spikes.append([[pos[0], pos[1]+8], 0, True, 0, False, False, True, 0])
+        self.spikes.append([[pos[0], pos[1]+4], 0, True, 0, False, False, True, 0])
     def add_spike_r(self, pos):
         selfpos = [pos[0]+((16*90)/90)+((20*90)/90)-int(self.spikesheet.get([3, 0]).get_width()/2), pos[1]+44-int(self.spikesheet.get([3, 0]).get_height()/2)]
         self.spikes.append([selfpos, 0, True, 0, False, False, True, 90])

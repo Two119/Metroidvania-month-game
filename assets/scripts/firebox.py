@@ -1,7 +1,7 @@
 from assets.scripts.core_funcs import *
 class FireBox:
     def __init__(self, init_pos):
-        self.pos = [init_pos[0]+10, init_pos[1]+8]
+        self.pos = [init_pos[0]+10, init_pos[1]+4]
         self.rect = pygame.Rect(self.pos[0], self.pos[1]-64, 64, 128)
         if web:
             fb = pygame.image.load("assets/Spritesheets/firebox.png")
@@ -23,10 +23,11 @@ class FireBox:
     def update(self, renderer):
         self.delay+=1
         if (hasattr(renderer, "dt")):
-            if (self.delay%round(8/renderer.dt)==0):
-                self.frame[0]+=1
-                if (self.frame[0]>32):
-                    self.frame[0] = 0
+            if round(8/renderer.dt) != 0:
+                if (self.delay%round(8/renderer.dt)==0):
+                    self.frame[0]+=1
+                    if (self.frame[0]>32):
+                        self.frame[0] = 0
             self.mask = pygame.mask.from_surface(self.fire.get(self.frame))
             if (hasattr(renderer.queue[0], "rect")):
                 if (self.rect.colliderect(renderer.queue[0].rect)):

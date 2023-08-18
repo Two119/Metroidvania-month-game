@@ -1,8 +1,9 @@
 from assets.scripts.core_funcs import *
 class Coin:
     def __init__(self, pos : tuple, spritesheet : pygame.Surface, sheet_size : tuple):
+        swap_color(spritesheet, [0, 0, 0], [1, 1, 1])
         img = scale_image(spritesheet)
-        img.set_colorkey((21, 20, 19))
+        img.set_colorkey([255, 255, 255])
         self.spritesheet = SpriteSheet(img, [12, 1])
         self.frame = [0, 0]
         self.pos = pos

@@ -19,7 +19,7 @@ class LevelRenderer:
         else:
             self.spike_image = pygame.image.load("assets/Spritesheets/spikes.png").convert()
             self.button_sprites = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/buttons.png").convert()), [2, 1], [255, 255, 255])
-        self.spikesheet = SpriteSheet(scale_image(self.spike_image, 8).convert(), [4, 1], [236, 28, 36])
+        self.spikesheet = SpriteSheet(scale_image(self.spike_image, 4).convert(), [4, 1], [236, 28, 36])
         self.attr_dict = {"pos":0, "delay":1, "just_spawned":2, "rect_surf":3, "is_hovered":4, "played":5}
         self.frame = [0, 0]
         self.button = None
@@ -195,7 +195,7 @@ class LevelRenderer:
                         renderer.coin_channel.play(pygame.mixer.Sound("assets/Audio/spike_spawn.ogg"))
                 self.played = True
     def add_spike_u(self, pos):
-        self.spikes.append([[pos[0], pos[1]-4], 0, True, 0, False, False, False, 0])
+        self.spikes.append([[pos[0], pos[1]+32], 0, True, 0, False, False, False, 0])
     def add_spike_d(self, pos):
         self.spikes.append([[pos[0], pos[1]+4], 0, True, 0, False, False, True, 0])
     def add_spike_r(self, pos):

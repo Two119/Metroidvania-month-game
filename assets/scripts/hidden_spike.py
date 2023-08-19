@@ -1,7 +1,7 @@
 from assets.scripts.core_funcs import *
 class HiddenSpike:
     def __init__(self, spritesheet, sheet_size, pos, down=False, ang=0):
-        self.spritesheet = SpriteSheet(pygame.transform.flip(scale_image(spritesheet, 8).convert(), False, down), sheet_size, [236, 28, 36])
+        self.spritesheet = SpriteSheet(pygame.transform.flip(scale_image(spritesheet, 4).convert(), False, down), sheet_size, [236, 28, 36])
         self.frame = [0, 0]
         if ang==0:
             self.pos = pos

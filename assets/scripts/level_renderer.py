@@ -148,7 +148,7 @@ class LevelRenderer:
                                     spike[self.attr_dict["is_hovered"]] = False
                 if spike[self.attr_dict["is_hovered"]]:
                     if pygame.mouse.get_pressed()[2]:
-                        renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int((spike[self.attr_dict["pos"]][0]-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
+                        renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
                         self.spikes = [sp for sp in self.spikes if sp != spike]
                     if self.rect_surf.get_alpha() != 50:
                         self.rect_surf.set_alpha(50)
@@ -195,14 +195,14 @@ class LevelRenderer:
                         renderer.coin_channel.play(pygame.mixer.Sound("assets/Audio/spike_spawn.ogg"))
                 self.played = True
     def add_spike_u(self, pos):
-        self.spikes.append([[pos[0], pos[1]+32], 0, True, 0, False, False, False, 0])
+        self.spikes.append([[pos[0], pos[1]], 0, True, 0, False, False, False, 0])
     def add_spike_d(self, pos):
         self.spikes.append([[pos[0], pos[1]+4], 0, True, 0, False, False, True, 0])
     def add_spike_r(self, pos):
-        selfpos = [pos[0]+((16*90)/90)+((20*90)/90)-int(self.spikesheet.get([3, 0]).get_width()/2), pos[1]+44-int(self.spikesheet.get([3, 0]).get_height()/2)]
+        selfpos = [pos[0]+((16*90)/90)+((20*90)/90)-int(self.spikesheet.get([3, 0]).get_width()/2)-8, pos[1]+44-int(self.spikesheet.get([3, 0]).get_height()/2)]
         self.spikes.append([selfpos, 0, True, 0, False, False, True, 90])
     def add_spike_l(self, pos):
-        selfpos = [pos[0]+((16*-90)/-90)+((26*-90)/-90)-int(self.spikesheet.get([3, 0]).get_width()/2), pos[1]+38-int(self.spikesheet.get([3, 0]).get_height()/2)]
+        selfpos = [pos[0]+((16*-90)/-90)+((26*-90)/-90)-int(self.spikesheet.get([3, 0]).get_width()/2)-4, pos[1]+38-int(self.spikesheet.get([3, 0]).get_height()/2)]
         self.spikes.append([selfpos, 0, True, 0, False, False, True, -90])
     def render(self):
         self.coin_count = 0
@@ -378,7 +378,9 @@ class LevelRenderer:
                     if not (obj.__class__.__name__ in self.ground):
                         obj.update(self)
             self.spike_update()
-        self.bullet_manager.update(self)
+        self.bullet_manager.update_physics(self)
+        self.bullet_manager.update_graphics(self)
+        
         if not web:
             print(self.clock.get_fps())
 

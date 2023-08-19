@@ -2,14 +2,14 @@ from assets.scripts.core_funcs import *
 class SpikeBall:
     def __init__(self, pos):
         if not web:
-            self.spikeball = scale_image(pygame.image.load("assets\Spritesheets\spikeball.png").convert(), 8)
+            self.spikeball = scale_image(pygame.image.load("assets\Spritesheets\spikeball.png").convert(), 4)
             self.spikeball.set_colorkey([236, 28, 36])
-            self.spikeball_spikes = SpriteSheet(scale_image(pygame.image.load("assets\Spritesheets\spikeball_spikes.png").convert(), 8), [4, 1], [236, 28, 36])
+            self.spikeball_spikes = SpriteSheet(scale_image(pygame.image.load("assets\Spritesheets\spikeball_spikes.png").convert(), 4), [4, 1], [236, 28, 36])
         else:
-            self.spikeball = scale_image(pygame.image.load("assets/Spritesheets/spikeball.png").convert(), 8)
+            self.spikeball = scale_image(pygame.image.load("assets/Spritesheets/spikeball.png").convert(), 4)
             self.spikeball.set_colorkey([236, 28, 36])
-            self.spikeball_spikes = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/spikeball_spikes.png").convert(), 8), [4, 1], [236, 28, 36])
-        self.spikeball_spikes.size = [50*8, 50*8]
+            self.spikeball_spikes = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/spikeball_spikes.png").convert(), 4), [4, 1], [236, 28, 36])
+        self.spikeball_spikes.size = [50*4, 50*4]
         self.frame = [0, 0]
         self.angle = 0
         self.pos = pos
@@ -45,8 +45,8 @@ class SpikeBall:
                     #renderer.queue = [ob for ob in renderer.queue if ob != self]
                     #reset(renderer.queue[0], renderer)
                     renderer.queue[0].deaths += 1
-                    del self
-                    return
+                    #del self
+                    #return
             renderer.standing_masks.append([self.mask_s, [self.pos[0]-int(img.get_width()/2), self.pos[1]-int(img.get_height()/2)], self])
             win.blit(img, [self.pos[0]-int(img.get_width()/2), self.pos[1]-int(img.get_height()/2)])
             win.blit(img_, [self.pos[0]-int(img_.get_width()/2), self.pos[1]-int(img_.get_height()/2)])

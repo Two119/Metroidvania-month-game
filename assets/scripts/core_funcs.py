@@ -1,6 +1,7 @@
 import pygame, json, asyncio, os, base64
 from random import randint
 import math
+from assets.scripts.particles import Particles
 from math import sqrt, degrees, radians
 if __import__("sys").platform == "emscripten":
     import platform

@@ -2,23 +2,23 @@ from assets.scripts.core_funcs import *
 class Crusher:
     def __init__(self, pos):
         if not web:
-            img = scale_image(pygame.image.load("assets\Spritesheets\crusher.png").convert(), 6)
+            img = scale_image(pygame.image.load("assets\Spritesheets\crusher.png").convert(), 4)
             swap_color(img, [87, 114, 119], [255, 255, 255])
             swap_color(img, [129, 151, 150], [195, 195, 195])
             swap_color(img, [168, 181, 178], [195, 195, 195])
             self.spritesheet = SpriteSheet(img, [12, 1])
             self.sound = pygame.mixer.Sound("assets\Audio\crusher.ogg")
         else:
-            img = scale_image(pygame.image.load("assets/Spritesheets/crusher.png").convert(), 6)
+            img = scale_image(pygame.image.load("assets/Spritesheets/crusher.png").convert(), 4)
             swap_color(img, [87, 114, 119], [255, 255, 255])
             swap_color(img, [129, 151, 150], [195, 195, 195])
             swap_color(img, [168, 181, 178], [195, 195, 195])
             self.spritesheet = SpriteSheet(img, [12, 1])
             self.sound = pygame.mixer.Sound("assets/Audio/crusher.ogg")
-        self.spritesheet.size = [64*6, 64*6]
+        self.spritesheet.size = [64*4, 64*4]
         self.frame = [0, 0]
         self.pos = [pos[0], pos[1]+4]
-        self.rect = pygame.Rect(self.pos[0]+(16*6), self.pos[1], 32*6, 64*6)
+        self.rect = pygame.Rect(self.pos[0]+(16*4), self.pos[1], 32*4, 64*4)
         self.falling = False
         self.adder = 1
         self.delay = 0
@@ -39,7 +39,7 @@ class Crusher:
         self.mask = pygame.mask.from_surface(self.spritesheet.get(self.frame))
     def update(self, renderer):
         if hasattr(renderer, "dt"):
-            self.rect = pygame.Rect(self.pos[0]+(16*6), self.pos[1], 32*6, 64*6)
+            self.rect = pygame.Rect(self.pos[0]+(16*4), self.pos[1], 32*4, 64*4)
             if self.rect.colliderect(renderer.queue[0].rect):
                 self.falling = True
             if self.falling:

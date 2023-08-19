@@ -3,11 +3,11 @@ class SwingingAxe:
     def __init__(self, pos):
         if not web:
             img = pygame.image.load("assets\Spritesheets\swinging_axe.png").convert()
-            self.image = scale_image(img, 6).convert()
+            self.image = scale_image(img, 4).convert()
             self.sound = pygame.mixer.Sound("assets\Audio\spike_spawn.ogg")
         else:
             img = pygame.image.load("assets/Spritesheets/swinging_axe.png").convert()
-            self.image = scale_image(img, 6).convert()
+            self.image = scale_image(img, 4).convert()
             self.sound = pygame.mixer.Sound("assets/Audio/spike_spawn.ogg")
         self.image.set_colorkey([236, 28, 36])
         self.pos = [pos[0], pos[1]+4]

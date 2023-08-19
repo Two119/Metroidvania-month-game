@@ -32,6 +32,8 @@ class Player:
         self.spinning = False
         self.dir = 0
         self.shots = []
+        self.particle_surf = None
+        #self.walk_particles = Particles(win, )
         if not web:
             sheets = [pygame.image.load("assets\Spritesheets\\right_sheet.png").convert(), pygame.image.load("assets\Spritesheets\\left_sheet.png").convert()]
             [s.set_colorkey([255, 255, 255]) for s in sheets]
@@ -292,13 +294,14 @@ class Player:
         self.staff_pos = [self.pos[0]+(self.spritesheet.get(self.frame).get_width()/1.2), self.pos[1]+(self.spritesheet.get(self.frame).get_height()/1.9)]
         ang = 315-angle_between([self.staff_pos, pygame.mouse.get_pos()])
         self.staff = pygame.transform.rotate(self.orig_staff, ang)
-        self.staff_pos = [self.staff_pos[0]-(self.staff.get_width()/2), self.staff_pos[1]-(self.staff.get_height()/2)]
         if pygame.mouse.get_pressed()[0] and not self.just_shot and not renderer.button.rect.collidepoint(pygame.mouse.get_pos()) and self.shapeshifting:
             self.shots.append(len(renderer.bullet_manager.bullets))
             renderer.bullet_manager.add_bullet(self.staff_pos, 315-ang)
             self.just_shot = True
         if not pygame.mouse.get_pressed()[0]:
             self.just_shot = False
+        self.staff_pos = [self.staff_pos[0]-(self.staff.get_width()/2), self.staff_pos[1]-(self.staff.get_height()/2)]
+        
     def update(self, renderer):
         if renderer.clock.get_fps() != 0:
             if self.just_spawned:

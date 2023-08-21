@@ -163,13 +163,13 @@ class Game:
             #self.settings[len(self.settings)-1].pos = [center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]+(3*self.button_sprites.get([0, 0]).get_height())]
             win.blit(self.renderer.background, (0, 0))
             self.settings[0].update()
-            self.settings[1].update()
+            #self.settings[1].update()
             if self.playing:
                 self.settings[2].update()
             else:
                 self.back_button.update()
             win.blit(self.vol_text, [center_pos(self.button_sprites.get([0, 0]))[0]-(self.vol_text.get_width()/2), center_pos(self.button_sprites.get([0, 0]))[1]+(-2*self.button_sprites.get([0, 0]).get_height())])
-            win.blit(self.fps_text, [center_pos(self.button_sprites.get([0, 0]))[0]-(self.fps_text.get_width()/1.5), center_pos(self.button_sprites.get([0, 0]))[1]+(-1*self.button_sprites.get([0, 0]).get_height())])
+            #win.blit(self.fps_text, [center_pos(self.button_sprites.get([0, 0]))[0]-(self.fps_text.get_width()/1.5), center_pos(self.button_sprites.get([0, 0]))[1]+(-1*self.button_sprites.get([0, 0]).get_height())])
             if self.playing:
                 win.blit(self.back_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+(3.2*self.button_sprites.get([0, 0]).get_height())+(3*self.settings[2].current)])
             else:

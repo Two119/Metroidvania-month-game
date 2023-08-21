@@ -43,7 +43,13 @@ class BulletManager:
                 for bullet in self.bullets:
                     bullet_sprite = pygame.transform.rotate(self.bullet_spritesheet.get([self.frame, 0]), 360-bullet[1])
                     bullet[2] = bullet_sprite.get_rect(topleft=[bullet[0][0]-(bullet_sprite.get_width()/2), bullet[0][1]-(bullet_sprite.get_height()/2)])
-                    win.blit(bullet_sprite, [bullet[0][0]-(bullet_sprite.get_width()/2), bullet[0][1]-(bullet_sprite.get_height()/2)])
+                    bullet_pos = [bullet[0][0]-(bullet_sprite.get_width()/2), bullet[0][1]-(bullet_sprite.get_height()/2)]
+                    win.blit(bullet_sprite, bullet_pos)
+                    if not self.bullets.index(bullet) in renderer.queue[0].shots:
+                        bullet_mask = pygame.mask.from_surface(bullet_sprite)
+                        if bullet_mask.overlap(renderer.queue[0].mask, (renderer.queue[0].pos[0]-bullet_pos[0], renderer.queue[0].pos[1]-bullet_pos[1])) != None:
+                            renderer.queue[0].is_alive = False
+                            renderer.queue[0].deaths += 1
                     if bullet[2] != None:
                         if not renderer.camera.rect.colliderect(bullet[2]):
                             self.bullets.remove(bullet)

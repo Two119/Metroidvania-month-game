@@ -398,7 +398,7 @@ class LevelRenderer:
                 elif tile == 140:
                     if self.coin_appending:
                         self.enemies.append(len(self.queue))
-                        self.queue.append(Enemy([self.x*self.tile_size[0], self.y*self.tile_size[1]], self))
+                        self.queue.append(EnemySwordsman([self.x*self.tile_size[0], self.y*self.tile_size[1]], self))
         self.first_cycle = False
         self.coin_appending = False
     def update(self):

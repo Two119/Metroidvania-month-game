@@ -33,6 +33,8 @@ class Player:
         self.dir = 0
         self.shots = []
         self.particle_surf = None
+        self.just_shot = False
+        self.staffs = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/staffs.png").convert()), [5, 1], [255, 255, 255])
         #self.walk_particles = Particles(win, )
         if not web:
             sheets = [pygame.image.load("assets\Spritesheets\\right_sheet.png").convert(), pygame.image.load("assets\Spritesheets\\left_sheet.png").convert()]
@@ -49,7 +51,7 @@ class Player:
             spritesheet_ = SpriteSheet(sheets[1], [4, 11])
             for sheet in spritesheet_.sheet:
                 self.spritesheet.sheet.append(sheet)
-            self.staff = scale_image(pygame.image.load("assets\Spritesheets\\staff.png").convert())
+            self.staff = self.staffs.get([0, 0]).copy()
         else:
             sheets = [pygame.image.load("assets/Spritesheets/right_sheet.png").convert(), pygame.image.load("assets/Spritesheets/left_sheet.png").convert()]
             [s.set_colorkey([255, 255, 255]) for s in sheets]
@@ -65,7 +67,7 @@ class Player:
             spritesheet_ = SpriteSheet(sheets[1], [4, 11])
             for sheet in spritesheet_.sheet:
                 self.spritesheet.sheet.append(sheet)
-            self.staff = scale_image(pygame.image.load("assets/Spritesheets/staff.png").convert())
+            self.staff = self.staffs.get([0, 0]).copy()
         self.staff.set_colorkey([255, 255, 255])
         self.orig_staff = self.staff.copy()
         self.just_shot = False
@@ -292,11 +294,11 @@ class Player:
             self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-8, self.pos[1]-20+(17*3), (12*4)+15, 1)
         """
         self.staff_pos = [self.pos[0]+(self.spritesheet.get(self.frame).get_width()/1.2), self.pos[1]+(self.spritesheet.get(self.frame).get_height()/1.9)]
-        ang = 315-angle_between([self.staff_pos, pygame.mouse.get_pos()])
+        ang = 270-angle_between([self.staff_pos, pygame.mouse.get_pos()])
         self.staff = pygame.transform.rotate(self.orig_staff, ang)
         if pygame.mouse.get_pressed()[0] and not self.just_shot and not renderer.button.rect.collidepoint(pygame.mouse.get_pos()) and self.shapeshifting:
             self.shots.append(len(renderer.bullet_manager.bullets))
-            renderer.bullet_manager.add_bullet(self.staff_pos, 315-ang)
+            renderer.bullet_manager.add_bullet(self.staff_pos, 270-ang)
             self.just_shot = True
         if not pygame.mouse.get_pressed()[0]:
             self.just_shot = False

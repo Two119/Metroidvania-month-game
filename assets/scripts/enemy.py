@@ -218,9 +218,20 @@ class Sword:
     def __init__(self, owner, pos, level=1):
         self.owner = owner
         self.pos = pos
-        self.sprite = scale_image(pygame.image.load("assets/Spritesheets/sword_"+str(level)+".png").convert())
-        self.sprite.set_colorkey([255, 255, 255])
-        self.spritesheet = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/sword_anim_"+str(level)+".png").convert()), [4, 2], [255, 255, 255])
+        if web:
+            self.sprite = scale_image(pygame.image.load("assets/Spritesheets/sword_"+str(level)+".png").convert())
+            self.sprite.set_colorkey([255, 255, 255])
+            sheet = scale_image(pygame.image.load("assets/Spritesheets/sword_anim_"+str(level)+".png").convert())
+            swap_color(sheet, [53, 53, 64], [1, 1, 1])
+            self.spritesheet = SpriteSheet(sheet, [7, 2], [255, 255, 255])
+        else:
+            self.sprite = scale_image(pygame.image.load("assets\Spritesheets\sword_"+str(level)+".png").convert())
+            self.sprite.set_colorkey([255, 255, 255])
+            sheet = scale_image(pygame.image.load("assets\Spritesheets\sword_anim_"+str(level)+".png").convert())
+            swap_color(sheet, [53, 53, 64], [1, 1, 1])
+            self.spritesheet = SpriteSheet(sheet, [7, 2], [255, 255, 255])
+        swap_color(self.sprite, [53, 53, 64], [1, 1, 1])
+        
         self.attacking = False
         self.attack = None
         self.frame = [0, 0]
@@ -230,7 +241,13 @@ class Sword:
         if not self.attacking:
             win.blit(pygame.transform.flip(self.sprite, self.dir, False), self.pos)
         else:
-            pass
+            self.delay += 1
+            if round(10/renderer.dt) != 0:
+                if (self.delay % round(10/renderer.dt))==0:
+                    self.frame[0] += 1
+                    if self.frame[0] > 6:
+                        self.frame[0] = 0
+            win.blit(pygame.transform.flip(self.spritesheet.get(self.frame), self.dir, False), self.pos)
 class EnemySwordsman:
     def __init__(self, position, renderer):
         self.pos = position
@@ -276,6 +293,8 @@ class EnemySwordsman:
             self.sounds.append(pygame.mixer.Sound("assets\Audio\land.ogg"))
             pygame.mixer.music.load("assets\Audio\jump.ogg")
             self.sounds.append(pygame.mixer.Sound("assets\Audio\jump.ogg"))
+            pygame.mixer.music.load("assets\Audio\crusher_death.ogg")
+            self.sounds.append(pygame.mixer.Sound("assets\Audio\crusher_death.ogg"))
             self.spritesheet = SpriteSheet(sheets[0], [4, 22])
         else:
             sheets = [pygame.image.load("assets/Spritesheets/"+self.tex).convert()]
@@ -286,6 +305,8 @@ class EnemySwordsman:
             self.sounds.append(pygame.mixer.Sound("assets/Audio/land.ogg"))
             pygame.mixer.music.load("assets/Audio/jump.ogg")
             self.sounds.append(pygame.mixer.Sound("assets/Audio/jump.ogg"))
+            pygame.mixer.music.load("assets/Audio/crusher_death.ogg")
+            self.sounds.append(pygame.mixer.Sound("assets/Audio/crusher_death.ogg"))
             self.spritesheet = SpriteSheet(sheets[0], [4, 22])
         self.renderer = renderer
         self.mask = pygame.mask.from_surface(self.spritesheet.get(self.frame))
@@ -313,7 +334,17 @@ class EnemySwordsman:
                     if self.frame[0] > 3:
                         self.frame[0] = 0
     def update_physics(self, renderer, dt):
+        for obj in renderer.queue:
+            if obj.__class__.__name__ in self.harmful:
+                if hasattr(obj, "mask"):
+                        if (self.mask.overlap(obj.mask, (obj.pos[0]-self.pos[0], obj.pos[1]-self.pos[1])) == None):
+                            pass
+                        else:
+                            if obj.__class__.__name__ == "Crusher":
+                                renderer.coin_channel.play(self.sounds[2])
+                            self.is_alive = False
 
+                            
         if self.pos[1] > (renderer.player_death_limit[renderer.level]+renderer.camera.cam_change[1]):
             self.is_alive = False
             #reset(self, renderer)
@@ -360,7 +391,7 @@ class EnemySwordsman:
         if self.standing:
             #self.chasing = False
             if self.rect.colliderect(renderer.camera.rect):
-                if sqrt((self.pos[0]-renderer.queue[0].pos[0])**2) > self.rect.w * 2:
+                if sqrt((self.pos[0]-renderer.queue[0].pos[0])**2) > self.rect.w * 1.5:
                     if self.pos[0] < renderer.queue[0].pos[0]:
                         self.vel[0] = (self.speed*dt)
                         self.dir = 1
@@ -371,12 +402,16 @@ class EnemySwordsman:
                         self.update_animation(12, 17.7/2, dt)
                     self.chasing = True
                     self.weapon.attacking = False
-                    self.weapon.frame = [0, 0]
+                    #self.weapon.frame = [0, 0]
                 else:
                     self.vel[0] = 0
                     self.weapon.attacking = True
                     #self.chasing = False
             self.vel[1] = 0
+            if self.pos[0] < renderer.queue[0].pos[0]:
+                self.dir = 1       
+            if self.pos[0] > renderer.queue[0].pos[0]:
+                self.dir = 0
         else:
             self.vel[1] += (self.gravity*(dt))    
         self.pos[0]+=self.vel[0]
@@ -385,9 +420,7 @@ class EnemySwordsman:
                 if (self.mask.overlap(double_list[0], (double_list[1][0]-self.pos[0], double_list[1][1]-self.pos[1])) == None):
                     pass
                 else:
-                    if self.standing == False:
-                        if not self.renderer.coin_channel.get_busy():
-                            self.renderer.coin_channel.play(self.sounds[self.sounds_dict["land"]])
+
                     self.standing = True
                     
                     if not double_list[2] in renderer.queue:
@@ -422,7 +455,8 @@ class EnemySwordsman:
                 self.weapon.pos = [self.pos[0]-40, self.pos[1]]
             else:
                 self.weapon.pos = [self.pos[0]+40, self.pos[1]]
-            self.weapon.dir = self.dir*1
-            self.weapon.update()
+            self.weapon.dir = 1-self.dir
+            self.weapon.attacking =self.chasing
+            self.weapon.update(renderer)
             #win.blit(self.staff, self.staff_pos)
         

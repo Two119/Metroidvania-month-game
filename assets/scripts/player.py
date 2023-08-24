@@ -330,4 +330,4 @@ class Player:
                 self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, 1)
             #pygame.draw.rect(win, [255, 0, 0], self.rect)
             win.blit(self.spritesheet.get(self.frame), self.pos)
-            win.blit(self.staff, self.staff_pos)
+            #win.blit(self.staff, self.staff_pos)

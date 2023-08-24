@@ -47,6 +47,14 @@ class SpikeBall:
                     renderer.queue[0].deaths += 1
                     #del self
                     #return
+                for e in renderer.enemies:
+                    if self.mask.overlap(renderer.queue[e].mask, (renderer.queue[e].pos[0]-(self.pos[0]-(img_.get_width()/2)), renderer.queue[e].pos[1]-(self.pos[1]-(img_.get_height()/2)))) == None:
+                        pass
+                    else:
+                        renderer.queue[e].is_alive = False
+                        del renderer.queue[e]
+                        renderer.queue.pop(e)
+
             renderer.standing_masks.append([self.mask_s, [self.pos[0]-int(img.get_width()/2), self.pos[1]-int(img.get_height()/2)], self])
             win.blit(img, [self.pos[0]-int(img.get_width()/2), self.pos[1]-int(img.get_height()/2)])
             win.blit(img_, [self.pos[0]-int(img_.get_width()/2), self.pos[1]-int(img_.get_height()/2)])

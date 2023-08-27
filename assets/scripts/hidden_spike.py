@@ -61,6 +61,15 @@ class HiddenSpike:
                         renderer.queue[0].deaths += 1
                         #del self
                         #return
+                    for e in renderer.queue:
+                        if e.__class__.__name__ == "EnemySwordsman":
+                            if self.mask.overlap(e.mask, (e.pos[0]-self.pos[0], e.pos[1]-self.pos[1])) == None:
+                                pass
+                            else:
+                                e.is_alive = False
+                                #renderer.queue = [ob for ob in renderer.queue if ob != self]
+                                #del self
+                                #return
                 else:
                     if self.mask.overlap(renderer.queue[0].mask, (renderer.queue[0].pos[0]-(self.pos[0]-int(self.spritesheet.get(self.frame).get_width()/2)), renderer.queue[0].pos[1]-(self.pos[1]-int(self.spritesheet.get(self.frame).get_height()/2)))) == None:
                         pass
@@ -71,6 +80,13 @@ class HiddenSpike:
                         renderer.queue[0].deaths += 1
                         #del self
                         #return
+                    for e in renderer.queue:
+                        if e.__class__.__name__ == "EnemySwordsman":
+                            if self.mask.overlap(e.mask, (e.pos[0]-(self.pos[0]-int(self.spritesheet.get(self.frame).get_width()/2)), e.pos[1]-(self.pos[1]-int(self.spritesheet.get(self.frame).get_height()/2)))) == None:
+                                pass
+                            else:
+                                e.is_alive = False
+                                
             if not self.just_spawned == None:
                 if self.ang == 0:
                     win.blit(self.spritesheet.get(self.frame), self.pos)

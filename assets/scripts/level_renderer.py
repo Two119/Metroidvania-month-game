@@ -406,19 +406,24 @@ class LevelRenderer:
         if self.clock.get_fps() != 0:
             self.dt = 60/self.clock.get_fps()
         self.render()
+        self.enemies = []
         if self.queue != []:
             for obj in self.queue:
                 if obj.__class__.__name__ in self.ground:
                     obj.update(self)
+                if obj.__class__.__name__ == "EnemySwordsman":
+                    if obj.is_alive:
+                        self.enemies.append(self.queue.index(obj))
             for obj in self.queue:
                 if obj != None:
                     if not (obj.__class__.__name__ in self.ground):
                         obj.update(self)
+                
             self.spike_update()
         self.bullet_manager.update_physics(self)
         self.bullet_manager.update_graphics(self)
         
-        if not web:
-            print(self.clock.get_fps())
+        #if not web:
+            #print(self.clock.get_fps())
 
         

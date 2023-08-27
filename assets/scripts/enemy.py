@@ -428,6 +428,8 @@ class EnemySwordsman:
                     self.jumping = False
 
         if not self.is_alive:
+            if renderer.queue.index(self) in renderer.enemies:
+                renderer.enemies.remove(renderer.queue.index(self))
             renderer.queue.remove(self)
             del self
     def update(self, renderer):

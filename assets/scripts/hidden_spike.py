@@ -41,12 +41,18 @@ class HiddenSpike:
         self.played = True
         self.mask = pygame.mask.from_surface(self.spritesheet.get(self.frame))
     def update(self, renderer):
-        if hasattr(renderer, "dt"):
+        if hasattr(renderer, "dt") and hasattr(renderer.queue[0], "rect"):
             self.rect = self.spritesheet.get(self.frame).get_rect(topleft=self.pos)
             self.rect.x += 10
             self.rect.width -= 10
             if self.rect.colliderect(renderer.queue[0].rect) and self.just_spawned == None:
                 self.just_spawned = True
+            if self.just_spawned == None:
+                for enemy in renderer.enemies:
+                    e = renderer.queue[enemy]
+                    if (e.__class__.__name__ == "EnemySwordsman" or e.__class__.__name__ == "EnemyWizard") and hasattr(e, "rect"):
+                        if self.rect.colliderect(e.rect):
+                            self.just_spawned = True
             if not self.just_spawned == None:
                 if self.just_spawned:
                     self.spawn_animation(0, 4, renderer)
@@ -61,8 +67,9 @@ class HiddenSpike:
                         renderer.queue[0].deaths += 1
                         #del self
                         #return
-                    for e in renderer.queue:
-                        if e.__class__.__name__ == "EnemySwordsman":
+                    for enemy in renderer.enemies:
+                        e = renderer.queue[enemy]
+                        if (e.__class__.__name__ == "EnemySwordsman" or e.__class__.__name__ == "EnemyWizard"):
                             if self.mask.overlap(e.mask, (e.pos[0]-self.pos[0], e.pos[1]-self.pos[1])) == None:
                                 pass
                             else:
@@ -80,8 +87,9 @@ class HiddenSpike:
                         renderer.queue[0].deaths += 1
                         #del self
                         #return
-                    for e in renderer.queue:
-                        if e.__class__.__name__ == "EnemySwordsman":
+                    for enemy in renderer.enemies:
+                        e = renderer.queue[enemy]
+                        if (e.__class__.__name__ == "EnemySwordsman" or e.__class__.__name__ == "EnemyWizard"):
                             if self.mask.overlap(e.mask, (e.pos[0]-(self.pos[0]-int(self.spritesheet.get(self.frame).get_width()/2)), e.pos[1]-(self.pos[1]-int(self.spritesheet.get(self.frame).get_height()/2)))) == None:
                                 pass
                             else:

@@ -112,121 +112,122 @@ class LevelRenderer:
                 else:
                     win.blit(pygame.transform.rotate(self.spikesheet.get(self.frame), spike[7]), spike[self.attr_dict["pos"]])
                 mouse_pos = pygame.mouse.get_pos()
-                if spike[7]==0:
-                    if not spike[6]:
-                        if (cursor_mask.overlap(self.mask, (spike[self.attr_dict["pos"]][0]-mouse_pos[0], spike[self.attr_dict["pos"]][1]-mouse_pos[1])) == None):
-                            spike[self.attr_dict["is_hovered"]] = False
-                        else:
-                            if len(spike) != 9:
-                                if not renderer.queue_updating:
-                                    spike[self.attr_dict["is_hovered"]] = True
-                                else:
-                                    spike[self.attr_dict["is_hovered"]] = False
-                    else:
-                        if (cursor_mask.overlap(self.mask_2, (spike[self.attr_dict["pos"]][0]-mouse_pos[0], spike[self.attr_dict["pos"]][1]-mouse_pos[1])) == None):
-                            spike[self.attr_dict["is_hovered"]] = False
-                        else:
-                            if len(spike) != 9:
-                                if not renderer.queue_updating:
-                                    spike[self.attr_dict["is_hovered"]] = True
-                                else:
-                                    spike[self.attr_dict["is_hovered"]] = False
-                else:
-                    if spike[7]==90:
-                        if (cursor_mask.overlap(self.mask_3, (spike[self.attr_dict["pos"]][0]-mouse_pos[0], spike[self.attr_dict["pos"]][1]-mouse_pos[1])) == None):
-                            spike[self.attr_dict["is_hovered"]] = False
-                        else:
-                            if len(spike) != 9:
-                                if not renderer.queue_updating:
-                                    spike[self.attr_dict["is_hovered"]] = True
-                                else:
-                                    spike[self.attr_dict["is_hovered"]] = False
-                    else:
-                        if (cursor_mask.overlap(self.mask_4, (spike[self.attr_dict["pos"]][0]-mouse_pos[0], spike[self.attr_dict["pos"]][1]-mouse_pos[1])) == None):
-                            spike[self.attr_dict["is_hovered"]] = False
-                        else:
-                            if len(spike) != 9:
-                                if not renderer.queue_updating:
-                                    spike[self.attr_dict["is_hovered"]] = True
-                                else:
-                                    spike[self.attr_dict["is_hovered"]] = False
-                if spike[self.attr_dict["is_hovered"]]:
-                    if pygame.mouse.get_pressed()[2]:
-                        renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
-                        self.spikes = [sp for sp in self.spikes if sp != spike]
-                    if self.rect_surf.get_alpha() != 50:
-                        self.rect_surf.set_alpha(50)
+                if hasattr(self, "mask") and hasattr(self.queue[0], "mask"):
                     if spike[7]==0:
-                        win.blit(self.rect_surf, [spike[self.attr_dict["pos"]][0]+4, spike[self.attr_dict["pos"]][1]+8])
-                    elif spike[7]==90:
-                        win.blit(self.rect_surf, [spike[self.attr_dict["pos"]][0]+4, spike[self.attr_dict["pos"]][1]])
-                    elif spike[7]==-90:
-                        win.blit(self.rect_surf, [spike[self.attr_dict["pos"]][0], spike[self.attr_dict["pos"]][1]+6])
-                if spike[7]==0:
-                    if not spike[6]:
-                        if (renderer.queue[0].mask.overlap(self.mask, (spike[self.attr_dict["pos"]][0]-renderer.queue[0].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[0].pos[1])) == None):
-                            pass
+                        if not spike[6]:
+                            if (cursor_mask.overlap(self.mask, (spike[self.attr_dict["pos"]][0]-mouse_pos[0], spike[self.attr_dict["pos"]][1]-mouse_pos[1])) == None):
+                                spike[self.attr_dict["is_hovered"]] = False
+                            else:
+                                if len(spike) != 9:
+                                    if not renderer.queue_updating:
+                                        spike[self.attr_dict["is_hovered"]] = True
+                                    else:
+                                        spike[self.attr_dict["is_hovered"]] = False
                         else:
-                            renderer.queue[0].is_alive = False
-                            #reset(renderer.queue[0], renderer)
-                            renderer.queue[0].deaths += 1
+                            if (cursor_mask.overlap(self.mask_2, (spike[self.attr_dict["pos"]][0]-mouse_pos[0], spike[self.attr_dict["pos"]][1]-mouse_pos[1])) == None):
+                                spike[self.attr_dict["is_hovered"]] = False
+                            else:
+                                if len(spike) != 9:
+                                    if not renderer.queue_updating:
+                                        spike[self.attr_dict["is_hovered"]] = True
+                                    else:
+                                        spike[self.attr_dict["is_hovered"]] = False
                     else:
-                        if (renderer.queue[0].mask.overlap(self.mask_2, (spike[self.attr_dict["pos"]][0]-renderer.queue[0].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[0].pos[1])) == None):
-                            pass
+                        if spike[7]==90:
+                            if (cursor_mask.overlap(self.mask_3, (spike[self.attr_dict["pos"]][0]-mouse_pos[0], spike[self.attr_dict["pos"]][1]-mouse_pos[1])) == None):
+                                spike[self.attr_dict["is_hovered"]] = False
+                            else:
+                                if len(spike) != 9:
+                                    if not renderer.queue_updating:
+                                        spike[self.attr_dict["is_hovered"]] = True
+                                    else:
+                                        spike[self.attr_dict["is_hovered"]] = False
                         else:
-                            renderer.queue[0].is_alive = False
-                            #reset(renderer.queue[0], renderer)
-                            renderer.queue[0].deaths += 1
-                else:
-                    if spike[7]==90:
-                        if (renderer.queue[0].mask.overlap(self.mask_3, (spike[self.attr_dict["pos"]][0]-renderer.queue[0].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[0].pos[1])) == None):
-                            pass
-                        else:
-                            renderer.queue[0].is_alive = False
-                            #reset(renderer.queue[0], renderer)
-                            renderer.queue[0].deaths += 1
-                    else:
-                        if (renderer.queue[0].mask.overlap(self.mask_4, (spike[self.attr_dict["pos"]][0]-renderer.queue[0].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[0].pos[1])) == None):
-                            pass
-                        else:
-                            renderer.queue[0].is_alive = False
-                            #reset(renderer.queue[0], renderer)
-                            renderer.queue[0].deaths += 1
-                if spike[7]==0:
-                    if not spike[6]:
-                        for enemy in self.enemies:
-                            if (renderer.queue[enemy].mask.overlap(self.mask, (spike[self.attr_dict["pos"]][0]-renderer.queue[enemy].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[enemy].pos[1])) == None):
+                            if (cursor_mask.overlap(self.mask_4, (spike[self.attr_dict["pos"]][0]-mouse_pos[0], spike[self.attr_dict["pos"]][1]-mouse_pos[1])) == None):
+                                spike[self.attr_dict["is_hovered"]] = False
+                            else:
+                                if len(spike) != 9:
+                                    if not renderer.queue_updating:
+                                        spike[self.attr_dict["is_hovered"]] = True
+                                    else:
+                                        spike[self.attr_dict["is_hovered"]] = False
+                    if spike[self.attr_dict["is_hovered"]]:
+                        if pygame.mouse.get_pressed()[2]:
+                            renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
+                            self.spikes = [sp for sp in self.spikes if sp != spike]
+                        if self.rect_surf.get_alpha() != 50:
+                            self.rect_surf.set_alpha(50)
+                        if spike[7]==0:
+                            win.blit(self.rect_surf, [spike[self.attr_dict["pos"]][0]+4, spike[self.attr_dict["pos"]][1]+8])
+                        elif spike[7]==90:
+                            win.blit(self.rect_surf, [spike[self.attr_dict["pos"]][0]+4, spike[self.attr_dict["pos"]][1]])
+                        elif spike[7]==-90:
+                            win.blit(self.rect_surf, [spike[self.attr_dict["pos"]][0], spike[self.attr_dict["pos"]][1]+6])
+                    if spike[7]==0:
+                        if not spike[6]:
+                            if (renderer.queue[0].mask.overlap(self.mask, (spike[self.attr_dict["pos"]][0]-renderer.queue[0].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[0].pos[1])) == None):
                                 pass
                             else:
-                                renderer.queue[enemy].is_alive = False
+                                renderer.queue[0].is_alive = False
+                                #reset(renderer.queue[0], renderer)
+                                renderer.queue[0].deaths += 1
+                        else:
+                            if (renderer.queue[0].mask.overlap(self.mask_2, (spike[self.attr_dict["pos"]][0]-renderer.queue[0].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[0].pos[1])) == None):
+                                pass
+                            else:
+                                renderer.queue[0].is_alive = False
+                                #reset(renderer.queue[0], renderer)
+                                renderer.queue[0].deaths += 1
+                    else:
+                        if spike[7]==90:
+                            if (renderer.queue[0].mask.overlap(self.mask_3, (spike[self.attr_dict["pos"]][0]-renderer.queue[0].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[0].pos[1])) == None):
+                                pass
+                            else:
+                                renderer.queue[0].is_alive = False
+                                #reset(renderer.queue[0], renderer)
+                                renderer.queue[0].deaths += 1
+                        else:
+                            if (renderer.queue[0].mask.overlap(self.mask_4, (spike[self.attr_dict["pos"]][0]-renderer.queue[0].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[0].pos[1])) == None):
+                                pass
+                            else:
+                                renderer.queue[0].is_alive = False
+                                #reset(renderer.queue[0], renderer)
+                                renderer.queue[0].deaths += 1
+                    if spike[7]==0:
+                        if not spike[6]:
+                            for enemy in self.enemies:
+                                if (renderer.queue[enemy].mask.overlap(self.mask, (spike[self.attr_dict["pos"]][0]-renderer.queue[enemy].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[enemy].pos[1])) == None):
+                                    pass
+                                else:
+                                    renderer.queue[enemy].is_alive = False
+
+                        else:
+                            for enemy in self.enemies:
+                                if (renderer.queue[enemy].mask.overlap(self.mask_2, (spike[self.attr_dict["pos"]][0]-renderer.queue[enemy].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[enemy].pos[1])) == None):
+                                    pass
+                                else:
+                                    renderer.queue[enemy].is_alive = False
 
                     else:
-                        for enemy in self.enemies:
-                            if (renderer.queue[enemy].mask.overlap(self.mask_2, (spike[self.attr_dict["pos"]][0]-renderer.queue[enemy].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[enemy].pos[1])) == None):
-                                pass
-                            else:
-                                renderer.queue[enemy].is_alive = False
+                        if spike[7]==90:
+                            for enemy in self.enemies:
+                                if (renderer.queue[enemy].mask.overlap(self.mask_3, (spike[self.attr_dict["pos"]][0]-renderer.queue[enemy].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[enemy].pos[1])) == None):
+                                    pass
+                                else:
+                                    renderer.queue[enemy].is_alive = False
 
-                else:
-                    if spike[7]==90:
-                        for enemy in self.enemies:
-                            if (renderer.queue[enemy].mask.overlap(self.mask_3, (spike[self.attr_dict["pos"]][0]-renderer.queue[enemy].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[enemy].pos[1])) == None):
-                                pass
-                            else:
-                                renderer.queue[enemy].is_alive = False
-
-                    else:
-                        for enemy in self.enemies:
-                            if (renderer.queue[enemy].mask.overlap(self.mask_4, (spike[self.attr_dict["pos"]][0]-renderer.queue[enemy].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[enemy].pos[1])) == None):
-                                pass
-                            else:
-                                renderer.queue[enemy].is_alive = False
-                if not self.played:
-                    if not web:
-                        renderer.coin_channel.play(pygame.mixer.Sound("assets\Audio\spike_spawn.ogg"))
-                    else:
-                        renderer.coin_channel.play(pygame.mixer.Sound("assets/Audio/spike_spawn.ogg"))
-                self.played = True
+                        else:
+                            for enemy in self.enemies:
+                                if (renderer.queue[enemy].mask.overlap(self.mask_4, (spike[self.attr_dict["pos"]][0]-renderer.queue[enemy].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[enemy].pos[1])) == None):
+                                    pass
+                                else:
+                                    renderer.queue[enemy].is_alive = False
+                    if not self.played:
+                        if not web:
+                            renderer.coin_channel.play(pygame.mixer.Sound("assets\Audio\spike_spawn.ogg"))
+                        else:
+                            renderer.coin_channel.play(pygame.mixer.Sound("assets/Audio/spike_spawn.ogg"))
+                    self.played = True
     def add_spike_u(self, pos):
         self.spikes.append([[pos[0], pos[1]], 0, True, 0, False, False, False, 0])
     def add_spike_d(self, pos):
@@ -405,6 +406,8 @@ class LevelRenderer:
         self.clock.tick(self.def_frame)
         if self.clock.get_fps() != 0:
             self.dt = 60/self.clock.get_fps()
+        if self.queue[0].just_spawned:
+            self.dt = 1
         self.render()
         self.enemies = []
         if self.queue != []:
@@ -423,7 +426,7 @@ class LevelRenderer:
         self.bullet_manager.update_physics(self)
         self.bullet_manager.update_graphics(self)
         
-        #if not web:
-            #print(self.clock.get_fps())
+        if not web:
+            print(self.clock.get_fps())
 
         

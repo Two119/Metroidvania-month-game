@@ -20,6 +20,7 @@ class FireBox:
         self.frame = [0, 0]
         self.mask = pygame.mask.from_surface(self.fire.get(self.frame))
         self.delay = 0
+        self.is_hovered = False
     def update(self, renderer):
         self.delay+=1
         if (hasattr(renderer, "dt")):
@@ -34,8 +35,19 @@ class FireBox:
                     if (self.mask.overlap(renderer.queue[0].mask, (renderer.queue[0].pos[0]-self.pos[0], renderer.queue[0].pos[1]-(self.pos[1]-64)))!=None) and self.frame[0] in range(4, 21):
                         renderer.queue[0].is_alive = False
                         renderer.queue[0].deaths += 1
-                        
+            for enemy in renderer.enemies:
+                if (hasattr(renderer.queue[enemy], "rect")):
+                    if (self.rect.colliderect(renderer.queue[enemy].rect)):
+                        if (self.mask.overlap(renderer.queue[enemy].mask, (renderer.queue[enemy].pos[0]-self.pos[0], renderer.queue[enemy].pos[1]-(self.pos[1]-64)))!=None) and self.frame[0] in range(4, 21):
+                            renderer.queue[enemy].is_alive = False
+                       
             win.blit(self.fire.get(self.frame), [self.pos[0], self.pos[1]-64])
             win.blit(self.firebox.get(self.frame), self.pos)
             renderer.standing_masks.append([pygame.mask.from_surface(self.firebox.get(self.frame)), self.pos, self])
+            self.mask = pygame.mask.from_surface(self.firebox.get(self.frame))
+        if self.is_hovered:
+            if pygame.mouse.get_pressed()[2]:
+                renderer.queue.remove(self)
+                del self
+                return 
 

@@ -89,6 +89,7 @@ class Game:
         self.back_button_2 = Button([center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]+(-1*self.button_sprites.get([0, 0]).get_height())], self.button_sprites.sheet[0], [back_to_game, self], win)
         self.back = Button([center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]-(self.button_sprites.get([0, 0]).get_height())+(3*self.button_sprites.get([0, 0]).get_height())], self.button_sprites.sheet[0], [back, self], win)
         self.renderer.button = self.small_menu_button
+        self.shoppables = []
     def update(self):
         self.cycles += 1
         cursor_pos = pygame.mouse.get_pos()
@@ -176,6 +177,8 @@ class Game:
                 win.blit(self.back_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+(3.2*self.button_sprites.get([0, 0]).get_height())+(3*self.back_button.current)])
             self.renderer.coin_channel.set_volume(self.settings[0].value/10)
             self.renderer.queue[0].channel.set_volume(self.settings[0].value/10)
+        elif self.screen == 3:
+            pass
         win.blit(self.cursor_img_, cursor_pos)
         if self.auto_save and ((self.cycles%20)==0):
             self.save_system.update(self.renderer)

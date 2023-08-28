@@ -90,6 +90,9 @@ class Game:
         self.back = Button([center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]-(self.button_sprites.get([0, 0]).get_height())+(3*self.button_sprites.get([0, 0]).get_height())], self.button_sprites.sheet[0], [back, self], win)
         self.renderer.button = self.small_menu_button
         self.shoppables = []
+        self.finished = False
+        self.radius = 0
+        self.add_rad = 0.12
     def update(self):
         self.cycles += 1
         cursor_pos = pygame.mouse.get_pos()
@@ -138,7 +141,24 @@ class Game:
                 win.blit(self.menu_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+10+(2*self.button_sprites.get([0, 0]).get_height())+(3*self.back.current)])
                 win.blit(self.back_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+(-0.8*self.button_sprites.get([0, 0]).get_height())+(3*self.back_button_2.current)])
             if not self.renderer.queue[0].is_alive:
-                start(self)
+                if self.finished:
+                    start(self)
+                    self.finished = False
+                    return
+                else:
+                    self.radius+=(self.add_rad*(60/self.renderer.clock.get_fps()))
+                    self.add_rad+=(0.02*(60/self.renderer.clock.get_fps()))
+                    if self.radius >= 1400:
+                        self.finished = True
+                        self.radius = 0 
+                        return
+                if self.spare_surf == None:
+                    pygame.image.save(win, "win.png")
+                    self.spare_surf = pygame.image.load("win.png").convert()
+                win.blit(self.spare_surf, (0, 0))
+                win.blit(self.renderer.surf, (0, 0))
+                if not self.finished:
+                    pygame.draw.circle(win, [0, 0, 0], [640, 360], self.radius)
 
         elif self.screen == 0:
             win.blit(self.renderer.background, (0, 0))

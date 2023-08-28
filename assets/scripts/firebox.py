@@ -1,7 +1,7 @@
 from assets.scripts.core_funcs import *
 class FireBox:
     def __init__(self, init_pos):
-        self.pos = [init_pos[0]+10, init_pos[1]+4]
+        self.pos = [init_pos[0]+4, init_pos[1]+4]
         self.rect = pygame.Rect(self.pos[0], self.pos[1]-64, 64, 128)
         if web:
             fb = pygame.image.load("assets/Spritesheets/firebox.png")

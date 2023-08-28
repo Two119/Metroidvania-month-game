@@ -138,21 +138,7 @@ class Game:
                 win.blit(self.menu_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+10+(2*self.button_sprites.get([0, 0]).get_height())+(3*self.back.current)])
                 win.blit(self.back_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+(-0.8*self.button_sprites.get([0, 0]).get_height())+(3*self.back_button_2.current)])
             if not self.renderer.queue[0].is_alive:
-                if self.spare_surf == None:
-                    pygame.image.save(win, "win.png")
-                    self.spare_surf = pygame.image.load("win.png").convert()
-                win.blit(self.spare_surf, (0, 0))
-                win.blit(self.renderer.surf, (0, 0))
-                for button in self.buttons:
-                    button.update()
-                self.back.update()
-                if pygame.key.get_pressed()[pygame.K_r]:
-                    self.buttons[0].onlick(self.buttons[0].args)
-                #self.back_button_2.update()
-                win.blit(self.restart_text, [self.buttons[0].pos[0]+10, self.buttons[0].pos[1]+15+(3*self.buttons[0].current)])
-                win.blit(self.set_text, [self.buttons[1].pos[0]+5, self.buttons[1].pos[1]+15+(3*self.buttons[1].current)])
-                win.blit(self.menu_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+10+(2*self.button_sprites.get([0, 0]).get_height())+(3*self.back.current)])
-                win.blit(self.death_surf, [center_pos(self.death_surf)[0], center_pos(self.death_surf)[1]-50])
+                start(self)
 
         elif self.screen == 0:
             win.blit(self.renderer.background, (0, 0))

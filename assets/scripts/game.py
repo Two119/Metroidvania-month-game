@@ -114,14 +114,20 @@ class Game:
                             if (self.cursor_mask.overlap(double_list[0], (double_list[1][0]-cursor_pos[0], double_list[1][1]-cursor_pos[1])) == None):
                                 pass
                             else:
-                                if double_list[2] != 122:
-                                    if pygame.mouse.get_pressed()[2]:
-                                            self.renderer.levels[self.renderer.level][int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1]))][int((double_list[1][0]-self.camera.cam_change[0])/self.renderer.tile_size[0])] = self.renderer.queue[0].tile
-                                    pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
-                                    win.blit(self.rect_surf, [double_list[1][0]+4, double_list[1][1]+4])
+                                if double_list[2] != 122 and not isinstance(double_list[2], SpikeBall):
+                                    if not isinstance(double_list[2], FireBox):
+                                        if pygame.mouse.get_pressed()[2]:
+                                                self.renderer.levels[self.renderer.level][int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1]))][int((double_list[1][0]-self.camera.cam_change[0])/self.renderer.tile_size[0])] = self.renderer.queue[0].tile
+                                        pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
+                                        win.blit(self.rect_surf, [double_list[1][0]+4, double_list[1][1]+4])
+                                    else:
+                                        if pygame.mouse.get_pressed()[2]:
+                                                self.renderer.levels[self.renderer.level][int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1]))+1][int((double_list[1][0]-self.camera.cam_change[0])/self.renderer.tile_size[0])] = self.renderer.queue[0].tile
+                                        pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
+                                        win.blit(self.rect_surf, [double_list[1][0], double_list[1][1]+64])
                     for obj in self.renderer.queue:
                         if not obj.__class__.__name__ in ["Player", "SpikeManager"] and hasattr(obj, "mask"):
-                            if (self.cursor_mask.overlap(obj.mask, (obj.pos[0]-cursor_pos[0], obj.pos[1]-cursor_pos[1])) == None):
+                            if (self.cursor_mask.overlap(obj.mask, (obj.pos[0]-cursor_pos[0], obj.pos[1]-cursor_pos[1])) == None) and not isinstance(obj, SpikeBall):
                                 obj.is_hovered = False
                             else:
                                 obj.is_hovered = True
@@ -142,15 +148,17 @@ class Game:
                 win.blit(self.back_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+(-0.8*self.button_sprites.get([0, 0]).get_height())+(3*self.back_button_2.current)])
             if not self.renderer.queue[0].is_alive:
                 if self.finished:
+                    win.blit(self.cursor_img_, cursor_pos)
                     start(self)
                     self.finished = False
                     return
                 else:
-                    self.radius+=(self.add_rad*(60/self.renderer.clock.get_fps()))
-                    self.add_rad+=(0.02*(60/self.renderer.clock.get_fps()))
-                    if self.radius >= 1400:
+                    self.radius+=(self.add_rad)
+                    self.add_rad+=(0.15)
+                    if self.radius >= 700:
                         self.finished = True
                         self.radius = 0 
+                        self.add_rad = 0.12
                         return
                 if self.spare_surf == None:
                     pygame.image.save(win, "win.png")
@@ -159,6 +167,7 @@ class Game:
                 win.blit(self.renderer.surf, (0, 0))
                 if not self.finished:
                     pygame.draw.circle(win, [0, 0, 0], [640, 360], self.radius)
+                
 
         elif self.screen == 0:
             win.blit(self.renderer.background, (0, 0))

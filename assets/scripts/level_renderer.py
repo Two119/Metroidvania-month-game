@@ -16,6 +16,7 @@ class LevelRenderer:
         swap_color(background, [0, 0, 0], final_color)
         tilesheet.set_colorkey([255, 255, 255])
         self.spikes = []
+        self.delay = 0
         if not web:
             self.spike_image = pygame.image.load("assets\Spritesheets\spikes.png").convert()
             self.button_sprites = SpriteSheet(scale_image(pygame.image.load("assets\Spritesheets\\buttons.png").convert()), [2, 1], [255, 255, 255])
@@ -63,9 +64,11 @@ class LevelRenderer:
         self.enemies = []
         self.special_blocks = []
         self.coin_channel = pygame.mixer.Channel(2)
+        self.firebox_channel = pygame.mixer.Channel(4)
         self.coin_channel.set_volume(0.5)
         self.tile_size = [64, 64]
         self.init_render_pos = [[-1, -9.2], [-1, -12.2]]
+        self.firebox_frame = 0
         self.x = self.init_render_pos[self.level][0]
         self.y = self.init_render_pos[self.level][1]
         self.queue = []
@@ -259,16 +262,18 @@ class LevelRenderer:
                 self.num_col += 1
                 self.x+=1
                 #if not [self.x*self.tile_size[0], self.y*self.tile_size[1]] in self.deleted:
-                if not tile == -1 and not(tile in self.exceptions):
-                    win.blit(self.images[tile], [self.x*self.tile_size[0], self.y*self.tile_size[1]])
+                if not tile == -1 and (not(tile in self.exceptions) or tile == 116):
+                    if tile != 116:
+                        win.blit(self.images[tile], [self.x*self.tile_size[0], self.y*self.tile_size[1]])
                     if not (tile in self.decorative_tiles):
                         #if self.standing_masks[]
-                        if self.queue_updating:
-                            if not tile == 19:
-                                if (tilemap[self.num_row-1][self.num_col] == -1) or (tilemap[self.num_row-1][self.num_col] in self.decorative_tiles):
-                                    self.standing_masks.append([pygame.mask.from_surface(self.images[tile]), [self.x*self.tile_size[0], self.y*self.tile_size[1]], tile])
-                        else:
-                            self.standing_masks.append([pygame.mask.from_surface(self.images[tile]), [self.x*self.tile_size[0], self.y*self.tile_size[1]], tile])
+                        if not tile == 116:
+                            if self.queue_updating:
+                                if not tile == 19:
+                                    if (tilemap[self.num_row-1][self.num_col] == -1) or (tilemap[self.num_row-1][self.num_col] in self.decorative_tiles):
+                                        self.standing_masks.append([pygame.mask.from_surface(self.images[tile]), [self.x*self.tile_size[0], self.y*self.tile_size[1]], tile])
+                            else:
+                                self.standing_masks.append([pygame.mask.from_surface(self.images[tile]), [self.x*self.tile_size[0], self.y*self.tile_size[1]], tile])
                         if not tile in [26, 27, 28]:
                             if tilemap[self.num_row][self.num_col-1] == -1 or tilemap[self.num_row][self.num_col-1] in self.decorative_tiles:
                                 if not tilemap[self.num_row-1][self.num_col] == -1 and not(tilemap[self.num_row-1][self.num_col] in self.decorative_tiles):
@@ -309,7 +314,7 @@ class LevelRenderer:
                                 if tilemap[self.num_row+1][self.num_col] == -1:
                                     self.side_rects.append([pygame.Rect((self.x*self.tile_size[0])+7.5, ((self.y+1)*self.tile_size[1])-30, (self.tile_size[0]), 1), 2])
                                     pygame.draw.rect(win, (255, 0, 0), pygame.Rect((self.x*self.tile_size[0])+7.5, ((self.y+1)*self.tile_size[1])-30, (self.tile_size[0]), 1))
-                elif tile == 60:
+                if tile == 60:
                     if self.coin_appending:
                         self.queue.append(Coin([self.x*self.tile_size[0], self.y*self.tile_size[1]], self.coin_img, [4, 1]))
                         self.added_coins += 1
@@ -403,11 +408,19 @@ class LevelRenderer:
         self.first_cycle = False
         self.coin_appending = False
     def update(self):
+        self.delay += 1
         self.clock.tick(self.def_frame)
         if self.clock.get_fps() != 0:
             self.dt = 60/self.clock.get_fps()
-        if self.queue[0].just_spawned:
+        else:
             self.dt = 1
+        if self.dt > 1.5:
+            self.dt = 1
+        if round(16/self.dt) != 0:
+            if (self.delay%round(16/self.dt)==0):
+                self.firebox_frame+=1
+                if (self.firebox_frame>12):
+                    self.firebox_frame = 0
         self.render()
         self.enemies = []
         if self.queue != []:

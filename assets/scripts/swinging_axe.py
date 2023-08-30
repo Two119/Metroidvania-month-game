@@ -3,11 +3,11 @@ class SwingingAxe:
     def __init__(self, pos):
         if not web:
             img = pygame.image.load("assets\Spritesheets\swinging_axe.png").convert()
-            self.image = scale_image(img, 4).convert()
+            self.image = scale_image(img).convert()
             self.sound = pygame.mixer.Sound("assets\Audio\spike_spawn.ogg")
         else:
             img = pygame.image.load("assets/Spritesheets/swinging_axe.png").convert()
-            self.image = scale_image(img, 4).convert()
+            self.image = scale_image(img).convert()
             self.sound = pygame.mixer.Sound("assets/Audio/spike_spawn.ogg")
         self.image.set_colorkey([236, 28, 36])
         self.pos = [pos[0], pos[1]+4]
@@ -17,7 +17,7 @@ class SwingingAxe:
         self.swing_angle = 45
     def update(self, renderer):
         img = pygame.transform.rotate(self.image, self.angle)
-        if hasattr(renderer, "dt"):
+        if hasattr(renderer, "dt") and hasattr(renderer.queue[0], "mask"):
             if True:
                 if (not(self.angle < self.swing_angle) and self.angle > 0 and not self.shifted) or (not(self.angle > 0-self.swing_angle) and self.angle < 0 and self.shifted):
                     self.shifted = not(self.shifted)

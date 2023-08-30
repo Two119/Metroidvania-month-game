@@ -7,7 +7,7 @@ if __import__("sys").platform == "emscripten":
     import platform
 pygame.init()
 global web
-web =  True
+web =  False
 global cursor_mask
 global cursor_img
 global button_sound
@@ -87,7 +87,6 @@ def reset(player, renderer, fell=False):
         #player.spritesheet = SpriteSheet(spritesheet, sheet_size)
         player.frame = [0, 0]
         player.fell = False
-        player.is_alive = True
         player.vel = [0, 0]
         player.gravity = 0.2
         player.just_spawned = True
@@ -102,3 +101,5 @@ def reset(player, renderer, fell=False):
         player.moving = True
         player.just_jumped = False
         renderer.bullet_manager.bullets = []
+        player.is_alive = True
+        

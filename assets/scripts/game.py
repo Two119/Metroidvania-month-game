@@ -71,6 +71,7 @@ class Game:
         self.menu_text = scale_image(self.ui_font.render("Menu", False, (255, 255, 255), (0, 0, 0)), 1.5)
         self.set_text = scale_image(self.ui_font.render("Options", False, (255, 255, 255), (0, 0, 0)), 1.2)
         self.shop_text = scale_image(self.ui_font.render("Shop", False, (255, 255, 255), (0, 0, 0)), 1.3)
+        self.renderer.font = self.ui_font
         self.start_text.set_colorkey((0, 0, 0))
         self.restart_text.set_colorkey((0, 0, 0))
         self.set_text.set_colorkey((0, 0, 0))
@@ -250,7 +251,7 @@ class Game:
             win.blit(self.renderer.background, (0, 0))
             #self.settings[1].update()
             
-            self.shop.update()
+            self.shop.update(self.renderer)
             self.back_button_.update()
             win.blit(self.back_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+(5.2*self.button_sprites.get([0, 0]).get_height())+(4*self.back_button_.current)])
         win.blit(self.cursor_img_, cursor_pos)

@@ -17,6 +17,7 @@ class LevelRenderer:
         swap_color(background, [0, 0, 0], final_color)
         tilesheet.set_colorkey([255, 255, 255])
         self.spikes = []
+        self.font = None
         self.delay = 0
         if not web:
             self.spike_image = pygame.image.load("assets\Spritesheets\spikes.png").convert()

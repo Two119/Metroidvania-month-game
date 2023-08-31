@@ -19,10 +19,10 @@ class SpikeBall:
         self.just_spawned = True
     def spawn_animation(self, row, delay_wait, renderer):
         if (renderer.dt) != 0 and self.just_spawned:
-            self.delay += 1
+            self.delay += (1*renderer.dt)
             self.frame[1] = row
             if round(delay_wait/renderer.dt) != 0:
-                if self.delay % round(delay_wait/renderer.dt) == 0:
+                if int(self.delay) % round(delay_wait/renderer.dt) == 0:
                     self.frame[0] += 1
             if self.frame[0] > 3:
                 self.frame[0] = 3

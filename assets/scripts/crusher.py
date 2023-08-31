@@ -25,8 +25,8 @@ class Crusher:
     def update_animation(self, delay_wait, renderer):
         if hasattr(renderer, "dt"):
             if round(delay_wait/renderer.dt) != 0:
-                self.delay += 1
-                if self.delay % round(delay_wait/renderer.dt) == 0:
+                self.delay += (1*renderer.dt)
+                if int(self.delay) % round(delay_wait/renderer.dt) == 0:
                     self.frame[0] += self.adder
                 if self.frame[0] > 11:
                     self.frame[0] = 11

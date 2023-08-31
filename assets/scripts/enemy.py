@@ -80,8 +80,8 @@ class EnemyWizard:
                 self.frame[1] = row
                 if self.just_spawned:
                     self.frame[1] == 0
-                    self.delay += 1
-                    if self.delay % round(delay_wait/(dt)) == 0:
+                    self.delay += (1*dt)
+                    if int(self.delay) % round(delay_wait/(dt)) == 0:
                         self.frame[0] += 1
                     
                     if self.frame[0] > 3:
@@ -91,8 +91,8 @@ class EnemyWizard:
                         if not self.renderer.coin_channel.get_busy():
                             self.renderer.coin_channel.play(self.sounds[self.sounds_dict["land"]])
                 else:
-                    self.delay += 1
-                    if self.delay % round(delay_wait/(dt)) == 0:
+                    self.delay += (1*dt)
+                    if int(self.delay) % round(delay_wait/(dt)) == 0:
                         self.frame[0] += 1
                     if self.frame[0] > 3:
                         self.frame[0] = 0
@@ -184,8 +184,8 @@ class EnemyWizard:
             renderer.bullet_manager.add_bullet(self.staff_pos, 270-ang)
             self.just_shot = True
         if self.just_shot:
-            self.shoot_delay += 1
-        if self.shoot_delay%round(60/dt)==0:
+            self.shoot_delay += (1*dt)
+        if int(self.shoot_delay)%round(60/dt)==0:
             self.just_shot = False
             self.shoot_delay = 0
         self.staff_pos = [self.staff_pos[0]-(self.staff.get_width()/2), self.staff_pos[1]-(self.staff.get_height()/2)]
@@ -241,9 +241,9 @@ class Sword:
         if not self.attacking:
             win.blit(pygame.transform.flip(self.sprite, self.dir, False), self.pos)
         else:
-            self.delay += 1
+            self.delay += (1*renderer.dt)
             if round(10/renderer.dt) != 0:
-                if (self.delay % round(10/renderer.dt))==0:
+                if (int(self.delay) % round(10/renderer.dt))==0:
                     self.frame[0] += 1
                     if self.frame[0] > 6:
                         self.frame[0] = 0
@@ -317,8 +317,8 @@ class EnemySwordsman:
                 self.frame[1] = row
                 if self.just_spawned:
                     self.frame[1] == 0
-                    self.delay += 1
-                    if self.delay % round(delay_wait/(dt)) == 0:
+                    self.delay += (1*dt)
+                    if int(self.delay) % round(delay_wait/(dt)) == 0:
                         self.frame[0] += 1
                     
                     if self.frame[0] > 3:
@@ -328,8 +328,8 @@ class EnemySwordsman:
                         if not self.renderer.coin_channel.get_busy():
                             self.renderer.coin_channel.play(self.sounds[self.sounds_dict["land"]])
                 else:
-                    self.delay += 1
-                    if self.delay % round(delay_wait/(dt)) == 0:
+                    self.delay += (1*dt)
+                    if int(self.delay) % round(delay_wait/(dt)) == 0:
                         self.frame[0] += 1
                     if self.frame[0] > 3:
                         self.frame[0] = 0

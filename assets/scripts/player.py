@@ -78,8 +78,8 @@ class Player:
                 self.frame[1] = row
                 if self.just_spawned:
                     self.frame[1] == 0
-                    self.delay += 1
-                    if self.delay % round(delay_wait/(dt)) == 0:
+                    self.delay += (1*dt)
+                    if int(self.delay) % round(delay_wait/(dt)) == 0:
                         self.frame[0] += 1
                     
                     if self.frame[0] > 3:
@@ -89,8 +89,8 @@ class Player:
                         if not self.channel.get_busy():
                             self.channel.play(self.sounds[self.sounds_dict["land"]])
                 else:
-                    self.delay += 1
-                    if self.delay % round(delay_wait/(dt)) == 0:
+                    self.delay += (1*dt)
+                    if int(self.delay) % round(delay_wait/(dt)) == 0:
                         self.frame[0] += 1
                     if self.frame[0] > 3:
                         self.frame[0] = 0
@@ -331,4 +331,4 @@ class Player:
                 self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, 1)
             #pygame.draw.rect(win, [255, 0, 0], self.rect)
             win.blit(self.spritesheet.get(self.frame), self.pos)
-            #win.blit(self.staff, self.staff_pos)
+            win.blit(self.staff, self.staff_pos)

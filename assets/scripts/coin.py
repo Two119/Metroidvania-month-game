@@ -26,8 +26,8 @@ class Coin:
             if (renderer.dt) != 0:
                 if round(delay_wait/(renderer.dt)) != 0:
                     self.frame[1] = row
-                    self.delay += 1
-                    if self.delay % round(delay_wait/(renderer.dt)) == 0:
+                    self.delay += (1*renderer.dt)
+                    if int(self.delay) % round(delay_wait/(renderer.dt)) == 0:
                         self.frame[0] += 1
                     if self.frame[0] > 11:
                         self.frame[0] = 0

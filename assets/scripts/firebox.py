@@ -54,7 +54,44 @@ class FireBox:
                 self.mask = pygame.mask.from_surface(self.firebox.get([renderer.firebox_frame, 0]))
             if self.is_hovered:
                 if pygame.mouse.get_pressed()[2]:
-                    renderer.queue.remove(self)
-                    del self
-                    return 
+                    if renderer.queue[0].tile == 117:
+                        renderer.add_spike_u([self.pos[0]-4, self.pos[1]+52])
+                        renderer.added_spikes += 1
+                        renderer.spike_count += 1
+                        if renderer.spike_count > renderer.added_spikes:
+                            renderer.add_spike_u([self.pos[0]-4, self.pos[1]+52])
+                            renderer.added_spikes += 1
+                        renderer.queue[0].shapeshifting=False
+                        renderer.queue_updating = True
+                    if renderer.queue[0].tile == 129:
+                        renderer.add_spike_d([self.pos[0]-4, self.pos[1]+56])
+                        renderer.added_spikes += 1
+                        renderer.spike_count += 1
+                        if renderer.spike_count > renderer.added_spikes:
+                            renderer.add_spike_d([self.pos[0]-4, self.pos[1]+56])
+                            renderer.added_spikes += 1
+                        renderer.queue[0].shapeshifting=False
+                        renderer.queue_updating = True
+                    if renderer.queue[0].tile == 138:
+                        renderer.add_spike_r([self.pos[0]-4, self.pos[1]+52])
+                        renderer.added_spikes += 1
+                        renderer.spike_count += 1
+                        if renderer.spike_count > renderer.added_spikes:
+                            renderer.add_spike_r([self.pos[0]-4, self.pos[1]+52])
+                            renderer.added_spikes += 1
+                        renderer.queue[0].shapeshifting=False
+                        renderer.queue_updating = True
+                    if renderer.queue[0].tile == 139:
+                        renderer.add_spike_l([self.pos[0]-4, self.pos[1]+56])
+                        renderer.added_spikes += 1
+                        renderer.spike_count += 1
+                        if renderer.spike_count > renderer.added_spikes:
+                            renderer.add_spike_l([self.pos[0]-4, self.pos[1]+56])
+                            renderer.added_spikes += 1
+                        renderer.queue[0].shapeshifting=False
+                        renderer.queue_updating = True
+                    if renderer.queue[0].tile != 116:
+                        renderer.queue.remove(self)
+                        del self
+                        return 
 

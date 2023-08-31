@@ -8,6 +8,7 @@ from assets.scripts.moving_platform import *
 from assets.scripts.swinging_axe import *
 from assets.scripts.firebox import *
 from assets.scripts.enemy import *
+from assets.scripts.shop import *
 from assets.scripts.bullet_manager import *
 class LevelRenderer:
     def __init__(self, levels : tuple, tilesheet : pygame.Surface, tilesheet_size : tuple, spike_images : tuple, colors : tuple, background : pygame.Surface, coin_image):
@@ -82,9 +83,11 @@ class LevelRenderer:
         self.clock = pygame.time.Clock()
         self.first_layer = []
         self.coin_appending = True
+        self.level_firebox_y_offset_dict = {0:0, 1:4}
         self.added_coins = 0
         self.added_spikes = 0
         self.added_spikes_h = 0
+        self.firebox_in_cam = False
         self.camera = None
         self.exceptions = [60, 116, 117, 118, 119, 120, 121, 122, 129, 135, 136, 137, 138, 139, 140]
         self.ground = ["SpikeBall", "MovingPlatform", "FireBox"]
@@ -121,7 +124,7 @@ class LevelRenderer:
                             if (cursor_mask.overlap(self.mask, (spike[self.attr_dict["pos"]][0]-mouse_pos[0], spike[self.attr_dict["pos"]][1]-mouse_pos[1])) == None):
                                 spike[self.attr_dict["is_hovered"]] = False
                             else:
-                                if len(spike) != 9:
+                                if len(spike) != 10:
                                     if not renderer.queue_updating:
                                         spike[self.attr_dict["is_hovered"]] = True
                                     else:
@@ -130,7 +133,7 @@ class LevelRenderer:
                             if (cursor_mask.overlap(self.mask_2, (spike[self.attr_dict["pos"]][0]-mouse_pos[0], spike[self.attr_dict["pos"]][1]-mouse_pos[1])) == None):
                                 spike[self.attr_dict["is_hovered"]] = False
                             else:
-                                if len(spike) != 9:
+                                if len(spike) != 10:
                                     if not renderer.queue_updating:
                                         spike[self.attr_dict["is_hovered"]] = True
                                     else:
@@ -140,7 +143,7 @@ class LevelRenderer:
                             if (cursor_mask.overlap(self.mask_3, (spike[self.attr_dict["pos"]][0]-mouse_pos[0], spike[self.attr_dict["pos"]][1]-mouse_pos[1])) == None):
                                 spike[self.attr_dict["is_hovered"]] = False
                             else:
-                                if len(spike) != 9:
+                                if len(spike) != 10:
                                     if not renderer.queue_updating:
                                         spike[self.attr_dict["is_hovered"]] = True
                                     else:
@@ -149,15 +152,20 @@ class LevelRenderer:
                             if (cursor_mask.overlap(self.mask_4, (spike[self.attr_dict["pos"]][0]-mouse_pos[0], spike[self.attr_dict["pos"]][1]-mouse_pos[1])) == None):
                                 spike[self.attr_dict["is_hovered"]] = False
                             else:
-                                if len(spike) != 9:
+                                if len(spike) != 10:
                                     if not renderer.queue_updating:
                                         spike[self.attr_dict["is_hovered"]] = True
                                     else:
                                         spike[self.attr_dict["is_hovered"]] = False
                     if spike[self.attr_dict["is_hovered"]]:
                         if pygame.mouse.get_pressed()[2]:
-                            renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
-                            self.spikes = [sp for sp in self.spikes if sp != spike]
+                            if not (renderer.queue[0].tile in [117, 129, 138, 139, 121]):
+                                renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
+                                self.spikes = [sp for sp in self.spikes if sp != spike]
+                                if renderer.queue[0].tile == 116:
+                                    self.queue.append(FireBox([spike[8][0]+self.camera.cam_change[0], spike[8][1]+self.camera.cam_change[1]]))
+                                    renderer.queue[0].shapeshifting=False
+                                    renderer.queue_updating = True
                         if self.rect_surf.get_alpha() != 50:
                             self.rect_surf.set_alpha(50)
                         if spike[7]==0:
@@ -232,15 +240,15 @@ class LevelRenderer:
                             renderer.coin_channel.play(pygame.mixer.Sound("assets/Audio/spike_spawn.ogg"))
                     self.played = True
     def add_spike_u(self, pos):
-        self.spikes.append([[pos[0], pos[1]], 0, True, 0, False, False, False, 0])
+        self.spikes.append([[pos[0], pos[1]], 0, True, 0, False, False, False, 0, pos])
     def add_spike_d(self, pos):
-        self.spikes.append([[pos[0], pos[1]+4], 0, True, 0, False, False, True, 0])
+        self.spikes.append([[pos[0], pos[1]+4], 0, True, 0, False, False, True, 0, pos])
     def add_spike_r(self, pos):
         selfpos = [pos[0]+((16*90)/90)+((20*90)/90)-int(self.spikesheet.get([3, 0]).get_width()/2)-8, pos[1]+44-int(self.spikesheet.get([3, 0]).get_height()/2)]
-        self.spikes.append([selfpos, 0, True, 0, False, False, True, 90])
+        self.spikes.append([selfpos, 0, True, 0, False, False, True, 90, pos])
     def add_spike_l(self, pos):
         selfpos = [pos[0]+((16*-90)/-90)+((26*-90)/-90)-int(self.spikesheet.get([3, 0]).get_width()/2)-4, pos[1]+38-int(self.spikesheet.get([3, 0]).get_height()/2)]
-        self.spikes.append([selfpos, 0, True, 0, False, False, True, -90])
+        self.spikes.append([selfpos, 0, True, 0, False, False, True, -90, pos])
     def render(self):
         self.coin_count = 0
         self.spike_count = 0
@@ -400,7 +408,7 @@ class LevelRenderer:
                         self.queue.append(MovingPlatform(5, [self.x*self.tile_size[0], self.y*self.tile_size[1]], 3, 200))
                 elif tile == 116:
                     if self.coin_appending:
-                        self.queue.append(FireBox([self.x*self.tile_size[0], self.y*self.tile_size[1]]))
+                        self.queue.append(FireBox([self.x*self.tile_size[0], self.y*self.tile_size[1]+self.level_firebox_y_offset_dict[self.level]]))
                 elif tile == 140:
                     if self.coin_appending:
                         self.enemies.append(len(self.queue))
@@ -408,7 +416,6 @@ class LevelRenderer:
         self.first_cycle = False
         self.coin_appending = False
     def update(self):
-        self.delay += 1
         self.clock.tick(self.def_frame)
         if self.clock.get_fps() != 0:
             self.dt = 60/self.clock.get_fps()
@@ -416,13 +423,18 @@ class LevelRenderer:
             self.dt = 1
         if self.dt > 1.5:
             self.dt = 1
+        self.delay += (1*self.dt)
         if round(16/self.dt) != 0:
-            if (self.delay%round(16/self.dt)==0):
+            if (int(self.delay)%round(16/self.dt)==0):
                 self.firebox_frame+=1
                 if (self.firebox_frame>12):
                     self.firebox_frame = 0
+        if not self.firebox_in_cam:
+            self.firebox_channel.stop()
+        self.firebox_channel.set_volume(self.coin_channel.get_volume())
         self.render()
         self.enemies = []
+        self.firebox_in_cam = False
         if self.queue != []:
             for obj in self.queue:
                 if obj.__class__.__name__ in self.ground:
@@ -434,7 +446,9 @@ class LevelRenderer:
                 if obj != None:
                     if not (obj.__class__.__name__ in self.ground):
                         obj.update(self)
-                
+                if isinstance(obj, FireBox):
+                    if obj.rect.colliderect(self.camera.rect) and self.queue[0].is_alive:
+                        self.firebox_in_cam = True
             self.spike_update()
         self.bullet_manager.update_physics(self)
         self.bullet_manager.update_graphics(self)

@@ -16,7 +16,7 @@ class SaveSystem:
                 if len(renderer.queue) > 0:
                     renderer.queue[0].coins = int(saved["coins"])
                     renderer.queue[0].deaths = int(saved["deaths"])
-                    renderer.queue[0].tile = int(saved["tile"])
+                    #renderer.queue[0].tile = int(saved["tile"])
                     renderer.coin_channel.set_volume(float(saved["volume"]))
                     renderer.queue[0].channel.set_volume(float(saved["volume"]))
                     renderer.def_frame = int(saved["fps"])
@@ -30,7 +30,7 @@ class SaveSystem:
                 if len(renderer.queue) > 0:
                     renderer.queue[0].coins = int(saved["coins"])
                     renderer.queue[0].deaths = int(saved["deaths"])
-                    renderer.queue[0].tile = int(saved["tile"])
+                    #renderer.queue[0].tile = int(saved["tile"])
                     renderer.coin_channel.set_volume(float(saved["volume"]))
                     renderer.queue[0].channel.set_volume(float(saved["volume"]))
                     renderer.def_frame = int(saved["fps"])

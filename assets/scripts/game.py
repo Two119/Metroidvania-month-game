@@ -104,6 +104,8 @@ class Game:
         self.level_spike_dicts = {0: 522, 1:712}
         self.shop = Shop(self.renderer)
     def update(self):
+        self.renderer.clock.tick(self.renderer.def_frame)
+        
         self.cycles += 1
         cursor_pos = pygame.mouse.get_pos()
         win.fill((0, 0, 0))

@@ -417,7 +417,6 @@ class LevelRenderer:
         self.first_cycle = False
         self.coin_appending = False
     def update(self):
-        self.clock.tick(self.def_frame)
         if self.clock.get_fps() != 0:
             self.dt = 60/self.clock.get_fps()
         else:

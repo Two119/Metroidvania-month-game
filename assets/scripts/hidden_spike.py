@@ -56,6 +56,8 @@ class HiddenSpike:
             if not self.just_spawned == None:
                 if self.just_spawned:
                     self.spawn_animation(0, 4, renderer)
+            else:
+                pygame.draw.rect(win, [255, 0, 0], pygame.Rect(self.pos[0]+4, self.pos[1]+70, 64, 2))
             if hasattr(self, "mask"):
                 if self.ang == 0:
                     if self.mask.overlap(renderer.queue[0].mask, (renderer.queue[0].pos[0]-self.pos[0], renderer.queue[0].pos[1]-self.pos[1])) == None:

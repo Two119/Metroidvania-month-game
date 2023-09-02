@@ -47,14 +47,8 @@ class SaveSystem:
                     renderer.queue[0].tiles_unlocked.append(6)
                     if saved["spike_bought"]:
                         renderer.queue[0].tiles_unlocked.append(117)
-                        renderer.queue[0].tiles_unlocked.append(129)
-                        renderer.queue[0].tiles_unlocked.append(138)
-                        renderer.queue[0].tiles_unlocked.append(139)
                     if saved["hiddenspike_bought"]:
                         renderer.queue[0].tiles_unlocked.append(118)
-                        renderer.queue[0].tiles_unlocked.append(135)
-                        renderer.queue[0].tiles_unlocked.append(136)
-                        renderer.queue[0].tiles_unlocked.append(137)
                     if saved["swing_bought"]:
                         renderer.queue[0].tiles_unlocked.append(121)
                     if saved["fire_bought"]:

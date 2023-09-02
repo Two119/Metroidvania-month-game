@@ -18,9 +18,6 @@ def buy(args):
     if args[2] == 0:
         if renderer.queue[0].coins >= price:
             renderer.queue[0].tiles_unlocked.append(117) 
-            renderer.queue[0].tiles_unlocked.append(129)
-            renderer.queue[0].tiles_unlocked.append(138)
-            renderer.queue[0].tiles_unlocked.append(139)
             renderer.queue[0].coins -= price
             args[3].notifications.append(Notification(args[3].purchase_text))
         else:
@@ -28,9 +25,6 @@ def buy(args):
     elif args[2] == 1:
         if renderer.queue[0].coins >= price:
             renderer.queue[0].tiles_unlocked.append(118) 
-            renderer.queue[0].tiles_unlocked.append(135)
-            renderer.queue[0].tiles_unlocked.append(136)
-            renderer.queue[0].tiles_unlocked.append(137)
             renderer.queue[0].coins -= price
             args[3].notifications.append(Notification(args[3].purchase_text))
         else:

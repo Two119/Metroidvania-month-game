@@ -1,4 +1,82 @@
 from assets.scripts.core_funcs import *
+class Inventory:
+    def __init__(self, size):
+        self.size = size
+        self.tile_size = 80
+        self.surf = pygame.Surface([size*self.tile_size, self.tile_size])
+        self.surf.fill([0, 0, 0])
+        self.bg_surf = self.surf.copy()
+        self.bg_surf.set_alpha(150)
+        self.surf.set_colorkey([0, 0, 0])
+        [pygame.draw.rect(self.surf, [108, 108, 108], pygame.Rect(i*self.tile_size, 0, self.tile_size, self.tile_size), 4) for i in range(size)]
+        self.rects = [pygame.Rect(((1280-self.bg_surf.get_width())/2)+(i*self.tile_size), 720-self.tile_size, self.tile_size, self.tile_size) for i in range(size)]
+        self.items = [6]
+        self.spike_dir_list = [117, 129, 138, 139]
+        self.hiddenspike_dir_list = [118, 135, 136, 137]
+        self.spike_ang_list = [0, 180, 90, -90]
+        self.cur_tile = 0
+        self.current = 0
+    def update(self, renderer):
+        win.blit(self.bg_surf, [(1280-self.bg_surf.get_width())/2, 720-self.tile_size])
+        win.blit(self.surf, [(1280-self.surf.get_width())/2, 720-self.tile_size])
+        index = 0
+        for item in self.items:
+            if item != 118:
+                if self.current < len(self.items):
+                    if self.items[self.current] != 117:
+                        win.blit(renderer.shop.tile_images[renderer.shop.tiles.index(item)], [((1280-self.surf.get_width())/2)+(self.tile_size*index)+((self.tile_size-64)/2)-4, 720-self.tile_size+((self.tile_size-64)/2)-4])
+                    else:
+                        if item == 117:
+                            s = pygame.transform.rotate(renderer.shop.tile_images[renderer.shop.tiles.index(item)], self.spike_ang_list[self.cur_tile])
+                            win.blit(s, [((1280-self.surf.get_width())/2)+(self.tile_size*index)+((self.tile_size-64)/2)-4, 720-self.tile_size+((self.tile_size-64)/2)-4])
+                        else:
+                            win.blit(renderer.shop.tile_images[renderer.shop.tiles.index(item)], [((1280-self.surf.get_width())/2)+(self.tile_size*index)+((self.tile_size-64)/2)-4, 720-self.tile_size+((self.tile_size-64)/2)-4])
+                else:
+                    win.blit(renderer.shop.tile_images[renderer.shop.tiles.index(item)], [((1280-self.surf.get_width())/2)+(self.tile_size*index)+((self.tile_size-64)/2)-4, 720-self.tile_size+((self.tile_size-64)/2)-4])
+            
+            else:
+                renderer.shop.tile_images[renderer.shop.tiles.index(item)].set_alpha(96)
+                if self.current < len(self.items):
+                    if self.items[self.current] == 118:
+                        s = pygame.transform.rotate(renderer.shop.tile_images[renderer.shop.tiles.index(item)], self.spike_ang_list[self.cur_tile])
+                    else:
+                        s = renderer.shop.tile_images[renderer.shop.tiles.index(item)]
+                else:
+                    s = renderer.shop.tile_images[renderer.shop.tiles.index(item)]
+                win.blit(s, [((1280-self.surf.get_width())/2)+(self.tile_size*index)+((self.tile_size-64)/2)-4, 720-self.tile_size+((self.tile_size-64)/2)-4])
+                renderer.shop.tile_images[renderer.shop.tiles.index(item)].set_alpha(255)
+            index+=1
+        index = 0
+        for rect in self.rects:
+            if rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0] and self.current != index:
+                self.current = index
+                if self.current < len(self.items):
+                    self.cur_tile = 0
+                    renderer.queue[0].tile = self.items[self.current]
+                break
+            index += 1
+        if self.current < len(self.items):
+            if self.items[self.current] == 117:
+                if pygame.key.get_pressed()[pygame.K_LEFT]:
+                    self.cur_tile = 2
+                if pygame.key.get_pressed()[pygame.K_RIGHT]:
+                    self.cur_tile = 3
+                if pygame.key.get_pressed()[pygame.K_UP]:
+                    self.cur_tile = 0
+                if pygame.key.get_pressed()[pygame.K_DOWN]:
+                    self.cur_tile = 1
+                renderer.queue[0].tile = self.spike_dir_list[self.cur_tile]
+            if self.items[self.current] == 118:
+                if pygame.key.get_pressed()[pygame.K_LEFT]:
+                    self.cur_tile = 2
+                if pygame.key.get_pressed()[pygame.K_RIGHT]:
+                    self.cur_tile = 3
+                if pygame.key.get_pressed()[pygame.K_UP]:
+                    self.cur_tile = 0
+                if pygame.key.get_pressed()[pygame.K_DOWN]:
+                    self.cur_tile = 1
+                renderer.queue[0].tile = self.hiddenspike_dir_list[self.cur_tile]
+        pygame.draw.rect(win, [85, 85, 85], pygame.Rect(((1280-self.surf.get_width())/2)+(self.current*self.tile_size), (720-self.tile_size), self.tile_size, self.tile_size), 8)
 class Player:
     def __init__(self, position, spritesheet, sheet_size):
         self.pos = position
@@ -72,6 +150,7 @@ class Player:
         self.staff.set_colorkey([255, 255, 255])
         self.orig_staff = self.staff.copy()
         self.just_shot = False
+        self.inventory = Inventory(8)
     def update_animation(self, row, delay_wait, dt):
         if dt != 0:
             if round(delay_wait/(dt)) != 0:
@@ -157,26 +236,26 @@ class Player:
             if not self.collided:
                 self.just_col = []
             if self.just_jumped:
-                if not (pygame.key.get_pressed()[pygame.K_SPACE] or pygame.key.get_pressed()[pygame.K_UP]):
+                if not (pygame.key.get_pressed()[pygame.K_SPACE] ):
                     self.just_jumped = False
             if self.standing:
                 if self.moving:
                     if not self.just_jumped:
-                        if pygame.key.get_pressed()[pygame.K_SPACE] or pygame.key.get_pressed()[pygame.K_UP]:
+                        if pygame.key.get_pressed()[pygame.K_SPACE] :
                             self.vel[1] = 0-(find_u(128, self.gravity*(dt)))
                             self.update_animation(1, 17.7/2, dt)
                             self.jumping = True
                             self.standing = False
                             renderer.coin_channel.play(self.sounds[self.sounds_dict["jump"]])
                             self.just_jumped = True
-                    if pygame.key.get_pressed()[pygame.K_a] or pygame.key.get_pressed()[pygame.K_LEFT]:
+                    if pygame.key.get_pressed()[pygame.K_a] :
                         if not self.jumping:
                             self.vel[0] = (0-(self.speed*(dt)))
                         else:
                             self.vel[0] = 0.85*(0-(find_u(25, self.gravity*(dt))))
                         self.update_animation(12, 17.7/2, dt)
                         self.dir = 0
-                    elif pygame.key.get_pressed()[pygame.K_d] or pygame.key.get_pressed()[pygame.K_RIGHT]:
+                    elif pygame.key.get_pressed()[pygame.K_d] :
                         if not self.jumping:
                             self.vel[0] = (self.speed*(dt))
                         else:
@@ -238,26 +317,26 @@ class Player:
             if not self.collided:
                 self.just_col = []
             if self.just_jumped:
-                if not (pygame.key.get_pressed()[pygame.K_SPACE] or pygame.key.get_pressed()[pygame.K_UP]):
+                if not (pygame.key.get_pressed()[pygame.K_SPACE] ):
                     self.just_jumped = False
             if self.standing:
                 if self.moving:
                     if not self.just_jumped:
-                        if pygame.key.get_pressed()[pygame.K_SPACE] or pygame.key.get_pressed()[pygame.K_UP]:
+                        if pygame.key.get_pressed()[pygame.K_SPACE] :
                             self.vel[1] = 0-(find_u(128, self.gravity*(dt)))
                             self.update_animation(1, 17.7/2, dt)
                             self.jumping = True
                             self.standing = False
                             renderer.coin_channel.play(self.sounds[self.sounds_dict["jump"]])
                             self.just_jumped = True
-                    if pygame.key.get_pressed()[pygame.K_a] or pygame.key.get_pressed()[pygame.K_LEFT]:
+                    if pygame.key.get_pressed()[pygame.K_a] :
                         if not self.jumping:
                             self.vel[0] = (0-(self.speed*(dt)))
                         else:
                             self.vel[0] = 0.85*(0-(find_u(25, self.gravity*(dt))))
                         self.update_animation(12, 17.7/2, dt)
                         self.dir = 0
-                    elif pygame.key.get_pressed()[pygame.K_d] or pygame.key.get_pressed()[pygame.K_RIGHT]:
+                    elif pygame.key.get_pressed()[pygame.K_d] :
                         if not self.jumping:
                             self.vel[0] = (self.speed*(dt))
                         else:
@@ -281,9 +360,9 @@ class Player:
             else:
                 self.rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, (16*4)+17)
                 self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, 1)
-        if pygame.key.get_pressed()[pygame.K_d] or pygame.key.get_pressed()[pygame.K_RIGHT]:
+        if pygame.key.get_pressed()[pygame.K_d] :
             self.dir = 1
-        elif pygame.key.get_pressed()[pygame.K_a] or pygame.key.get_pressed()[pygame.K_LEFT]:
+        elif pygame.key.get_pressed()[pygame.K_a] :
             self.dir = 0
         """
         pygame.draw.rect(win, (255, 0, 0), self.rect)
@@ -313,7 +392,7 @@ class Player:
             self.standing = False
             #if renderer.clock.get_fps() != 0:
             self.update_physics(renderer, renderer.dt)
-            if self.standing and not (pygame.key.get_pressed()[pygame.K_a] or pygame.key.get_pressed()[pygame.K_LEFT]) and not (pygame.key.get_pressed()[pygame.K_d] or pygame.key.get_pressed()[pygame.K_RIGHT]):
+            if self.standing and not (pygame.key.get_pressed()[pygame.K_a] ) and not (pygame.key.get_pressed()[pygame.K_d] ):
                 if self.dir == 1:
                     self.update_animation(0, 15/2, renderer.dt)
                 else:
@@ -332,3 +411,5 @@ class Player:
             #pygame.draw.rect(win, [255, 0, 0], self.rect)
             win.blit(self.spritesheet.get(self.frame), self.pos)
             win.blit(self.staff, self.staff_pos)
+            self.inventory.items = self.tiles_unlocked
+            self.inventory.update(renderer)

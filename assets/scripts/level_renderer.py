@@ -17,6 +17,7 @@ class LevelRenderer:
         swap_color(background, [0, 0, 0], final_color)
         tilesheet.set_colorkey([255, 255, 255])
         self.spikes = []
+        self.shop = None
         self.font = None
         self.delay = 0
         if not web:
@@ -287,42 +288,42 @@ class LevelRenderer:
                             if tilemap[self.num_row][self.num_col-1] == -1 or tilemap[self.num_row][self.num_col-1] in self.decorative_tiles:
                                 if not tilemap[self.num_row-1][self.num_col] == -1 and not(tilemap[self.num_row-1][self.num_col] in self.decorative_tiles):
                                     self.side_rects.append([pygame.Rect(self.x*self.tile_size[0]+10, (self.y*self.tile_size[1]), 1, (self.tile_size[1])), -1])
-                                    pygame.draw.rect(win, (255, 0, 0), pygame.Rect(self.x*self.tile_size[0], (self.y*self.tile_size[1]), 1, (self.tile_size[1])))
+                                    #pygame.draw.rect(win, (255, 0, 0), pygame.Rect(self.x*self.tile_size[0], (self.y*self.tile_size[1]), 1, (self.tile_size[1])))
                                 else:
                                     self.side_rects.append([pygame.Rect(self.x*self.tile_size[0], (self.y*self.tile_size[1]+15), 1, (self.tile_size[1]-15)), -1])
-                                    pygame.draw.rect(win, (255, 0, 0), pygame.Rect(self.x*self.tile_size[0], (self.y*self.tile_size[1]+15), 1, (self.tile_size[1]-15)))
+                                    #pygame.draw.rect(win, (255, 0, 0), pygame.Rect(self.x*self.tile_size[0], (self.y*self.tile_size[1]+15), 1, (self.tile_size[1]-15)))
                             if self.num_col+1 < len(tilemap[self.num_row]):
                                 if tilemap[self.num_row][self.num_col+1] == -1 or tilemap[self.num_row][self.num_col+1] in self.decorative_tiles:
                                     if not tilemap[self.num_row-1][self.num_col] == -1 and not(tilemap[self.num_row-1][self.num_col] in self.decorative_tiles):
                                         self.side_rects.append([pygame.Rect((self.x+1)*self.tile_size[0]+6, (self.y*self.tile_size[1]), 1, (self.tile_size[1])), 1])
-                                        pygame.draw.rect(win, (255, 0, 0), pygame.Rect((self.x+1)*self.tile_size[0]+6, (self.y*self.tile_size[1]), 1, (self.tile_size[1])))
+                                        #pygame.draw.rect(win, (255, 0, 0), pygame.Rect((self.x+1)*self.tile_size[0]+6, (self.y*self.tile_size[1]), 1, (self.tile_size[1])))
                                     else:
                                         self.side_rects.append([pygame.Rect((self.x+1)*self.tile_size[0]+6, (self.y*self.tile_size[1]+15), 1, (self.tile_size[1]-15)), 1])
-                                        pygame.draw.rect(win, (255, 0, 0), pygame.Rect((self.x+1)*self.tile_size[0]+6, (self.y*self.tile_size[1]+15), 1, (self.tile_size[1]-15)))
+                                        #pygame.draw.rect(win, (255, 0, 0), pygame.Rect((self.x+1)*self.tile_size[0]+6, (self.y*self.tile_size[1]+15), 1, (self.tile_size[1]-15)))
                             if self.num_row+1 < len(tilemap):
                                 if tilemap[self.num_row+1][self.num_col] == -1 or tilemap[self.num_row+1][self.num_col] in self.decorative_tiles:
                                     self.side_rects.append([pygame.Rect((self.x*self.tile_size[0])+7.5, ((self.y+1)*self.tile_size[1])+7.5, (self.tile_size[0]), 1), 2])
-                                    pygame.draw.rect(win, (255, 0, 0), pygame.Rect((self.x*self.tile_size[0])+7.5, ((self.y+1)*self.tile_size[1])+7.5, (self.tile_size[0]), 1))
+                                    #pygame.draw.rect(win, (255, 0, 0), pygame.Rect((self.x*self.tile_size[0])+7.5, ((self.y+1)*self.tile_size[1])+7.5, (self.tile_size[0]), 1))
                         else:
                             if tilemap[self.num_row][self.num_col-1] == -1:
                                 if not tilemap[self.num_row-1][self.num_col] == -1:
                                     self.side_rects.append([pygame.Rect(self.x*self.tile_size[0]+10, (self.y*self.tile_size[1]+(0-int(self.init_render_pos[self.level][1]))), 1, 24), -1])
-                                    pygame.draw.rect(win, (255, 0, 0), pygame.Rect(self.x*self.tile_size[0]+10, (self.y*self.tile_size[1]+(0-int(self.init_render_pos[self.level][1]))), 1, 24))
+                                    #pygame.draw.rect(win, (255, 0, 0), pygame.Rect(self.x*self.tile_size[0]+10, (self.y*self.tile_size[1]+(0-int(self.init_render_pos[self.level][1]))), 1, 24))
                                 else:
                                     self.side_rects.append([pygame.Rect(self.x*self.tile_size[0]+10, (self.y*self.tile_size[1]+15), 1, (24-7)), -1])
-                                    pygame.draw.rect(win, (255, 0, 0), pygame.Rect(self.x*self.tile_size[0]+10, (self.y*self.tile_size[1]+15), 1, (24-7)))
+                                    #pygame.draw.rect(win, (255, 0, 0), pygame.Rect(self.x*self.tile_size[0]+10, (self.y*self.tile_size[1]+15), 1, (24-7)))
                             if self.num_col+1 < len(tilemap[self.num_row]):
                                 if tilemap[self.num_row][self.num_col+1] == -1:
                                     if not tilemap[self.num_row-1][self.num_col] == -1:
                                         self.side_rects.append([pygame.Rect((self.x+1)*self.tile_size[0]+6, (self.y*self.tile_size[1]+(0-int(self.init_render_pos[self.level][1]))), 1, (24)), 1])
-                                        pygame.draw.rect(win, (255, 0, 0), pygame.Rect((self.x+1)*self.tile_size[0]+6, (self.y*self.tile_size[1]+(0-int(self.init_render_pos[self.level][1]))), 1, (24)))
+                                        #pygame.draw.rect(win, (255, 0, 0), pygame.Rect((self.x+1)*self.tile_size[0]+6, (self.y*self.tile_size[1]+(0-int(self.init_render_pos[self.level][1]))), 1, (24)))
                                     else:
                                         self.side_rects.append([pygame.Rect((self.x+1)*self.tile_size[0]+10, (self.y*self.tile_size[1]+15), 1, (24-15)), 1])
-                                        pygame.draw.rect(win, (255, 0, 0), pygame.Rect((self.x+1)*self.tile_size[0]+10, (self.y*self.tile_size[1]+15), 1, (24-15)))
+                                        #pygame.draw.rect(win, (255, 0, 0), pygame.Rect((self.x+1)*self.tile_size[0]+10, (self.y*self.tile_size[1]+15), 1, (24-15)))
                             if self.num_row+1 < len(tilemap):
                                 if tilemap[self.num_row+1][self.num_col] == -1:
                                     self.side_rects.append([pygame.Rect((self.x*self.tile_size[0])+7.5, ((self.y+1)*self.tile_size[1])-30, (self.tile_size[0]), 1), 2])
-                                    pygame.draw.rect(win, (255, 0, 0), pygame.Rect((self.x*self.tile_size[0])+7.5, ((self.y+1)*self.tile_size[1])-30, (self.tile_size[0]), 1))
+                                    #pygame.draw.rect(win, (255, 0, 0), pygame.Rect((self.x*self.tile_size[0])+7.5, ((self.y+1)*self.tile_size[1])-30, (self.tile_size[0]), 1))
                 if tile == 60:
                     if self.coin_appending:
                         self.queue.append(Coin([self.x*self.tile_size[0], self.y*self.tile_size[1]], self.coin_img, [4, 1]))

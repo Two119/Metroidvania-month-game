@@ -60,7 +60,6 @@ class Game:
         self.rect_surf = pygame.Surface((64, 64))
         self.rect_surf.set_alpha(50)
         self.cursor_img_.set_colorkey([0, 0, 0])
-        self.save_system.load(self.renderer)
         self.renderer.super = self
         self.auto_save = True
         self.start_text = scale_image(self.ui_font.render("Start", False, (255, 255, 255), (0, 0, 0)), 1.5)
@@ -103,9 +102,9 @@ class Game:
         self.add_rad = 0.12
         self.level_spike_dicts = {0: 522, 1:712}
         self.shop = Shop(self.renderer)
+        self.save_system.load(self.renderer)
     def update(self):
         self.renderer.clock.tick(self.renderer.def_frame)
-        
         self.cycles += 1
         cursor_pos = pygame.mouse.get_pos()
         win.fill((0, 0, 0))

@@ -16,7 +16,21 @@ class SaveSystem:
                 if len(renderer.queue) > 0:
                     renderer.queue[0].coins = int(saved["coins"])
                     renderer.queue[0].deaths = int(saved["deaths"])
-                    renderer.queue[0].tile_unlocked = [saved["tiles_unlocked"][i]*1 for i in range(len(saved["tiles_unlocked"]))]
+                    renderer.queue[0].tiles_unlocked.append(6)
+                    if saved["spike_bought"]:
+                        renderer.queue[0].tiles_unlocked.append(117)
+                        renderer.queue[0].tiles_unlocked.append(129)
+                        renderer.queue[0].tiles_unlocked.append(138)
+                        renderer.queue[0].tiles_unlocked.append(139)
+                    if saved["hiddenspike_bought"]:
+                        renderer.queue[0].tiles_unlocked.append(118)
+                        renderer.queue[0].tiles_unlocked.append(135)
+                        renderer.queue[0].tiles_unlocked.append(136)
+                        renderer.queue[0].tiles_unlocked.append(137)
+                    if saved["swing_bought"]:
+                        renderer.queue[0].tiles_unlocked.append(121)
+                    if saved["fire_bought"]:
+                        renderer.queue[0].tiles_unlocked.append(116)
                     renderer.coin_channel.set_volume(float(saved["volume"]))
                     renderer.queue[0].channel.set_volume(float(saved["volume"]))
                     renderer.def_frame = int(saved["fps"])
@@ -30,7 +44,21 @@ class SaveSystem:
                 if len(renderer.queue) > 0:
                     renderer.queue[0].coins = int(saved["coins"])
                     renderer.queue[0].deaths = int(saved["deaths"])
-                    renderer.queue[0].tile_unlocked = [saved["tiles_unlocked"][i]*1 for i in range(len(saved["tiles_unlocked"]))]
+                    renderer.queue[0].tiles_unlocked.append(6)
+                    if saved["spike_bought"]:
+                        renderer.queue[0].tiles_unlocked.append(117)
+                        renderer.queue[0].tiles_unlocked.append(129)
+                        renderer.queue[0].tiles_unlocked.append(138)
+                        renderer.queue[0].tiles_unlocked.append(139)
+                    if saved["hiddenspike_bought"]:
+                        renderer.queue[0].tiles_unlocked.append(118)
+                        renderer.queue[0].tiles_unlocked.append(135)
+                        renderer.queue[0].tiles_unlocked.append(136)
+                        renderer.queue[0].tiles_unlocked.append(137)
+                    if saved["swing_bought"]:
+                        renderer.queue[0].tiles_unlocked.append(121)
+                    if saved["fire_bought"]:
+                        renderer.queue[0].tiles_unlocked.append(116)
                     renderer.coin_channel.set_volume(float(saved["volume"]))
                     renderer.queue[0].channel.set_volume(float(saved["volume"]))
                     renderer.def_frame = int(saved["fps"])
@@ -41,13 +69,21 @@ class SaveSystem:
             open(self.file_path, "w").close()
     def update(self, renderer):
         #if (not renderer.queue[0].is_alive):
-        tiles_unlocked_list = "["
-        for tile in renderer.queue[0].tiles_unlocked:
-            if tile != renderer.queue[0].tiles_unlocked[len(renderer.queue[0].tiles_unlocked)-1]:
-                tiles_unlocked_list = tiles_unlocked_list + str(tile) + ", "
-            else:
-                tiles_unlocked_list = tiles_unlocked_list + str(tile) + "]"
-        dat = '{"coins":'+str(renderer.queue[0].coins)+","+'"level":'+str(renderer.level)+","+'"deaths":'+str(renderer.queue[0].deaths)+","+'"tiles_unlocked":'+tiles_unlocked_list+","+'"volume":'+str(renderer.coin_channel.get_volume())+","+'"fps":'+str(renderer.def_frame)+"}"
+        spike_bought = "false"
+        hiddenspike_bought = "false"
+        swing_bought = "false"
+        fire_bought = "false"
+        if 117 in renderer.queue[0].tiles_unlocked:
+            spike_bought = "true"
+        if 118 in renderer.queue[0].tiles_unlocked:
+            hiddenspike_bought = "true"
+        if 121 in renderer.queue[0].tiles_unlocked:
+            swing_bought = "true"
+        if 116 in renderer.queue[0].tiles_unlocked:
+            fire_bought = "true"
+        tiles_unlocked_str = '"spike_bought":'+str(spike_bought)+","+'"hiddenspike_bought":'+str(hiddenspike_bought)+","+'"swing_bought":'+str(swing_bought)+","+'"fire_bought":'+str(fire_bought)+","
+        print(renderer.queue[0].tiles_unlocked)
+        dat = '{"coins":'+str(0)+","+'"level":'+str(renderer.level)+","+'"deaths":'+str(renderer.queue[0].deaths)+","+tiles_unlocked_str+'"volume":'+str(renderer.coin_channel.get_volume())+","+'"fps":'+str(renderer.def_frame)+"}"
         b = base64.b64encode(bytes(dat, 'utf-8'))
         base64_str = b.decode('utf-8')
         if web:

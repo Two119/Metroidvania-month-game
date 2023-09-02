@@ -5,6 +5,7 @@ class Player:
         self.staff_pos = [position[0], position[1]]
         self.frame = [0, 0]
         self.tile = 115
+        self.tiles_unlocked = []
         self.is_alive = True
         self.levels_unlocked = [0]
         self.vel = [0, 0]
@@ -34,7 +35,6 @@ class Player:
         self.shots = []
         self.particle_surf = None
         self.just_shot = False
-        self.tiles_unlocked = [115]
         self.staffs = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/staffs.png").convert()), [5, 1], [255, 255, 255])
         #self.walk_particles = Particles(win, )
         if not web:

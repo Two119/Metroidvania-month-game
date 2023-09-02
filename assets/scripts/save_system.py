@@ -16,7 +16,7 @@ class SaveSystem:
                 if len(renderer.queue) > 0:
                     renderer.queue[0].coins = int(saved["coins"])
                     renderer.queue[0].deaths = int(saved["deaths"])
-                    #renderer.queue[0].tile = int(saved["tile"])
+                    renderer.queue[0].tile_unlocked = [saved["tiles_unlocked"][i]*1 for i in range(len(saved["tiles_unlocked"]))]
                     renderer.coin_channel.set_volume(float(saved["volume"]))
                     renderer.queue[0].channel.set_volume(float(saved["volume"]))
                     renderer.def_frame = int(saved["fps"])
@@ -30,7 +30,7 @@ class SaveSystem:
                 if len(renderer.queue) > 0:
                     renderer.queue[0].coins = int(saved["coins"])
                     renderer.queue[0].deaths = int(saved["deaths"])
-                    #renderer.queue[0].tile = int(saved["tile"])
+                    renderer.queue[0].tile_unlocked = [saved["tiles_unlocked"][i]*1 for i in range(len(saved["tiles_unlocked"]))]
                     renderer.coin_channel.set_volume(float(saved["volume"]))
                     renderer.queue[0].channel.set_volume(float(saved["volume"]))
                     renderer.def_frame = int(saved["fps"])
@@ -41,7 +41,13 @@ class SaveSystem:
             open(self.file_path, "w").close()
     def update(self, renderer):
         #if (not renderer.queue[0].is_alive):
-        dat = '{"coins":'+str(renderer.queue[0].coins)+","+'"level":'+str(renderer.level)+","+'"deaths":'+str(renderer.queue[0].deaths)+","+'"tile":'+str(renderer.queue[0].tile)+","+'"volume":'+str(renderer.coin_channel.get_volume())+","+'"fps":'+str(renderer.def_frame)+"}"
+        tiles_unlocked_list = "["
+        for tile in renderer.queue[0].tiles_unlocked:
+            if tile != renderer.queue[0].tiles_unlocked[len(renderer.queue[0].tiles_unlocked)-1]:
+                tiles_unlocked_list = tiles_unlocked_list + str(tile) + ", "
+            else:
+                tiles_unlocked_list = tiles_unlocked_list + str(tile) + "]"
+        dat = '{"coins":'+str(renderer.queue[0].coins)+","+'"level":'+str(renderer.level)+","+'"deaths":'+str(renderer.queue[0].deaths)+","+'"tiles_unlocked":'+tiles_unlocked_list+","+'"volume":'+str(renderer.coin_channel.get_volume())+","+'"fps":'+str(renderer.def_frame)+"}"
         b = base64.b64encode(bytes(dat, 'utf-8'))
         base64_str = b.decode('utf-8')
         if web:

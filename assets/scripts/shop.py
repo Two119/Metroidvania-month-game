@@ -1,5 +1,42 @@
 from assets.scripts.core_funcs import *
 from assets.scripts.button import *
+def buy(args):
+    renderer = args[0]
+    price = args[1]
+    if args[2] == 0:
+        if renderer.queue[0].coins >= price:
+            renderer.queue[0].tiles_unlocked.append(117) 
+            renderer.queue[0].tiles_unlocked.append(129)
+            renderer.queue[0].tiles_unlocked.append(138)
+            renderer.queue[0].tiles_unlocked.append(139)
+            renderer.queue[0].coins -= price
+            print("purchased")
+        else:
+            print("HAHA YOU'RE POOR")
+    elif args[2] == 1:
+        if renderer.queue[0].coins >= price:
+            renderer.queue[0].tiles_unlocked.append(118) 
+            renderer.queue[0].tiles_unlocked.append(135)
+            renderer.queue[0].tiles_unlocked.append(136)
+            renderer.queue[0].tiles_unlocked.append(137)
+            renderer.queue[0].coins -= price
+            print("purchased")
+        else:
+            print("HAHA YOU'RE POOR")
+    elif args[2] == 2:
+        if renderer.queue[0].coins >= price:
+            renderer.queue[0].tiles_unlocked.append(121) 
+            renderer.queue[0].coins -= price
+            print("purchased")
+        else:
+            print("HAHA YOU'RE POOR")
+    elif args[2] == 3:
+        if renderer.queue[0].coins >= price:
+            renderer.queue[0].tiles_unlocked.append(116) 
+            renderer.queue[0].coins -= price
+            print("purchased")
+        else:
+            print("HAHA YOU'RE POOR")
 class Shop:
     def  __init__(self, renderer):
         self.tiles = [117, 118, 121, 116]
@@ -23,13 +60,19 @@ class Shop:
         self.tiles_unlocked = [115]
         self.tile_masks = [pygame.mask.from_surface(i) for i in self.tile_images]
         self.tile_positions = []
-        self.buttons = []
         self.font : pygame.font.Font = renderer.font
         self.item_names = [self.font.render(self.tile_names_dict[self.tiles[i]], False, [255, 255, 255], [0, 0, 0]) for i in range(len(self.tiles))]
         [item.set_colorkey([0, 0, 0]) for item in self.item_names]
         self.firebox_frame = 0
         self.spike_frame = 0
         self.delay = 0
+        self.buttons = []
+        self.prices = [1, 10, 25, 30]
+        self.add_heights = [96, 96, 88, 152]
+        self.button_sprites = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/buy_buttons.png").convert()), [2, 1], [255, 255, 255])
+        self.subtract_x = [(self.button_sprites.sheet[0][0].get_width()-self.tile_images[i].get_width())/2 for i in range(len(self.tile_images))]
+        self.buy_text = self.font.render("Buy", False, [254, 255, 255], [0, 0, 0])
+        self.buy_text.set_colorkey([0, 0, 0])
     def update(self, renderer):
         x = ((1280-self.bg_tex.get_width())/2)+128
         y = -128
@@ -78,8 +121,7 @@ class Shop:
                 else:
                     win.blit(self.item_names[i], [x-8-self.tile_images[i].get_width()/2, y+72])
             x += 192
-        if self.buttons == []:
-                pass
+        
         for i in range(len(self.tile_masks)):
             if cursor_mask.overlap(self.tile_masks[i], (self.tile_positions[i][0]-pygame.mouse.get_pos()[0], self.tile_positions[i][1]-pygame.mouse.get_pos()[1])) != None:
                 if i == len(self.tile_images)-1:
@@ -104,6 +146,12 @@ class Shop:
                                 self.spike_frame = 0
                 else:
                     win.blit(self.tile_images[i], self.tile_positions[i])
+        if self.buttons == []:
+            self.buttons = [Button([self.tile_positions[i][0]-self.subtract_x[i], self.tile_positions[i][1]+self.add_heights[i]], self.button_sprites.sheet[0], [buy, [renderer, self.prices[i], i]], win) for i in range(len(self.tile_positions))]
+            [self.buttons[i].textures[0].blit(self.buy_text, [(self.buttons[i].textures[0].get_width()-self.buy_text.get_width())/2, 12]) for i in range(len(self.buttons))]
+            [self.buttons[i].textures[1].blit(self.buy_text, [(self.buttons[i].textures[1].get_width()-self.buy_text.get_width())/2, 16]) for i in range(len(self.buttons))]
+        else:
+            [button.update(renderer) for button in self.buttons]
                 
                 
         

@@ -11,7 +11,8 @@ class Button():
         self.click_delay = 0;
         self.max_delay = 500;
         self.delaying = False;
-    def update(self):
+        self.clicked = False
+    def update(self, renderer):
         self.current = 0;
         if self.delaying:
             self.click_delay += 1;
@@ -19,9 +20,12 @@ class Button():
             self.delaying = False;
         if self.rect.collidepoint(pygame.mouse.get_pos()):
             if pygame.mouse.get_pressed()[0]:
-                if not self.delaying:
+                if not self.delaying and not self.clicked:
                     self.onlick(self.args);
-                    self.args.renderer.coin_channel.play(button_sound)
+                    renderer.coin_channel.play(button_sound)
+                    self.clicked = True
+            else:
+                self.clicked = False
             self.current = 1;
         self.screen.blit(self.textures[self.current], self.pos);
         self.rect = self.textures[self.current].get_rect(topleft=self.pos);

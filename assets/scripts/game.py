@@ -187,7 +187,7 @@ class Game:
                                 obj.is_hovered = False
                             else:
                                 obj.is_hovered = True
-                self.small_menu_button.update()
+                self.small_menu_button.update(self.renderer)
             if not self.playing:
                 if self.spare_surf == None:
                     pygame.image.save(win, "win.png")
@@ -195,9 +195,9 @@ class Game:
                 win.blit(self.spare_surf, (0, 0))
                 win.blit(self.renderer.surf, (0, 0))
                 for button in self.buttons:
-                    button.update()
-                self.back.update()
-                self.back_button_2.update()
+                    button.update(self.renderer)
+                self.back.update(self.renderer)
+                self.back_button_2.update(self.renderer)
                 win.blit(self.restart_text, [self.buttons[0].pos[0]+10, self.buttons[0].pos[1]+15+(4*self.buttons[0].current)])
                 win.blit(self.set_text, [self.buttons[1].pos[0]+5, self.buttons[1].pos[1]+15+(4*self.buttons[1].current)])
                 win.blit(self.menu_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+10+(2*self.button_sprites.get([0, 0]).get_height())+(4*self.back.current)])
@@ -228,7 +228,7 @@ class Game:
         elif self.screen == 0:
             win.blit(self.renderer.background, (0, 0))
             for button in self.buttons:
-                button.update()
+                button.update(self.renderer)
             win.blit(self.start_text, [self.buttons[0].pos[0]+10, self.buttons[0].pos[1]+10+(4*self.buttons[0].current)])
             win.blit(self.set_text, [self.buttons[1].pos[0]+5, self.buttons[1].pos[1]+15+(4*self.buttons[1].current)])
             win.blit(self.shop_text, [self.buttons[2].pos[0]+(self.buttons[2].textures[0].get_width()-self.shop_text.get_width())/2, self.buttons[2].pos[1]+15+(4*self.buttons[2].current)])
@@ -238,9 +238,9 @@ class Game:
             self.settings[0].update()
             #self.settings[1].update()
             if self.playing:
-                self.settings[2].update()
+                self.settings[2].update(self.renderer)
             else:
-                self.back_button.update()
+                self.back_button.update(self.renderer)
             win.blit(self.vol_text, [center_pos(self.button_sprites.get([0, 0]))[0]-(self.vol_text.get_width()/2), center_pos(self.button_sprites.get([0, 0]))[1]+(-2*self.button_sprites.get([0, 0]).get_height())])
             #win.blit(self.fps_text, [center_pos(self.button_sprites.get([0, 0]))[0]-(self.fps_text.get_width()/1.5), center_pos(self.button_sprites.get([0, 0]))[1]+(-1*self.button_sprites.get([0, 0]).get_height())])
             if self.playing:
@@ -254,7 +254,7 @@ class Game:
             #self.settings[1].update()
             
             self.shop.update(self.renderer)
-            self.back_button_.update()
+            self.back_button_.update(self.renderer)
             win.blit(self.back_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+(5.2*self.button_sprites.get([0, 0]).get_height())+(4*self.back_button_.current)])
         win.blit(self.cursor_img_, cursor_pos)
         if self.auto_save and ((self.cycles%20)==0):

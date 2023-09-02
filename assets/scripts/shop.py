@@ -1,5 +1,17 @@
 from assets.scripts.core_funcs import *
 from assets.scripts.button import *
+class Notification:
+    def __init__(self, surf: pygame.Surface):
+        self.surf = surf
+        self.alpha = 255
+        self.pos = [(1280-self.surf.get_width())/2, (900-self.surf.get_height())/2]
+        self.speed = 1
+    def update(self, dt):
+        self.pos[1]-=(self.speed*dt)
+        self.alpha -= (self.speed*dt*2)
+        if int(self.alpha) >= 0:
+            self.surf.set_alpha(int(self.alpha))
+        win.blit(self.surf, self.pos)
 def buy(args):
     renderer = args[0]
     price = args[1]
@@ -10,9 +22,9 @@ def buy(args):
             renderer.queue[0].tiles_unlocked.append(138)
             renderer.queue[0].tiles_unlocked.append(139)
             renderer.queue[0].coins -= price
-            print("purchased")
+            args[3].notifications.append(Notification(args[3].purchase_text))
         else:
-            print("HAHA YOU'RE POOR")
+            args[3].notifications.append(Notification(args[3].poor_text))
     elif args[2] == 1:
         if renderer.queue[0].coins >= price:
             renderer.queue[0].tiles_unlocked.append(118) 
@@ -20,30 +32,30 @@ def buy(args):
             renderer.queue[0].tiles_unlocked.append(136)
             renderer.queue[0].tiles_unlocked.append(137)
             renderer.queue[0].coins -= price
-            print("purchased")
+            args[3].notifications.append(Notification(args[3].purchase_text))
         else:
-            print("HAHA YOU'RE POOR")
+            args[3].notifications.append(Notification(args[3].poor_text))
     elif args[2] == 2:
         if renderer.queue[0].coins >= price:
             renderer.queue[0].tiles_unlocked.append(121) 
             renderer.queue[0].coins -= price
-            print("purchased")
+            args[3].notifications.append(Notification(args[3].purchase_text))
         else:
-            print("HAHA YOU'RE POOR")
+            args[3].notifications.append(Notification(args[3].poor_text))
     elif args[2] == 3:
         if renderer.queue[0].coins >= price:
             renderer.queue[0].tiles_unlocked.append(6) 
             renderer.queue[0].coins -= price
-            print("purchased")
+            args[3].notifications.append(Notification(args[3].purchase_text))
         else:
-            print("HAHA YOU'RE POOR")
+            args[3].notifications.append(Notification(args[3].poor_text))
     elif args[2] == 4:
         if renderer.queue[0].coins >= price:
             renderer.queue[0].tiles_unlocked.append(116) 
             renderer.queue[0].coins -= price
-            print("purchased")
+            args[3].notifications.append(Notification(args[3].purchase_text))
         else:
-            print("HAHA YOU'RE POOR")
+            args[3].notifications.append(Notification(args[3].poor_text))
 def equip(args):
     renderer = args[0]
     if args[1] == 0:
@@ -94,8 +106,15 @@ class Shop:
         self.subtract_x = [(self.button_sprites.sheet[0][0].get_width()-self.tile_images[i].get_width())/2 for i in range(len(self.tile_images))]
         self.buy_text = self.font.render("Buy", False, [254, 255, 255], [0, 0, 0])
         self.equip_text = self.font.render("Equip", False, [254, 255, 255], [0, 0, 0])
+        self.font.set_bold(True)
+        self.poor_text = self.font.render("You are poor!", False, [255, 0, 0], [0, 0, 0])
+        self.purchase_text = self.font.render("Purchased successfully!", False, [0, 255, 0], [0, 0, 0])
+        self.font.set_bold(False)
         self.buy_text.set_colorkey([0, 0, 0])
         self.equip_text.set_colorkey([0, 0, 0])
+        self.poor_text.set_colorkey([0, 0, 0])
+        self.purchase_text.set_colorkey([0, 0, 0])
+        self.notifications = []
     def update(self, renderer):
         x = ((1280-self.bg_tex.get_width())/2)+128
         y = -128
@@ -173,7 +192,7 @@ class Shop:
                 else:
                     win.blit(self.tile_images[i], self.tile_positions[i])
         if self.buttons == []:
-            self.buttons = [Button([self.tile_positions[i][0]-self.subtract_x[i], self.tile_positions[i][1]+self.add_heights[i]], [self.button_sprites.sheet[0][0].copy(), self.button_sprites.sheet[0][1].copy()], [buy, [renderer, self.prices[i], i]], win) for i in range(len(self.tile_positions))]
+            self.buttons = [Button([self.tile_positions[i][0]-self.subtract_x[i], self.tile_positions[i][1]+self.add_heights[i]], [self.button_sprites.sheet[0][0].copy(), self.button_sprites.sheet[0][1].copy()], [buy, [renderer, self.prices[i], i, self]], win) for i in range(len(self.tile_positions))]
             self.equip_buttons = [Button([self.tile_positions[i][0]-self.subtract_x[i], self.tile_positions[i][1]+self.add_heights[i]], [self.button_sprites.sheet[0][0].copy(), self.button_sprites.sheet[0][1].copy()], [equip, [renderer, i]], win) for i in range(len(self.tile_positions))]
             [self.buttons[i].textures[0].blit(self.buy_text, [(self.buttons[i].textures[0].get_width()-self.buy_text.get_width())/2, 12]) for i in range(len(self.buttons))]
             [self.buttons[i].textures[1].blit(self.buy_text, [(self.buttons[i].textures[1].get_width()-self.buy_text.get_width())/2, 16]) for i in range(len(self.buttons))]
@@ -185,6 +204,10 @@ class Shop:
                     self.buttons[i].update(renderer)
                 else:
                     self.equip_buttons[i].update(renderer)
+        for notification in self.notifications:
+            notification.update((60/renderer.clock.get_fps()))
+            if notification.alpha < 0:
+                self.notifications.remove(notification)
                 
                 
         

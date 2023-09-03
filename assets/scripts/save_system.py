@@ -16,7 +16,8 @@ class SaveSystem:
                 if len(renderer.queue) > 0:
                     renderer.queue[0].coins = int(saved["coins"])
                     renderer.queue[0].deaths = int(saved["deaths"])
-                    renderer.queue[0].tiles_unlocked.append(6)
+                    if not (6 in renderer.queue[0].tiles_unlocked):
+                        renderer.queue[0].tiles_unlocked.append(6)
                     if saved["spike_bought"]:
                         renderer.queue[0].tiles_unlocked.append(117)
                     if saved["hiddenspike_bought"]:
@@ -38,7 +39,8 @@ class SaveSystem:
                 if len(renderer.queue) > 0:
                     renderer.queue[0].coins = int(saved["coins"])
                     renderer.queue[0].deaths = int(saved["deaths"])
-                    renderer.queue[0].tiles_unlocked.append(6)
+                    if not (6 in renderer.queue[0].tiles_unlocked):
+                        renderer.queue[0].tiles_unlocked.append(6)
                     if saved["spike_bought"]:
                         renderer.queue[0].tiles_unlocked.append(117)
                     if saved["hiddenspike_bought"]:

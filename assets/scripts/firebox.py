@@ -90,6 +90,7 @@ class FireBox:
                             renderer.added_spikes += 1
                         renderer.queue[0].shapeshifting=False
                         renderer.queue_updating = True
+                    
                     if renderer.queue[0].tile != 116:
                         renderer.queue.remove(self)
                         del self

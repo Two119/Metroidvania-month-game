@@ -70,7 +70,7 @@ class SaveSystem:
         if 116 in renderer.queue[0].tiles_unlocked:
             fire_bought = "true"
         tiles_unlocked_str = '"spike_bought":'+str(spike_bought)+","+'"hiddenspike_bought":'+str(hiddenspike_bought)+","+'"swing_bought":'+str(swing_bought)+","+'"fire_bought":'+str(fire_bought)+","
-        print(renderer.queue[0].tiles_unlocked)
+        #print(renderer.queue[0].tiles_unlocked)
         dat = '{"coins":'+str(0)+","+'"level":'+str(renderer.level)+","+'"deaths":'+str(renderer.queue[0].deaths)+","+tiles_unlocked_str+'"volume":'+str(renderer.coin_channel.get_volume())+","+'"fps":'+str(renderer.def_frame)+"}"
         b = base64.b64encode(bytes(dat, 'utf-8'))
         base64_str = b.decode('utf-8')

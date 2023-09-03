@@ -66,6 +66,11 @@ def equip(args):
         renderer.queue[0].inventory.current = renderer.queue[0].inventory.items.index(121)
     elif args[1] == 3:
         renderer.queue[0].tile = 6
+        l = [6]
+        if not (6 in renderer.queue[0].tiles_unlocked):
+            for tile in renderer.queue[0].tiles_unlocked:
+                l.append(tile*1)
+        renderer.queue[0].tiles_unlocked = l
         renderer.queue[0].inventory.items = renderer.queue[0].tiles_unlocked
         renderer.queue[0].inventory.current = renderer.queue[0].inventory.items.index(6)
     elif args[1] == 4:

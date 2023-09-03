@@ -1,8 +1,11 @@
 from assets.scripts.core_funcs import *
+from assets.scripts.swinging_axe import *
+from assets.scripts.firebox import *
 class HiddenSpike:
     def __init__(self, spritesheet, sheet_size, pos, down=False, ang=0):
         self.spritesheet = SpriteSheet(pygame.transform.flip(scale_image(spritesheet, 4).convert(), False, down), sheet_size, [236, 28, 36])
         self.frame = [0, 0]
+        self.orig_pos = [pos[0]*1, pos[1]*1]
         if ang==0:
             self.pos = pos
         else:
@@ -13,7 +16,7 @@ class HiddenSpike:
         self.down = down
         self.ang = ang
         self.delay = 0
-        self.just_spawned = None
+        self.just_spawned = True
         self.rect_surf = pygame.Surface((64, 64))
         self.rect_surf.set_alpha(50)
         self.is_hovered = False
@@ -58,7 +61,7 @@ class HiddenSpike:
                     self.spawn_animation(0, 4, renderer)
             else:
                 pygame.draw.rect(win, [255, 0, 0], pygame.Rect(self.pos[0]+4, self.pos[1]+70, 64, 2))
-            if hasattr(self, "mask"):
+            if hasattr(self, "mask") and hasattr(renderer.queue[0], "mask"):
                 if self.ang == 0:
                     if self.mask.overlap(renderer.queue[0].mask, (renderer.queue[0].pos[0]-self.pos[0], renderer.queue[0].pos[1]-self.pos[1])) == None:
                         pass
@@ -108,6 +111,48 @@ class HiddenSpike:
                 if not self.ang == 0:
                     if self.ang == 90:
                         if pygame.mouse.get_pressed()[2]:
+                            if renderer.queue[0].tile == 117:
+                                renderer.add_spike_u([self.pos[0]-4, self.pos[1]+52])
+                                renderer.added_spikes += 1
+                                renderer.spike_count += 1
+                                if renderer.spike_count > renderer.added_spikes:
+                                    renderer.add_spike_u([self.pos[0]-4, self.pos[1]+52])
+                                    renderer.added_spikes += 1
+                                renderer.queue[0].shapeshifting=False
+                                renderer.queue_updating = True
+                            if renderer.queue[0].tile == 129:
+                                renderer.add_spike_d(self.orig_pos)
+                                renderer.added_spikes += 1
+                                renderer.spike_count += 1
+                                if renderer.spike_count > renderer.added_spikes:
+                                    renderer.add_spike_d(self.orig_pos)
+                                    renderer.added_spikes += 1
+                                renderer.queue[0].shapeshifting=False
+                                renderer.queue_updating = True
+                            if renderer.queue[0].tile == 138:
+                                renderer.add_spike_r([self.pos[0]-4, self.pos[1]+52])
+                                renderer.added_spikes += 1
+                                renderer.spike_count += 1
+                                if renderer.spike_count > renderer.added_spikes:
+                                    renderer.add_spike_r([self.pos[0]-4, self.pos[1]+52])
+                                    renderer.added_spikes += 1
+                                renderer.queue[0].shapeshifting=False
+                                renderer.queue_updating = True
+                            if renderer.queue[0].tile == 139:
+                                renderer.add_spike_l(self.orig_pos)
+                                renderer.added_spikes += 1
+                                renderer.spike_count += 1
+                                if renderer.spike_count > renderer.added_spikes:
+                                    renderer.add_spike_l(self.orig_pos)
+                                    renderer.added_spikes += 1
+                                renderer.queue[0].shapeshifting=False
+                                renderer.queue_updating = True
+                            if renderer.queue[0].tile == 121:
+                                renderer.queue.append(SwingingAxe(self.orig_pos))
+                            if renderer.queue[0].tile == 116:
+                                renderer.queue.append(FireBox(self.orig_pos))
+                                renderer.queue[0].shapeshifting=False
+                                renderer.queue_updating = True
                             renderer.levels[renderer.level][int((self.pos[1]-28)/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int(((self.pos[0]-32)-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
                             renderer.queue = [ob for ob in renderer.queue if ob != self]
                             return
@@ -115,6 +160,48 @@ class HiddenSpike:
                         win.blit(self.rect_surf, [self.pos[0]-32, self.pos[1]-28])
                     else:
                         if pygame.mouse.get_pressed()[2]:
+                            if renderer.queue[0].tile == 117:
+                                renderer.add_spike_u([self.pos[0]-4, self.pos[1]+52])
+                                renderer.added_spikes += 1
+                                renderer.spike_count += 1
+                                if renderer.spike_count > renderer.added_spikes:
+                                    renderer.add_spike_u([self.pos[0]-4, self.pos[1]+52])
+                                    renderer.added_spikes += 1
+                                renderer.queue[0].shapeshifting=False
+                                renderer.queue_updating = True
+                            if renderer.queue[0].tile == 129:
+                                renderer.add_spike_d(self.orig_pos)
+                                renderer.added_spikes += 1
+                                renderer.spike_count += 1
+                                if renderer.spike_count > renderer.added_spikes:
+                                    renderer.add_spike_d(self.orig_pos)
+                                    renderer.added_spikes += 1
+                                renderer.queue[0].shapeshifting=False
+                                renderer.queue_updating = True
+                            if renderer.queue[0].tile == 138:
+                                renderer.add_spike_r([self.pos[0]-4, self.pos[1]+52])
+                                renderer.added_spikes += 1
+                                renderer.spike_count += 1
+                                if renderer.spike_count > renderer.added_spikes:
+                                    renderer.add_spike_r([self.pos[0]-4, self.pos[1]+52])
+                                    renderer.added_spikes += 1
+                                renderer.queue[0].shapeshifting=False
+                                renderer.queue_updating = True
+                            if renderer.queue[0].tile == 139:
+                                renderer.add_spike_l(self.orig_pos)
+                                renderer.added_spikes += 1
+                                renderer.spike_count += 1
+                                if renderer.spike_count > renderer.added_spikes:
+                                    renderer.add_spike_l(self.orig_pos)
+                                    renderer.added_spikes += 1
+                                renderer.queue[0].shapeshifting=False
+                                renderer.queue_updating = True
+                            if renderer.queue[0].tile == 121:
+                                renderer.queue.append(SwingingAxe(self.orig_pos))
+                            if renderer.queue[0].tile == 116:
+                                renderer.queue.append(FireBox(self.orig_pos))
+                                renderer.queue[0].shapeshifting=False
+                                renderer.queue_updating = True
                             renderer.levels[renderer.level][int((self.pos[1]-28)/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int(((self.pos[0]-36)-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
                             renderer.queue = [ob for ob in renderer.queue if ob != self]
                             return
@@ -122,6 +209,48 @@ class HiddenSpike:
                         win.blit(self.rect_surf, [self.pos[0]-36, self.pos[1]-28])
                 else:
                     if pygame.mouse.get_pressed()[2]:
+                        if renderer.queue[0].tile == 117:
+                            renderer.add_spike_u([self.pos[0]-4, self.pos[1]+52])
+                            renderer.added_spikes += 1
+                            renderer.spike_count += 1
+                            if renderer.spike_count > renderer.added_spikes:
+                                renderer.add_spike_u([self.pos[0]-4, self.pos[1]+52])
+                                renderer.added_spikes += 1
+                            renderer.queue[0].shapeshifting=False
+                            renderer.queue_updating = True
+                        if renderer.queue[0].tile == 129:
+                            renderer.add_spike_d(self.orig_pos)
+                            renderer.added_spikes += 1
+                            renderer.spike_count += 1
+                            if renderer.spike_count > renderer.added_spikes:
+                                renderer.add_spike_d(self.orig_pos)
+                                renderer.added_spikes += 1
+                            renderer.queue[0].shapeshifting=False
+                            renderer.queue_updating = True
+                        if renderer.queue[0].tile == 138:
+                            renderer.add_spike_r([self.pos[0]-4, self.pos[1]+52])
+                            renderer.added_spikes += 1
+                            renderer.spike_count += 1
+                            if renderer.spike_count > renderer.added_spikes:
+                                renderer.add_spike_r([self.pos[0]-4, self.pos[1]+52])
+                                renderer.added_spikes += 1
+                            renderer.queue[0].shapeshifting=False
+                            renderer.queue_updating = True
+                        if renderer.queue[0].tile == 139:
+                            renderer.add_spike_l(self.orig_pos)
+                            renderer.added_spikes += 1
+                            renderer.spike_count += 1
+                            if renderer.spike_count > renderer.added_spikes:
+                                renderer.add_spike_l(self.orig_pos)
+                                renderer.added_spikes += 1
+                            renderer.queue[0].shapeshifting=False
+                            renderer.queue_updating = True
+                        if renderer.queue[0].tile == 121:
+                            renderer.queue.append(SwingingAxe(self.orig_pos))
+                        if renderer.queue[0].tile == 116:
+                            renderer.queue.append(FireBox(self.orig_pos))
+                            renderer.queue[0].shapeshifting=False
+                            renderer.queue_updating = True
                         renderer.levels[renderer.level][int((self.pos[1]+4)/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int(((self.pos[0]+8)-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
                         renderer.queue = [ob for ob in renderer.queue if ob != self]
                         return

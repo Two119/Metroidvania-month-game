@@ -454,9 +454,9 @@ class EnemySwordsman:
             #pygame.draw.rect(win, [255, 0, 0], self.rect)
             win.blit(self.spritesheet.get(self.frame), self.pos)
             if self.dir == 0:
-                self.weapon.pos = [self.pos[0]-40, self.pos[1]]
+                self.weapon.pos = [self.pos[0]-40, self.pos[1]+32]
             else:
-                self.weapon.pos = [self.pos[0]+40, self.pos[1]]
+                self.weapon.pos = [self.pos[0]+40, self.pos[1]+32]
             self.weapon.dir = 1-self.dir
             self.weapon.attacking =self.chasing
             self.weapon.update(renderer)

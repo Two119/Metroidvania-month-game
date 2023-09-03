@@ -83,7 +83,7 @@ class Player:
         self.staff_pos = [position[0], position[1]]
         self.frame = [0, 0]
         self.tile = 115
-        self.tiles_unlocked = []
+        self.tiles_unlocked = [6]
         self.is_alive = True
         self.levels_unlocked = [0]
         self.vel = [0, 0]
@@ -411,5 +411,10 @@ class Player:
             #pygame.draw.rect(win, [255, 0, 0], self.rect)
             win.blit(self.spritesheet.get(self.frame), self.pos)
             win.blit(self.staff, self.staff_pos)
+            if not (6 in self.tiles_unlocked):
+                l = [6]
+                for tile in self.tiles_unlocked:
+                    l.append(tile*1)
+                self.tiles_unlocked = l
             self.inventory.items = self.tiles_unlocked
             self.inventory.update(renderer)

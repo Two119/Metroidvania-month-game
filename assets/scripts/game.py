@@ -210,6 +210,37 @@ class Game:
                                             self.renderer.levels[self.renderer.level][int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1]))+1][int((double_list[1][0]-self.camera.cam_change[0])/self.renderer.tile_size[0])] = self.renderer.queue[0].tile 
                                             if self.renderer.queue[0].tile == 121:
                                                 self.renderer.queue.append(SwingingAxe([(int((double_list[1][0]-self.renderer.camera.cam_change[0])/self.renderer.tile_size[0]))*self.renderer.tile_size[0]+self.camera.cam_change[0], (int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1])))*self.renderer.tile_size[1]-self.level_spike_dicts[self.renderer.level]+64+self.camera.cam_change[1]]))
+                                            if self.renderer.queue[0].tile == 118:
+                                                if True:
+                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-4, double_list[2].pos[1]+56]))
+                                                    self.renderer.added_spikes_h += 1
+                                                self.renderer.spike_h_count += 1
+                                                if self.renderer.spike_h_count > self.renderer.added_spikes_h:
+                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-4, double_list[2].pos[1]+56]))
+                                                    self.renderer.added_spikes_h += 1
+                                            if self.renderer.queue[0].tile == 135:
+                                                if True:
+                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-4, double_list[2].pos[1]+60], True))
+                                                    self.renderer.added_spikes_h += 1
+                                                self.renderer.spike_h_count += 1
+                                                if self.renderer.spike_h_count > self.renderer.added_spikes_h:
+                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-4, double_list[2].pos[1]+60], True))
+                                                    self.renderer.added_spikes_h += 1
+                                            if self.renderer.queue[0].tile == 136:
+                                                if True:
+                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-18, double_list[2].pos[1]+56], False, 90))
+                                                    self.renderer.added_spikes_h += 1
+                                                self.renderer.spike_h_count += 1
+                                                if self.renderer.spike_h_count > self.renderer.added_spikes_h:
+                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-18, double_list[2].pos[1]+56], False, 90))
+                                                    self.renderer.added_spikes_h += 1
+                                            if self.renderer.queue[0].tile == 137:
+                                                self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-8, double_list[2].pos[1]+56], False, -90))
+                                                self.renderer.added_spikes_h += 1
+                                                self.renderer.spike_h_count += 1
+                                                if self.renderer.spike_h_count > self.renderer.added_spikes_h:
+                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2][0]-8, double_list[2].pos[1]+56], False, -90))
+                                                    self.renderer.added_spikes_h += 1
                                         pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
                                         win.blit(self.rect_surf, [double_list[1][0], double_list[1][1]+64])
                     for obj in self.renderer.queue:

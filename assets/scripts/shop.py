@@ -54,14 +54,24 @@ def equip(args):
     renderer = args[0]
     if args[1] == 0:
         renderer.queue[0].tile = 117
+        renderer.queue[0].inventory.items = renderer.queue[0].tiles_unlocked
+        renderer.queue[0].inventory.current = renderer.queue[0].inventory.items.index(117)
     elif args[1] == 1:
         renderer.queue[0].tile = 118
+        renderer.queue[0].inventory.items = renderer.queue[0].tiles_unlocked
+        renderer.queue[0].inventory.current = renderer.queue[0].inventory.items.index(118)
     elif args[1] == 2:
         renderer.queue[0].tile = 121
+        renderer.queue[0].inventory.items = renderer.queue[0].tiles_unlocked
+        renderer.queue[0].inventory.current = renderer.queue[0].inventory.items.index(121)
     elif args[1] == 3:
         renderer.queue[0].tile = 6
+        renderer.queue[0].inventory.items = renderer.queue[0].tiles_unlocked
+        renderer.queue[0].inventory.current = renderer.queue[0].inventory.items.index(6)
     elif args[1] == 4:
         renderer.queue[0].tile = 116
+        renderer.queue[0].inventory.items = renderer.queue[0].tiles_unlocked
+        renderer.queue[0].inventory.current = renderer.queue[0].inventory.items.index(116)
 class Shop:
     def  __init__(self, renderer):
         self.tiles = [117, 118, 121, 6, 116]

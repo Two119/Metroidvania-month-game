@@ -126,9 +126,9 @@ class Game:
                             if (self.cursor_mask.overlap(double_list[0], (double_list[1][0]-cursor_pos[0], double_list[1][1]-cursor_pos[1])) == None):
                                 pass
                             else:
-                                if double_list[2] != 122 and not isinstance(double_list[2], SpikeBall) and double_list[2] != self.renderer.queue[0].tile:
+                                if double_list[2] != 122 and not isinstance(double_list[2], SpikeBall):
                                     if not isinstance(double_list[2], FireBox):
-                                        if pygame.mouse.get_pressed()[2]:
+                                        if pygame.mouse.get_pressed()[2] and double_list[2] != self.renderer.queue[0].tile:
                                             self.renderer.levels[self.renderer.level][int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1]))][int((double_list[1][0]-self.camera.cam_change[0])/self.renderer.tile_size[0])] = self.renderer.queue[0].tile
                                             if self.renderer.queue[0].tile == 117:
                                                 self.renderer.add_spike_u([((int((double_list[1][0]-self.camera.cam_change[0])/self.renderer.tile_size[0]))*64)+self.camera.cam_change[0], ((int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1])))*64)-self.level_spike_dicts[self.renderer.level]-8+self.camera.cam_change[1]])

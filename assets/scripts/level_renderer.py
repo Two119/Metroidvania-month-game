@@ -83,6 +83,7 @@ class LevelRenderer:
         self.queue_updating = True
         self.first_cycle = True
         self.clock = pygame.time.Clock()
+        self.death_anims = []
         self.first_layer = []
         self.coin_appending = True
         self.level_firebox_y_offset_dict = {0:0, 1:4}
@@ -451,6 +452,11 @@ class LevelRenderer:
                     if obj.rect.colliderect(self.camera.rect) and self.queue[0].is_alive:
                         self.firebox_in_cam = True
             self.spike_update()
+        for anim in self.death_anims:
+            if len(anim.particles) > 0:
+                anim.update(win, 0)
+            else:
+                self.death_anims.remove(anim)
         self.bullet_manager.update_physics(self)
         self.bullet_manager.update_graphics(self)
         

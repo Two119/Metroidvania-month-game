@@ -1,5 +1,6 @@
 from assets.scripts.core_funcs import *
 from assets.scripts.button import *
+from assets.scripts.player import Shield
 class Notification:
     def __init__(self, surf: pygame.Surface):
         self.surf = surf
@@ -43,7 +44,17 @@ def buy(args):
             args[3].notifications.append(Notification(args[3].purchase_text))
         else:
             args[3].notifications.append(Notification(args[3].poor_text))
-    elif args[2] == 4:
+    elif args[2] in [4, 5, 6, 7]:
+        if renderer.queue[0].coins >= price:
+            d = {4:200, 5:201, 6:202, 7:203}
+            renderer.queue[0].tiles_unlocked.append(200) 
+            renderer.queue[0].using_shield = True
+            renderer.queue[0].shield.__init__(renderer.queue[0].pos, args[4])
+            renderer.queue[0].coins -= price
+            args[3].notifications.append(Notification(args[3].purchase_text))
+        else:
+            args[3].notifications.append(Notification(args[3].poor_text))
+    elif args[2] == 8:
         if renderer.queue[0].coins >= price:
             renderer.queue[0].tiles_unlocked.append(116) 
             renderer.queue[0].coins -= price
@@ -73,14 +84,17 @@ def equip(args):
         renderer.queue[0].tiles_unlocked = l
         renderer.queue[0].inventory.items = renderer.queue[0].tiles_unlocked
         renderer.queue[0].inventory.current = renderer.queue[0].inventory.items.index(6)
-    elif args[1] == 4:
+    elif args[1] in [4, 5, 6, 7]:
+        renderer.queue[0].using_shield = True
+        renderer.queue[0].shield.__init__(renderer.queue[0].pos, args[4])
+    elif args[1] == 8:
         renderer.queue[0].tile = 116
         renderer.queue[0].inventory.items = renderer.queue[0].tiles_unlocked
         renderer.queue[0].inventory.current = renderer.queue[0].inventory.items.index(116)
 class Shop:
     def  __init__(self, renderer):
-        self.tiles = [117, 118, 121, 6, 116]
-        self.tile_names_dict = {117: "Spike", 118: "Hidden Spike", 121: "Swinging Axe", 116: "Fire platform", 6: "Standard tile"}
+        self.tiles = [117, 118, 121, 6, 200, 201, 202, 203, 116]
+        self.tile_names_dict = {117: "Spike", 118: "Hidden Spike", 121: "Swinging Axe", 116: "Fire platform", 6: "Standard tile", 200:"Wooden Shield", 201:"Iron Shield", 202:"Golden Shield", 203:"Diamond Shield"}
         self.tile_images = [renderer.spikesheet.sheet[0][3].copy(), renderer.spikesheet.sheet[0][3].copy()]
         fb = pygame.image.load("assets/Spritesheets/FireBox.png").convert()
         f = pygame.image.load("assets/Spritesheets/fire.png").convert()
@@ -94,6 +108,24 @@ class Shop:
         swinging_axe.set_colorkey([236, 28, 36])
         self.tile_images.append(swinging_axe)
         self.tile_images.append(renderer.images[6])
+        self.shields = [Shield([0, 0], 1), Shield([0, 0], 2), Shield([0, 0], 3), Shield([0, 0], 4)]
+        self.shield_level = 0
+        surf = pygame.Surface([64, 64])
+        surf.blit(self.shields[0].sheet.get([0, 0]), [-30, -36])
+        surf.set_colorkey([0, 0, 0])
+        self.tile_images.append(surf)
+        surf = pygame.Surface([64, 64])
+        surf.blit(self.shields[1].sheet.get([0, 0]), [-30, -36])
+        surf.set_colorkey([0, 0, 0])
+        self.tile_images.append(surf)
+        surf = pygame.Surface([64, 64])
+        surf.blit(self.shields[2].sheet.get([0, 0]), [-30, -36])
+        surf.set_colorkey([0, 0, 0])
+        self.tile_images.append(surf)
+        surf = pygame.Surface([64, 64])
+        surf.blit(self.shields[3].sheet.get([0, 0]), [-30, -36])
+        surf.set_colorkey([0, 0, 0])
+        self.tile_images.append(surf)
         self.tile_images.append(firebox)
         self.pos = [0, 0]
         self.bg_tex = scale_image(pygame.image.load("assets/Spritesheets/shop_bg.png").convert())
@@ -101,7 +133,7 @@ class Shop:
         self.tile_masks = [pygame.mask.from_surface(i) for i in self.tile_images]
         self.tile_positions = []
         self.font : pygame.font.Font = renderer.font
-        self.prices = [5, 10, 25, 0, 30]
+        self.prices = [5, 10, 25, 0, 1, 8, 16, 25, 30]
         self.item_names = [self.font.render(self.tile_names_dict[self.tiles[i]], False, [255, 255, 255], [0, 0, 0]) for i in range(len(self.tiles))]
         self.price_texts = [self.font.render(str(self.prices[i])+" coins", False, [255, 255, 255], [0, 0, 0]) for i in range(len(self.tiles))]
         [item.set_colorkey([0, 0, 0]) for item in self.item_names]
@@ -110,7 +142,7 @@ class Shop:
         self.spike_frame = 0
         self.delay = 0
         self.buttons = []
-        self.add_heights = [96, 96, 88, 88, 152]
+        self.add_heights = [96, 96, 88, 88, 88, 88, 88, 88, 152]
         self.button_sprites = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/buy_buttons.png").convert()), [2, 1], [255, 255, 255])
         self.subtract_x = [(self.button_sprites.sheet[0][0].get_width()-self.tile_images[i].get_width())/2 for i in range(len(self.tile_images))]
         self.buy_text = self.font.render("Buy", False, [254, 255, 255], [0, 0, 0])
@@ -202,7 +234,13 @@ class Shop:
                     win.blit(self.tile_images[i], self.tile_positions[i])
         if self.buttons == []:
             self.buttons = [Button([self.tile_positions[i][0]-self.subtract_x[i], self.tile_positions[i][1]+self.add_heights[i]], [self.button_sprites.sheet[0][0].copy(), self.button_sprites.sheet[0][1].copy()], [buy, [renderer, self.prices[i], i, self]], win) for i in range(len(self.tile_positions))]
+            self.buttons[len(self.buttons)-2].args.append(1)
+            self.buttons[len(self.buttons)-3].args.append(2)
+            self.buttons[len(self.buttons)-4].args.append(3)
+            self.buttons[len(self.buttons)-5].args.append(4)
             self.equip_buttons = [Button([self.tile_positions[i][0]-self.subtract_x[i], self.tile_positions[i][1]+self.add_heights[i]], [self.button_sprites.sheet[0][0].copy(), self.button_sprites.sheet[0][1].copy()], [equip, [renderer, i]], win) for i in range(len(self.tile_positions))]
+            [self.equip_buttons[len(self.equip_buttons)-(2+n)].args.append(self.shield_level+1) for n in range(4)]
+            
             [self.buttons[i].textures[0].blit(self.buy_text, [(self.buttons[i].textures[0].get_width()-self.buy_text.get_width())/2, 12]) for i in range(len(self.buttons))]
             [self.buttons[i].textures[1].blit(self.buy_text, [(self.buttons[i].textures[1].get_width()-self.buy_text.get_width())/2, 16]) for i in range(len(self.buttons))]
             [self.equip_buttons[i].textures[0].blit(self.equip_text, [(self.equip_buttons[i].textures[0].get_width()-self.equip_text.get_width())/2, 12]) for i in range(len(self.equip_buttons))]

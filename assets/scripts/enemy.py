@@ -215,8 +215,7 @@ class EnemyWizard:
             win.blit(self.spritesheet.get(self.frame), self.pos)
             win.blit(self.staff, self.staff_pos)
 class Sword:
-    def __init__(self, owner, pos, level=1):
-        self.owner = owner
+    def __init__(self, pos, level=4):
         self.pos = pos
         if web:
             self.sprite = scale_image(pygame.image.load("assets/Spritesheets/sword_"+str(level)+".png").convert())
@@ -231,23 +230,43 @@ class Sword:
             swap_color(sheet, [53, 53, 64], [1, 1, 1])
             self.spritesheet = SpriteSheet(sheet, [7, 2], [255, 255, 255])
         swap_color(self.sprite, [53, 53, 64], [1, 1, 1])
-        
         self.attacking = False
         self.attack = None
         self.frame = [0, 0]
         self.delay = 0
         self.dir = 0
+        self.level = level
+        self.just_hit = False
+        self.hit_delay = 1
     def update(self, renderer):
         if not self.attacking:
-            win.blit(pygame.transform.flip(self.sprite, self.dir, False), self.pos)
+            win.blit(pygame.transform.flip(self.spritesheet.get([0, 1]), self.dir, False), self.pos)
         else:
             self.delay += (1*renderer.dt)
             if round(10/renderer.dt) != 0:
                 if (int(self.delay) % round(10/renderer.dt))==0:
                     self.frame[0] += 1
-                    if self.frame[0] > 6:
-                        self.frame[0] = 0
+            if self.frame[0] > 6:
+                self.frame[0] = 0
+                self.just_hit = False
+            self.mask = pygame.mask.from_surface(pygame.transform.flip(self.spritesheet.get(self.frame), self.dir, False))
+            if self.mask.overlap(renderer.queue[0].shield.mask, [renderer.queue[0].shield.pos[0]-self.pos[0], renderer.queue[0].shield.pos[1]-self.pos[1]]) == None:
+                if self.mask.overlap(renderer.queue[0].mask, [renderer.queue[0].pos[0]-self.pos[0], renderer.queue[0].pos[1]-self.pos[1]])!=None:
+                    renderer.queue[0].is_alive = False
+                    renderer.queue[0].deaths += 1
+            else:
+                if renderer.queue[0].shield.health >= 0:
+                    if not self.just_hit:
+                        renderer.queue[0].shield.health -= self.level
+                        renderer.queue[0].shield.health_bar_rect.w -= renderer.queue[0].shield.unit_bar_length*self.level
+                        self.just_hit = True
+                else:
+                    if self.mask.overlap(renderer.queue[0].mask, [renderer.queue[0].pos[0]-self.pos[0], renderer.queue[0].pos[1]-self.pos[1]])!=None:
+                        renderer.queue[0].is_alive = False
+                        renderer.queue[0].deaths += 1
             win.blit(pygame.transform.flip(self.spritesheet.get(self.frame), self.dir, False), self.pos)
+       
+            
 class EnemySwordsman:
     def __init__(self, position, renderer):
         self.pos = position
@@ -310,7 +329,7 @@ class EnemySwordsman:
             self.spritesheet = SpriteSheet(sheets[0], [4, 22])
         self.renderer = renderer
         self.mask = pygame.mask.from_surface(self.spritesheet.get(self.frame))
-        self.weapon = Sword(self, self.pos)
+        self.weapon = Sword(self.pos)
     def update_animation(self, row, delay_wait, dt):
         if dt != 0:
             if round(delay_wait/(dt)) != 0:
@@ -431,6 +450,7 @@ class EnemySwordsman:
             if renderer.queue.index(self) in renderer.enemies:
                 renderer.enemies.remove(renderer.queue.index(self))
             renderer.queue.remove(self)
+            renderer.death_anims.append(DeathAnim(self.spritesheet.get(self.frame), self.pos, 4))
             del self
     def update(self, renderer):
         if renderer.clock.get_fps() != 0:

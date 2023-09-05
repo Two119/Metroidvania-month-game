@@ -1,4 +1,4 @@
-import pygame, json, asyncio, os, base64
+import pygame, json, asyncio, os, base64, time
 from random import randint
 import math
 from assets.scripts.particles import Particles
@@ -62,6 +62,99 @@ class SpriteSheet:
                 self.sheet[i].append(image)
     def get(self, loc):
         return self.sheet[loc[1]][loc[0]]
+class DeathAnim:
+
+    def __init__(self, image, pos, sprite_scale):
+        self.image, self.pos = image, pos
+        self.rect = self.image.get_rect(topleft=pos)
+
+        self.particles = []
+
+        debut = time.time()
+
+        px_width = sprite_scale
+        px_height = sprite_scale
+        length_y = 1
+
+        surf = pygame.surfarray.array3d(self.image).swapaxes(0, 1)
+
+        # Increase the pixel depth pretty please
+        for y in range(0, len(surf), sprite_scale):
+            for x in range(0, len(surf[y]), sprite_scale):
+                if not (surf[y][x][0] == 255 and surf[y][x][1] == 255 and surf[y][x][2] == 255):
+                    self.particles.append(
+                        DestructedParticle(
+                            (sprite_scale * 2, sprite_scale * 2), self.rect.topleft + pygame.Vector2(x, y), surf[y][x], length_y*y
+                        )
+                    )
+
+        for particle in self.particles:
+            particle.delay = [pygame.time.get_ticks(), pygame.time.get_ticks()]
+
+    def update(self, screen, scroll):
+
+        to_remove = []
+        for particle in self.particles:
+            upd = particle.update(screen, scroll)
+            if upd == "kill":
+                to_remove.append(particle)
+
+        for removing in to_remove:
+            self.particles.remove(removing)
+
+class DestructedParticle:
+
+    def __init__(self, size, pos, color, delay, colkey = [0, 0, 0]):
+
+        self.image = pygame.Surface(size, pygame.SRCALPHA)
+        self.rect = self.image.get_rect(topleft=pos)
+        self.color = list(color)
+        self.image.fill(color)
+        self.tend_color = (192, 160, 128, 255)
+        self.image.set_colorkey(colkey)
+        self.colkey = colkey
+        self.start_time = pygame.time.get_ticks() + delay
+        self.last_time = 2500
+        self.delay = [0, 0]
+        self.WIDTH = self.image.get_width()
+
+        self.dy = 1
+        self.count = 0
+
+    def whiter(self, step):
+        if self.color[0] < 255:
+            self.color[0] += 1
+        if self.color[1] < 255:
+            self.color[1] += 1
+        if self.color[2] < 255:
+            self.color[2] += 1
+
+    def behavior(self):
+        if pygame.time.get_ticks() > self.start_time:
+
+            self.rect.y -= self.dy
+            self.rect.x += randint(-1, 1)
+            if pygame.time.get_ticks() - self.delay[0] > (self.last_time // 255):
+                self.delay[0] = pygame.time.get_ticks()
+                self.image.set_alpha(self.image.get_alpha()-2)
+            if pygame.time.get_ticks() - self.delay[1] > (self.last_time // self.WIDTH):
+                self.delay[1] = pygame.time.get_ticks()
+                alpha = self.image.get_alpha()
+
+                try:
+                    self.image = pygame.Surface((self.image.get_width()-1, self.image.get_height()-1), pygame.SRCALPHA)
+                    self.image.set_colorkey(self.colkey)
+                except pygame.error:
+                    pass
+                self.rect.topleft += pygame.Vector2(0.5, 0.5)
+                self.image.set_alpha(alpha)
+                self.image.fill(self.color)
+
+    def update(self, screen, scroll):
+        self.behavior()
+        screen.blit(self.image, self.rect.topleft)
+        if pygame.time.get_ticks() - self.start_time > self.last_time:
+            return "kill"
 def reset(player, renderer, fell=False):
         
         renderer.levels = [json.load(open("levels.json", "r"))["level_1"], json.load(open("levels.json", "r"))["level_2"]]
@@ -102,4 +195,5 @@ def reset(player, renderer, fell=False):
         player.just_jumped = False
         renderer.bullet_manager.bullets = []
         player.is_alive = True
+        player.shield.__init__(player.pos)
         

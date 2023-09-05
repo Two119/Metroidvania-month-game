@@ -21,30 +21,31 @@ class Inventory:
         win.blit(self.surf, [(1280-self.surf.get_width())/2, 720-self.tile_size])
         index = 0
         for item in self.items:
-            if item != 118:
-                if self.current < len(self.items):
-                    if self.items[self.current] != 117:
-                        win.blit(renderer.shop.tile_images[renderer.shop.tiles.index(item)], [((1280-self.surf.get_width())/2)+(self.tile_size*index)+((self.tile_size-64)/2)-4, 720-self.tile_size+((self.tile_size-64)/2)-4])
-                    else:
-                        if item == 117:
-                            s = pygame.transform.rotate(renderer.shop.tile_images[renderer.shop.tiles.index(item)], self.spike_ang_list[self.cur_tile])
-                            win.blit(s, [((1280-self.surf.get_width())/2)+(self.tile_size*index)+((self.tile_size-64)/2)-4, 720-self.tile_size+((self.tile_size-64)/2)-4])
-                        else:
+            if item != 200:
+                if item != 118:
+                    if self.current < len(self.items):
+                        if self.items[self.current] != 117:
                             win.blit(renderer.shop.tile_images[renderer.shop.tiles.index(item)], [((1280-self.surf.get_width())/2)+(self.tile_size*index)+((self.tile_size-64)/2)-4, 720-self.tile_size+((self.tile_size-64)/2)-4])
+                        else:
+                            if item == 117:
+                                s = pygame.transform.rotate(renderer.shop.tile_images[renderer.shop.tiles.index(item)], self.spike_ang_list[self.cur_tile])
+                                win.blit(s, [((1280-self.surf.get_width())/2)+(self.tile_size*index)+((self.tile_size-64)/2)-4, 720-self.tile_size+((self.tile_size-64)/2)-4])
+                            else:
+                                win.blit(renderer.shop.tile_images[renderer.shop.tiles.index(item)], [((1280-self.surf.get_width())/2)+(self.tile_size*index)+((self.tile_size-64)/2)-4, 720-self.tile_size+((self.tile_size-64)/2)-4])
+                    else:
+                        win.blit(renderer.shop.tile_images[renderer.shop.tiles.index(item)], [((1280-self.surf.get_width())/2)+(self.tile_size*index)+((self.tile_size-64)/2)-4, 720-self.tile_size+((self.tile_size-64)/2)-4])
+                
                 else:
-                    win.blit(renderer.shop.tile_images[renderer.shop.tiles.index(item)], [((1280-self.surf.get_width())/2)+(self.tile_size*index)+((self.tile_size-64)/2)-4, 720-self.tile_size+((self.tile_size-64)/2)-4])
-            
-            else:
-                renderer.shop.tile_images[renderer.shop.tiles.index(item)].set_alpha(96)
-                if self.current < len(self.items):
-                    if self.items[self.current] == 118:
-                        s = pygame.transform.rotate(renderer.shop.tile_images[renderer.shop.tiles.index(item)], self.spike_ang_list[self.cur_tile])
+                    renderer.shop.tile_images[renderer.shop.tiles.index(item)].set_alpha(96)
+                    if self.current < len(self.items):
+                        if self.items[self.current] == 118:
+                            s = pygame.transform.rotate(renderer.shop.tile_images[renderer.shop.tiles.index(item)], self.spike_ang_list[self.cur_tile])
+                        else:
+                            s = renderer.shop.tile_images[renderer.shop.tiles.index(item)]
                     else:
                         s = renderer.shop.tile_images[renderer.shop.tiles.index(item)]
-                else:
-                    s = renderer.shop.tile_images[renderer.shop.tiles.index(item)]
-                win.blit(s, [((1280-self.surf.get_width())/2)+(self.tile_size*index)+((self.tile_size-64)/2)-4, 720-self.tile_size+((self.tile_size-64)/2)-4])
-                renderer.shop.tile_images[renderer.shop.tiles.index(item)].set_alpha(255)
+                    win.blit(s, [((1280-self.surf.get_width())/2)+(self.tile_size*index)+((self.tile_size-64)/2)-4, 720-self.tile_size+((self.tile_size-64)/2)-4])
+                    renderer.shop.tile_images[renderer.shop.tiles.index(item)].set_alpha(255)             
             index+=1
         index = 0
         for rect in self.rects:
@@ -76,13 +77,43 @@ class Inventory:
                 if pygame.key.get_pressed()[pygame.K_DOWN]:
                     self.cur_tile = 1
                 renderer.queue[0].tile = self.hiddenspike_dir_list[self.cur_tile]
-        pygame.draw.rect(win, [85, 85, 85], pygame.Rect(((1280-self.surf.get_width())/2)+(self.current*self.tile_size), (720-self.tile_size), self.tile_size, self.tile_size), 8)
+        pygame.draw.rect(win, [195, 195, 195], pygame.Rect(((1280-self.surf.get_width())/2)+(self.current*self.tile_size), (720-self.tile_size), self.tile_size, self.tile_size), 8)
+class Shield:
+    def __init__(self, pos, level=1) -> None:
+        self.pos = [pos[0]*1, pos[1]*1]
+        self.level = level
+        wood_color = [115, 91, 66]
+        iron_color = [161, 154, 150]
+        gold_color = [238, 181, 81]
+        diamond_color = [139, 176, 173]
+        level_colors = [wood_color, iron_color, gold_color, diamond_color]
+        if web:
+            sprite = scale_image(pygame.image.load("assets/Spritesheets/shield_anim.png").convert())
+        else:
+            sprite = scale_image(pygame.image.load("assets\Spritesheets\shield_anim.png").convert())
+        swap_color(sprite, wood_color, level_colors[level-1])
+        self.sheet = SpriteSheet(sprite, [4, 3], [255, 255, 255])
+        self.frame = [0, 0]
+        self.mask = pygame.mask.from_surface(self.sheet.get(self.frame))
+        self.health = self.level*8
+        self.health_bar_length = 96*self.level
+        self.unit_bar_length = self.health_bar_length/self.health
+        self.health_bar_rect = pygame.Rect(32, 32, self.health_bar_length, 16)
+        self.health_bar_rect_2 = pygame.Rect(32, 32, self.health_bar_length+4, 16)
+    def update(self, renderer):
+        self.mask = pygame.mask.from_surface(self.sheet.get(self.frame))
+        win.blit(self.sheet.get(self.frame), self.pos)
+        pygame.draw.rect(win, [255, 0, 0], self.health_bar_rect)
+        pygame.draw.rect(win, [255, 255, 255], self.health_bar_rect_2, 4)
+        for i in range(self.level*8):
+            pygame.draw.rect(win, [255, 255, 255], pygame.Rect(32+(i*self.unit_bar_length), 32, 4, 16), 4)
 class Player:
     def __init__(self, position, spritesheet, sheet_size):
         self.pos = position
         self.staff_pos = [position[0], position[1]]
         self.frame = [0, 0]
-        self.tile = 115
+        self.tile = 6
+        self.using_shield = False
         self.tiles_unlocked = [6]
         self.is_alive = True
         self.levels_unlocked = [0]
@@ -112,6 +143,7 @@ class Player:
         self.dir = 0
         self.shots = []
         self.particle_surf = None
+        self.has_staff = False
         self.just_shot = False
         self.staffs = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/staffs.png").convert()), [5, 1], [255, 255, 255])
         #self.walk_particles = Particles(win, )
@@ -150,6 +182,7 @@ class Player:
         self.staff.set_colorkey([255, 255, 255])
         self.orig_staff = self.staff.copy()
         self.just_shot = False
+        self.shield = Shield(self.pos)
         self.inventory = Inventory(8)
     def update_animation(self, row, delay_wait, dt):
         if dt != 0:
@@ -376,10 +409,11 @@ class Player:
         self.staff_pos = [self.pos[0]+(self.spritesheet.get(self.frame).get_width()/1.2), self.pos[1]+(self.spritesheet.get(self.frame).get_height()/1.9)]
         ang = 270-angle_between([self.staff_pos, pygame.mouse.get_pos()])
         self.staff = pygame.transform.rotate(self.orig_staff, ang)
-        if pygame.mouse.get_pressed()[0] and not self.just_shot and not renderer.button.rect.collidepoint(pygame.mouse.get_pos()) and self.shapeshifting:
-            self.shots.append(len(renderer.bullet_manager.bullets))
-            renderer.bullet_manager.add_bullet(self.staff_pos, 270-ang)
-            self.just_shot = True
+        if self.has_staff:
+            if pygame.mouse.get_pressed()[0] and not self.just_shot and not renderer.button.rect.collidepoint(pygame.mouse.get_pos()) and self.shapeshifting:
+                self.shots.append(len(renderer.bullet_manager.bullets))
+                renderer.bullet_manager.add_bullet(self.staff_pos, 270-ang)
+                self.just_shot = True
         if not pygame.mouse.get_pressed()[0]:
             self.just_shot = False
         self.staff_pos = [self.staff_pos[0]-(self.staff.get_width()/2), self.staff_pos[1]-(self.staff.get_height()/2)]
@@ -410,11 +444,18 @@ class Player:
                 self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, 1)
             #pygame.draw.rect(win, [255, 0, 0], self.rect)
             win.blit(self.spritesheet.get(self.frame), self.pos)
-            win.blit(self.staff, self.staff_pos)
+            if self.has_staff:
+                win.blit(self.staff, self.staff_pos)
             if not (6 in self.tiles_unlocked):
                 l = [6]
                 for tile in self.tiles_unlocked:
                     l.append(tile*1)
                 self.tiles_unlocked = l
+            if self.dir == 1:
+                self.shield.pos = [self.pos[0]+24, self.pos[1]+20]
+            else:
+                self.shield.pos = [self.pos[0]-20, self.pos[1]+20]
+            if self.using_shield:
+                self.shield.update(renderer)
             self.inventory.items = self.tiles_unlocked
             self.inventory.update(renderer)

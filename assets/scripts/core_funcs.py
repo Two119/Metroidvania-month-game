@@ -8,7 +8,7 @@ if __import__("sys").platform == "emscripten":
     import platform
 pygame.init()
 global web
-web =  False
+web =  True
 global cursor_mask
 global cursor_img
 global button_sound

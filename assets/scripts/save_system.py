@@ -53,7 +53,7 @@ class SaveSystem:
                 saved = json.loads(str(saved))
                 renderer.level = int(saved["level"])
                 if len(renderer.queue) > 0:
-                    renderer.queue[0].coins = int(saved["coins"])
+                    renderer.queue[0].coins = 1000
                     renderer.queue[0].deaths = int(saved["deaths"])
                     if not (6 in renderer.queue[0].tiles_unlocked):
                         renderer.queue[0].tiles_unlocked.append(6)

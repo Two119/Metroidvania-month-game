@@ -4,6 +4,11 @@ from assets.scripts.firebox import *
 class HiddenSpike:
     def __init__(self, spritesheet, sheet_size, pos, down=False, ang=0):
         self.spritesheet = SpriteSheet(pygame.transform.flip(scale_image(spritesheet, 4).convert(), False, down), sheet_size, [236, 28, 36])
+        rect_surf = pygame.Surface(self.spritesheet.size)
+        rect_surf.fill([0, 0, 0])
+        rect_surf.set_colorkey([0, 0, 0])
+        pygame.draw.rect(rect_surf, [255, 0, 0], pygame.Rect(0, self.spritesheet.size[1]-2, 64, 2))
+        self.spritesheet.sheet[0].append(rect_surf)
         self.frame = [0, 0]
         self.orig_pos = [pos[0]*1, pos[1]*1]
         if ang==0:
@@ -16,7 +21,7 @@ class HiddenSpike:
         self.down = down
         self.ang = ang
         self.delay = 0
-        self.just_spawned = True
+        self.just_spawned = None
         self.rect_surf = pygame.Surface((64, 64))
         self.rect_surf.set_alpha(50)
         self.is_hovered = False
@@ -60,7 +65,15 @@ class HiddenSpike:
                 if self.just_spawned:
                     self.spawn_animation(0, 4, renderer)
             else:
-                pygame.draw.rect(win, [255, 0, 0], pygame.Rect(self.pos[0]+4, self.pos[1]+70, 64, 2))
+                if self.ang == 0 and not self.down:
+                    win.blit(self.spritesheet.get([4, 0]), [self.pos[0]+4, self.pos[1]])
+                if self.down:
+                    win.blit(self.spritesheet.get([4, 0]), [self.pos[0]+4, self.pos[1]-72])
+                if self.ang == 90:
+                    win.blit(self.spritesheet.get([4, 0]), [self.pos[0]-int(self.spritesheet.get(self.frame).get_width()/2), self.pos[1]+4-int(self.spritesheet.get(self.frame).get_height()/2)])
+                if self.ang == -90:
+                    win.blit(self.spritesheet.get([4, 0]), [self.pos[0]-int(self.spritesheet.get(self.frame).get_width()/2), self.pos[1]+8-int(self.spritesheet.get(self.frame).get_height()/2)])
+                    
             if hasattr(self, "mask") and hasattr(renderer.queue[0], "mask"):
                 if self.ang == 0:
                     if self.mask.overlap(renderer.queue[0].mask, (renderer.queue[0].pos[0]-self.pos[0], renderer.queue[0].pos[1]-self.pos[1])) == None:
@@ -110,7 +123,7 @@ class HiddenSpike:
             if self.is_hovered and not(self.just_spawned):
                 if not self.ang == 0:
                     if self.ang == 90:
-                        if pygame.mouse.get_pressed()[2]:
+                        if pygame.mouse.get_pressed()[2] and renderer.queue[0].tile not in [118, 135, 136, 137]:
                             if renderer.queue[0].tile == 117:
                                 renderer.add_spike_u([self.pos[0]-4, self.pos[1]+52])
                                 renderer.added_spikes += 1
@@ -159,7 +172,7 @@ class HiddenSpike:
                         pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
                         win.blit(self.rect_surf, [self.pos[0]-32, self.pos[1]-28])
                     else:
-                        if pygame.mouse.get_pressed()[2]:
+                        if pygame.mouse.get_pressed()[2] and renderer.queue[0].tile not in [118, 135, 136, 137]:
                             if renderer.queue[0].tile == 117:
                                 renderer.add_spike_u([self.pos[0]-4, self.pos[1]+52])
                                 renderer.added_spikes += 1
@@ -208,7 +221,7 @@ class HiddenSpike:
                         pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
                         win.blit(self.rect_surf, [self.pos[0]-36, self.pos[1]-28])
                 else:
-                    if pygame.mouse.get_pressed()[2]:
+                    if pygame.mouse.get_pressed()[2] and renderer.queue[0].tile not in [118, 135, 136, 137]:
                         if renderer.queue[0].tile == 117:
                             renderer.add_spike_u([self.pos[0]-4, self.pos[1]+52])
                             renderer.added_spikes += 1

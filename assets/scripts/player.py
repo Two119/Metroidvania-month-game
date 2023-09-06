@@ -164,7 +164,7 @@ class Player:
         self.orig_staff = self.staff.copy()
         self.just_shot = False
         self.shield = None
-        self.inventory = Inventory(8)
+        self.inventory = Inventory(5)
     def update_animation(self, row, delay_wait, dt):
         if dt != 0:
             if round(delay_wait/(dt)) != 0:

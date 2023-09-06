@@ -53,6 +53,13 @@ class HiddenSpike:
             self.rect = self.spritesheet.get(self.frame).get_rect(topleft=self.pos)
             self.rect.x += 10
             self.rect.width -= 10
+            if self.ang == 90 or self.ang == -90:
+                self.rect.y -= 28
+                if self.ang == 90:
+                    self.rect.x -= 38
+                else:
+                    self.rect.x -= 44
+            pygame.draw.rect(win, [0, 255, 0], self.rect)
             if self.rect.colliderect(renderer.camera.window_rect):
                 if self.rect.colliderect(renderer.queue[0].rect) and self.just_spawned == None:
                     self.just_spawned = True

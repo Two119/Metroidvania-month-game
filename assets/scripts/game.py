@@ -32,6 +32,8 @@ def game_menu(args):
     args.playing = False
 def open_shop(args):
     args.screen = 3
+def open_shop_2(args):
+    args.screen = 4
 class Game:
     def __init__(self):
         self.save_system = SaveSystem()
@@ -71,7 +73,7 @@ class Game:
         self.vol_text = scale_image(self.ui_font.render("Volume", False, (255, 255, 255), (0, 0, 0)), 1.5)
         self.fps_text = scale_image(self.ui_font.render("Framerate", False, (255, 255, 255), (0, 0, 0)), 1.5)
         self.back_text = scale_image(self.ui_font.render("Back", False, (255, 255, 255), (0, 0, 0)), 1.5)
-        self.menu_text = scale_image(self.ui_font.render("Menu", False, (255, 255, 255), (0, 0, 0)), 1.5)
+        self.menu_text = scale_image(self.ui_font.render("Home", False, (255, 255, 255), (0, 0, 0)), 1.5)
         self.set_text = scale_image(self.ui_font.render("Options", False, (255, 255, 255), (0, 0, 0)), 1.2)
         self.shop_text = scale_image(self.ui_font.render("Shop", False, (255, 255, 255), (0, 0, 0)), 1.3)
         self.renderer.font = self.ui_font
@@ -91,12 +93,14 @@ class Game:
         self.death_surf.set_colorkey((0, 0, 0))
         self.buttons = [Button(center_pos(self.button_sprites.get([0, 0])), self.button_sprites.sheet[0], [start, self], win), Button([center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]+(1*self.button_sprites.get([0, 0]).get_height())], self.button_sprites.sheet[0], [settings, self], win)]
         shop_button = Button([center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]+(2*self.button_sprites.get([0, 0]).get_height())], self.button_sprites.sheet[0], [open_shop, self], win)
+        self.shop_button_2 = Button([center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]+(3*self.button_sprites.get([0, 0]).get_height())], self.button_sprites.sheet[0], [open_shop_2, self], win)
         self.buttons.append(shop_button)
         #self.buttons = [Button(center_pos(self.button_sprites.get([0, 0])), self.button_sprites.sheet[0], [start, self], win), Button([center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]+(1*self.button_sprites.get([0, 0]).get_height())], self.button_sprites.sheet[0], [settings, self], win)]
         self.settings = [Slider([[center_pos(self.button_sprites.get([0, 0]))[0]+(self.vol_text.get_width()/2)+20, center_pos(self.button_sprites.get([0, 0]))[1]+(-2*self.button_sprites.get([0, 0]).get_height())], self.ui_font, True, self]), Slider([[center_pos(self.button_sprites.get([0, 0]))[0]+(self.vol_text.get_width()/2)+20, center_pos(self.button_sprites.get([0, 0]))[1]+(-1*self.button_sprites.get([0, 0]).get_height())], self.ui_font, False, self]), Button([center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]+(3*self.button_sprites.get([0, 0]).get_height())], self.button_sprites.sheet[0], [back, self], win)]
         self.small_menu_button = Button([win_size[0]-66, 10], self.small_button_sprites.sheet[0], [game_menu, self], win)
-        self.back_button = Button([center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]+(3*self.button_sprites.get([0, 0]).get_height())], self.button_sprites.sheet[0], [back_to_menu, self], win)
+        self.back_button = Button([center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]+(4*self.button_sprites.get([0, 0]).get_height())], self.button_sprites.sheet[0], [back_to_menu, self], win)
         self.back_button_ = Button([center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]+(5*self.button_sprites.get([0, 0]).get_height())], self.button_sprites.sheet[0], [back, self], win)
+        self.back_button_3 = Button([center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]+(5*self.button_sprites.get([0, 0]).get_height())], self.button_sprites.sheet[0], [back_to_menu, self], win)
         self.back_button_2 = Button([center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]+(-1*self.button_sprites.get([0, 0]).get_height())], self.button_sprites.sheet[0], [back_to_game, self], win)
         self.back = Button([center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]-(self.button_sprites.get([0, 0]).get_height())+(3*self.button_sprites.get([0, 0]).get_height())], self.button_sprites.sheet[0], [back, self], win)
         self.renderer.button = self.small_menu_button
@@ -264,11 +268,16 @@ class Game:
                     button.update(self.renderer)
                 self.back.update(self.renderer)
                 self.back_button_2.update(self.renderer)
+                self.shop_button_2.update(self.renderer)
                 win.blit(self.restart_text, [self.buttons[0].pos[0]+10, self.buttons[0].pos[1]+15+(4*self.buttons[0].current)])
                 win.blit(self.set_text, [self.buttons[1].pos[0]+5, self.buttons[1].pos[1]+15+(4*self.buttons[1].current)])
-                win.blit(self.menu_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+10+(2*self.button_sprites.get([0, 0]).get_height())+(4*self.back.current)])
+                win.blit(self.menu_text, [center_pos(self.button_sprites.get([0, 0]))[0]+self.menu_text.get_width()/4, center_pos(self.button_sprites.get([0, 0]))[1]+10+(2*self.button_sprites.get([0, 0]).get_height())+(4*self.back.current)])
                 win.blit(self.back_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+(-0.8*self.button_sprites.get([0, 0]).get_height())+(4*self.back_button_2.current)])
+                win.blit(self.shop_text, [center_pos(self.button_sprites.get([0, 0]))[0]+self.shop_text.get_width()/3, center_pos(self.button_sprites.get([0, 0]))[1]+(3.25*self.button_sprites.get([0, 0]).get_height())+(4*self.shop_button_2.current)])
             if not self.renderer.queue[0].is_alive:
+                if self.radius == 0:
+                    pygame.image.save(win, "win.png")
+                    self.spare_surf = pygame.image.load("win.png").convert()
                 if self.finished:
                     win.blit(self.cursor_img_, cursor_pos)
                     start(self)
@@ -282,9 +291,7 @@ class Game:
                         self.radius = 0 
                         self.add_rad = 0.12
                         return
-                if self.spare_surf == None:
-                    pygame.image.save(win, "win.png")
-                    self.spare_surf = pygame.image.load("win.png").convert()
+                
                 win.blit(self.spare_surf, (0, 0))
                 win.blit(self.renderer.surf, (0, 0))
                 if not self.finished:
@@ -301,18 +308,22 @@ class Game:
         elif self.screen == 2:
             #self.settings[len(self.settings)-1].pos = [center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]+(3*self.button_sprites.get([0, 0]).get_height())]
             win.blit(self.renderer.background, (0, 0))
-            self.settings[0].update()
             #self.settings[1].update()
             if self.playing:
+                self.settings[0].update()
                 self.settings[2].update(self.renderer)
             else:
+                if self.spare_surf != None:
+                    win.blit(self.spare_surf, (0, 0))
+                    win.blit(self.renderer.surf, (0, 0))
+                self.settings[0].update()
                 self.back_button.update(self.renderer)
             win.blit(self.vol_text, [center_pos(self.button_sprites.get([0, 0]))[0]-(self.vol_text.get_width()/2), center_pos(self.button_sprites.get([0, 0]))[1]+(-2*self.button_sprites.get([0, 0]).get_height())])
             #win.blit(self.fps_text, [center_pos(self.button_sprites.get([0, 0]))[0]-(self.fps_text.get_width()/1.5), center_pos(self.button_sprites.get([0, 0]))[1]+(-1*self.button_sprites.get([0, 0]).get_height())])
             if self.playing:
                 win.blit(self.back_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+(3.2*self.button_sprites.get([0, 0]).get_height())+(4*self.settings[2].current)])
             else:
-                win.blit(self.back_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+(3.2*self.button_sprites.get([0, 0]).get_height())+(4*self.back_button.current)])
+                win.blit(self.back_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+(4.2*self.button_sprites.get([0, 0]).get_height())+(4*self.back_button.current)])
             self.renderer.coin_channel.set_volume(self.settings[0].value/10)
             self.renderer.queue[0].channel.set_volume(self.settings[0].value/10)
         elif self.screen == 3:
@@ -321,6 +332,17 @@ class Game:
             
             self.shop.update(self.renderer)
             self.back_button_.update(self.renderer)
+            win.blit(self.back_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+(5.2*self.button_sprites.get([0, 0]).get_height())+(4*self.back_button_.current)])
+        elif self.screen == 4:
+            if self.spare_surf == None:
+                pygame.image.save(win, "win.png")
+                self.spare_surf = pygame.image.load("win.png").convert()
+            win.blit(self.spare_surf, (0, 0))
+            win.blit(self.renderer.surf, (0, 0))
+            #self.settings[1].update()
+            
+            self.shop.update(self.renderer)
+            self.back_button_3.update(self.renderer)
             win.blit(self.back_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+(5.2*self.button_sprites.get([0, 0]).get_height())+(4*self.back_button_.current)])
         win.blit(self.cursor_img_, cursor_pos)
         if self.auto_save and ((self.cycles%20)==0):

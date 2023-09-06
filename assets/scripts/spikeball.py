@@ -17,6 +17,7 @@ class SpikeBall:
         self.delay = 0
         self.standing = False
         self.just_spawned = True
+        self.rect = self.cur_img.get_rect(topleft=self.pos)
     def spawn_animation(self, row, delay_wait, renderer):
         if (renderer.dt) != 0 and self.just_spawned:
             self.delay += (1*renderer.dt)
@@ -29,7 +30,8 @@ class SpikeBall:
                 self.just_spawned = False
             self.cur_img = self.spikeball_spikes.get(self.frame)
     def update(self, renderer):
-        if hasattr(renderer, "dt") and hasattr(renderer.queue[0], "mask"):
+        self.rect = self.cur_img.get_rect(topleft=self.pos)
+        if hasattr(renderer, "dt") and hasattr(renderer.queue[0], "mask") and self.rect.colliderect(renderer.camera.window_rect):
             self.angle -= 3*renderer.dt
             img = pygame.transform.rotate(self.spikeball, self.angle)
             self.mask_s = pygame.mask.from_surface(img)

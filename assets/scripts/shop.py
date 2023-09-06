@@ -248,8 +248,10 @@ class Shop:
             self.buttons[len(self.buttons)-4].args.append(3)
             self.buttons[len(self.buttons)-5].args.append(4)
             self.equip_buttons = [Button([self.tile_positions[i][0]-self.subtract_x[i], self.tile_positions[i][1]+self.add_heights[i]], [self.button_sprites.sheet[0][0].copy(), self.button_sprites.sheet[0][1].copy()], [equip, [renderer, i]], win) for i in range(len(self.tile_positions))]
-            [self.equip_buttons[len(self.equip_buttons)-(2+n)].args.append(self.shield_level) for n in range(4)]
-            
+            self.equip_buttons[len(self.equip_buttons)-2].args.append(1)
+            self.equip_buttons[len(self.equip_buttons)-3].args.append(2)
+            self.equip_buttons[len(self.equip_buttons)-4].args.append(3)
+            self.equip_buttons[len(self.equip_buttons)-5].args.append(4)
             [self.buttons[i].textures[0].blit(self.buy_text, [(self.buttons[i].textures[0].get_width()-self.buy_text.get_width())/2, 12]) for i in range(len(self.buttons))]
             [self.buttons[i].textures[1].blit(self.buy_text, [(self.buttons[i].textures[1].get_width()-self.buy_text.get_width())/2, 16]) for i in range(len(self.buttons))]
             [self.equip_buttons[i].textures[0].blit(self.equip_text, [(self.equip_buttons[i].textures[0].get_width()-self.equip_text.get_width())/2, 12]) for i in range(len(self.equip_buttons))]

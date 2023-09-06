@@ -2,6 +2,8 @@ from assets.scripts.core_funcs import *
 class Camera:
     def __init__(self):
         self.rect = pygame.Rect(0, 0, win.get_width()-((12*4)+15), win.get_height()-(80+((16*4)+17)))
+        self.window_rect = pygame.Rect(0, 0, win.get_width(), win.get_height())
+        self.bigger_window_rect = pygame.Rect(-320, -320, win.get_width()+320, win.get_height()+320)
         self.transition_vel = [0, 0]
         self.cam_change = [0, 0]
         self.checking = True

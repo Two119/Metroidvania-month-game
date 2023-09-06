@@ -142,7 +142,7 @@ class Shop:
         self.tile_masks = [pygame.mask.from_surface(i) for i in self.tile_images]
         self.tile_positions = []
         self.font : pygame.font.Font = renderer.font
-        self.prices = [5, 10, 25, 0, 1, 8, 16, 25, 30]
+        self.prices = [5, 10, 25, 0, 3, 8, 16, 25, 30]
         self.item_names = [self.font.render(self.tile_names_dict[self.tiles[i]], False, [255, 255, 255], [0, 0, 0]) for i in range(len(self.tiles))]
         self.price_texts = [self.font.render(str(self.prices[i])+" coins", False, [255, 255, 255], [0, 0, 0]) for i in range(len(self.tiles))]
         [item.set_colorkey([0, 0, 0]) for item in self.item_names]
@@ -263,9 +263,10 @@ class Shop:
                 else:
                     self.equip_buttons[i].update(renderer)
         for notification in self.notifications:
-            notification.update((60/renderer.clock.get_fps()))
-            if notification.alpha < 0:
-                self.notifications.remove(notification)
+            if renderer.clock.get_fps() != 0:
+                notification.update((60/renderer.clock.get_fps()))
+                if notification.alpha < 0:
+                    self.notifications.remove(notification)
                 
                 
         

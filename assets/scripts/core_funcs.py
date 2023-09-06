@@ -8,7 +8,7 @@ if __import__("sys").platform == "emscripten":
     import platform
 pygame.init()
 global web
-web =  False
+web =  True
 global cursor_mask
 global cursor_img
 global button_sound
@@ -73,7 +73,7 @@ class DeathParticle:
         self.colkey = colkey
     def update(self, renderer):
         if self.alpha > 0:
-            self.alpha -= (1*renderer.dt)
+            self.alpha -= (2*renderer.dt)
         self.pos[1] -= (1*renderer.dt)
         self.pos[0] = self.orig_x+randint(-5, 5)
         self.tex.set_alpha(self.alpha)

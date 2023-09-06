@@ -77,6 +77,7 @@ class Inventory:
                 if pygame.key.get_pressed()[pygame.K_DOWN]:
                     self.cur_tile = 1
                 renderer.queue[0].tile = self.spike_dir_list[self.cur_tile]
+                print(self.spike_dir_list[self.cur_tile])
             if self.items[self.current] == 118:
                 if pygame.key.get_pressed()[pygame.K_LEFT]:
                     self.cur_tile = 2

@@ -460,7 +460,7 @@ class LevelRenderer:
         self.bullet_manager.update_physics(self)
         self.bullet_manager.update_graphics(self)
         
-        if not web:
-            print(self.clock.get_fps())
+        #if not web:
+            #print(self.clock.get_fps())
 
         

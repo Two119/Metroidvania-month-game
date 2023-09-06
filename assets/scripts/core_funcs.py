@@ -24,7 +24,7 @@ global win_size
 win_size = [win.get_width(), win.get_height()]
 pygame.display.set_caption("Shiftania")
 global spawn_positions
-spawn_positions = [[64, 3*64], [64, 4.5*64]]
+spawn_positions = [[64, -3*64], [64, 4.5*64]]
 
 def max_height_vertical(u, g):
     return (u*u)/(2*g)
@@ -135,7 +135,7 @@ def reset(player, renderer, fell=False):
         renderer.camera.cam_change = [0, 0]
         match renderer.level:
             case 0:
-                player.pos = [64, 5*64]
+                player.pos = [64, -3*64]
             case 1:
                 player.pos = [64, 4.5*64]
         #player.spritesheet = SpriteSheet(spritesheet, sheet_size)

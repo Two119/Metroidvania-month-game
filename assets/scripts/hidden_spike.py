@@ -59,7 +59,7 @@ class HiddenSpike:
                     self.rect.x -= 38
                 else:
                     self.rect.x -= 44
-            pygame.draw.rect(win, [0, 255, 0], self.rect)
+            #pygame.draw.rect(win, [0, 255, 0], self.rect)
             if self.rect.colliderect(renderer.camera.window_rect):
                 if self.rect.colliderect(renderer.queue[0].rect) and self.just_spawned == None:
                     self.just_spawned = True

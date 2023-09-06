@@ -450,7 +450,7 @@ class EnemySwordsman:
             if renderer.queue.index(self) in renderer.enemies:
                 renderer.enemies.remove(renderer.queue.index(self))
             renderer.queue.remove(self)
-            renderer.death_anims.append(DeathAnim(self.spritesheet.get(self.frame), self.pos, 4))
+            renderer.queue.append(DeathAnim(self.spritesheet.get(self.frame), self.pos, 4))
             del self
     def update(self, renderer):
         if renderer.clock.get_fps() != 0:

@@ -70,9 +70,9 @@ class DeathAnim:
         for j, sheet in enumerate(self.particle_sheet.sheet):
             for i, surf in enumerate(sheet):
                 self.particles.append(DeathParticle(surf, [pos[0]+(i*scale), pos[1]+(j*scale)], [0, 0, 0]))
-    def update(self, screen, scroll):
+    def update(self, renderer):
         for particle in self.particles:
-            particle.update(screen)
+            particle.update(renderer.dt)
             if particle.alpha <= 0:
                 self.particles.remove(particle)
 class DeathParticle:
@@ -83,11 +83,11 @@ class DeathParticle:
         self.colkey = colkey
         self.alpha = 255
         self.colkey = colkey
-    def update(self, screen):
+    def update(self, dt):
         if self.alpha > 0:
-            self.alpha -= 5
-        self.pos[1] -= 3
-        self.pos[0] = self.orig_x+randint(-3, 3)
+            self.alpha -= (2*dt)
+        self.pos[1] -= (1*dt)
+        self.pos[0] = self.orig_x+randint(-5, 5)
         self.tex.set_alpha(self.alpha)
         win.blit(self.tex, self.pos)
 class Shield:
@@ -123,7 +123,7 @@ class Shield:
                 for i in range(self.level*8):
                     pygame.draw.rect(win, [255, 255, 255], pygame.Rect(32+(i*self.unit_bar_length), 32, 4, 16), 4)
             else:
-                renderer.death_anims.append(DeathAnim(self.sheet.get(self.frame), self.pos, 4))
+                renderer.queue.append(DeathAnim(self.sheet.get(self.frame), self.pos, 4))
                 self.dead = True
 def reset(player, renderer, fell=False):
         

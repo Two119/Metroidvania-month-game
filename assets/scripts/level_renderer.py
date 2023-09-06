@@ -260,7 +260,7 @@ class LevelRenderer:
         self.side_rects = []
         self.standing_masks = []
         win.blit(self.background, [0, 0])
-        pygame.draw.rect(win, [0, 0, 255], self.camera.rect)
+        #pygame.draw.rect(win, [0, 0, 255], self.camera.rect)
         
         tilemap = self.levels[self.level]
         self.num_row = -1

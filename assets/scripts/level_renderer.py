@@ -260,6 +260,8 @@ class LevelRenderer:
         self.side_rects = []
         self.standing_masks = []
         win.blit(self.background, [0, 0])
+        pygame.draw.rect(win, [0, 0, 255], self.camera.rect)
+        
         tilemap = self.levels[self.level]
         self.num_row = -1
         self.num_col = -1
@@ -460,7 +462,7 @@ class LevelRenderer:
         self.bullet_manager.update_physics(self)
         self.bullet_manager.update_graphics(self)
         
-        if not web:
-            print(self.clock.get_fps())
+        #if not web:
+            #print(self.clock.get_fps())
 
         

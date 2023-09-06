@@ -2,11 +2,12 @@ from assets.scripts.core_funcs import *
 from assets.scripts.button import *
 from assets.scripts.player import Shield
 class Notification:
-    def __init__(self, surf: pygame.Surface):
+    def __init__(self, surf: pygame.Surface, type):
         self.surf = surf
         self.alpha = 255
         self.pos = [(1280-self.surf.get_width())/2, (900-self.surf.get_height())/2]
         self.speed = 1
+        self.type = type
     def update(self, dt):
         self.pos[1]-=(self.speed*dt)
         self.alpha -= (self.speed*dt*2)
@@ -20,47 +21,48 @@ def buy(args):
         if renderer.queue[0].coins >= price:
             renderer.queue[0].tiles_unlocked.append(117) 
             renderer.queue[0].coins -= price
-            args[3].notifications.append(Notification(args[3].purchase_text))
+            args[3].notifications.append(Notification(args[3].purchase_text, 1))
         else:
-            args[3].notifications.append(Notification(args[3].poor_text))
+            args[3].notifications.append(Notification(args[3].poor_text, 2))
     elif args[2] == 1:
         if renderer.queue[0].coins >= price:
             renderer.queue[0].tiles_unlocked.append(118) 
             renderer.queue[0].coins -= price
-            args[3].notifications.append(Notification(args[3].purchase_text))
+            args[3].notifications.append(Notification(args[3].purchase_text, 1))
         else:
-            args[3].notifications.append(Notification(args[3].poor_text))
+            args[3].notifications.append(Notification(args[3].poor_text, 2))
     elif args[2] == 2:
         if renderer.queue[0].coins >= price:
             renderer.queue[0].tiles_unlocked.append(121) 
             renderer.queue[0].coins -= price
-            args[3].notifications.append(Notification(args[3].purchase_text))
+            args[3].notifications.append(Notification(args[3].purchase_text, 1))
         else:
-            args[3].notifications.append(Notification(args[3].poor_text))
+            args[3].notifications.append(Notification(args[3].poor_text, 2))
     elif args[2] == 3:
         if renderer.queue[0].coins >= price:
             renderer.queue[0].tiles_unlocked.append(6) 
             renderer.queue[0].coins -= price
-            args[3].notifications.append(Notification(args[3].purchase_text))
+            args[3].notifications.append(Notification(args[3].purchase_text, 1))
         else:
-            args[3].notifications.append(Notification(args[3].poor_text))
+            args[3].notifications.append(Notification(args[3].poor_text, 2))
     elif args[2] in [4, 5, 6, 7]:
         if renderer.queue[0].coins >= price:
             d = {4:200, 5:201, 6:202, 7:203}
-            renderer.queue[0].tiles_unlocked.append(200) 
+            renderer.queue[0].tiles_unlocked.append(d[args[2]]) 
             renderer.queue[0].using_shield = True
-            renderer.queue[0].shield.__init__(renderer.queue[0].pos, args[4])
+            renderer.queue[0].shield = Shield(renderer.queue[0].pos, args[4])
             renderer.queue[0].coins -= price
-            args[3].notifications.append(Notification(args[3].purchase_text))
+            args[3].notifications.append(Notification(args[3].purchase_text, 1))
+            renderer.shop.shield_level = args[2]
         else:
-            args[3].notifications.append(Notification(args[3].poor_text))
+            args[3].notifications.append(Notification(args[3].poor_text, 2))
     elif args[2] == 8:
         if renderer.queue[0].coins >= price:
             renderer.queue[0].tiles_unlocked.append(116) 
             renderer.queue[0].coins -= price
-            args[3].notifications.append(Notification(args[3].purchase_text))
+            args[3].notifications.append(Notification(args[3].purchase_text, 1))
         else:
-            args[3].notifications.append(Notification(args[3].poor_text))
+            args[3].notifications.append(Notification(args[3].poor_text, 2))
 def equip(args):
     renderer = args[0]
     if args[1] == 0:
@@ -77,20 +79,27 @@ def equip(args):
         renderer.queue[0].inventory.current = renderer.queue[0].inventory.items.index(121)
     elif args[1] == 3:
         renderer.queue[0].tile = 6
-        l = [6]
-        if not (6 in renderer.queue[0].tiles_unlocked):
-            for tile in renderer.queue[0].tiles_unlocked:
-                l.append(tile*1)
-        renderer.queue[0].tiles_unlocked = l
         renderer.queue[0].inventory.items = renderer.queue[0].tiles_unlocked
         renderer.queue[0].inventory.current = renderer.queue[0].inventory.items.index(6)
     elif args[1] in [4, 5, 6, 7]:
         renderer.queue[0].using_shield = True
-        renderer.queue[0].shield.__init__(renderer.queue[0].pos, args[4])
+        d = {4:1, 5:2, 6:3, 7:4}
+        renderer.queue[0].shield = Shield(renderer.queue[0].pos, d[args[1]])
+        renderer.shop.shield_level = d[args[1]]
     elif args[1] == 8:
         renderer.queue[0].tile = 116
         renderer.queue[0].inventory.items = renderer.queue[0].tiles_unlocked
         renderer.queue[0].inventory.current = renderer.queue[0].inventory.items.index(116)
+    notify = True
+    for n in renderer.shop.notifications:
+        if n.type == 1 and n.alpha > 192:
+            notify = False
+    if notify:
+        renderer.shop.font.set_bold(True)
+        notification_text = renderer.shop.font.render("Equipped "+str(renderer.shop.tile_names_dict[renderer.shop.tiles[args[1]]]), False, [0, 0, 255], [0, 0, 0])
+        renderer.shop.font.set_bold(False)
+        notification_text.set_colorkey([0, 0, 0])
+        renderer.shop.notifications.append(Notification(notification_text, 3))
 class Shop:
     def  __init__(self, renderer):
         self.tiles = [117, 118, 121, 6, 200, 201, 202, 203, 116]
@@ -109,7 +118,7 @@ class Shop:
         self.tile_images.append(swinging_axe)
         self.tile_images.append(renderer.images[6])
         self.shields = [Shield([0, 0], 1), Shield([0, 0], 2), Shield([0, 0], 3), Shield([0, 0], 4)]
-        self.shield_level = 0
+        self.shield_level = 1
         surf = pygame.Surface([64, 64])
         surf.blit(self.shields[0].sheet.get([0, 0]), [-30, -36])
         surf.set_colorkey([0, 0, 0])
@@ -239,7 +248,7 @@ class Shop:
             self.buttons[len(self.buttons)-4].args.append(3)
             self.buttons[len(self.buttons)-5].args.append(4)
             self.equip_buttons = [Button([self.tile_positions[i][0]-self.subtract_x[i], self.tile_positions[i][1]+self.add_heights[i]], [self.button_sprites.sheet[0][0].copy(), self.button_sprites.sheet[0][1].copy()], [equip, [renderer, i]], win) for i in range(len(self.tile_positions))]
-            [self.equip_buttons[len(self.equip_buttons)-(2+n)].args.append(self.shield_level+1) for n in range(4)]
+            [self.equip_buttons[len(self.equip_buttons)-(2+n)].args.append(self.shield_level) for n in range(4)]
             
             [self.buttons[i].textures[0].blit(self.buy_text, [(self.buttons[i].textures[0].get_width()-self.buy_text.get_width())/2, 12]) for i in range(len(self.buttons))]
             [self.buttons[i].textures[1].blit(self.buy_text, [(self.buttons[i].textures[1].get_width()-self.buy_text.get_width())/2, 16]) for i in range(len(self.buttons))]

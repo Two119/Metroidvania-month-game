@@ -155,6 +155,41 @@ class DestructedParticle:
         screen.blit(self.image, self.rect.topleft)
         if pygame.time.get_ticks() - self.start_time > self.last_time:
             return "kill"
+class Shield:
+    def __init__(self, pos, level) -> None:
+        self.pos = [pos[0]*1, pos[1]*1]
+        self.level = level
+        wood_color = [115, 91, 66]
+        iron_color = [161, 154, 150]
+        gold_color = [238, 181, 81]
+        diamond_color = [139, 176, 173]
+        level_colors = [wood_color, iron_color, gold_color, diamond_color]
+        if web:
+            sprite = scale_image(pygame.image.load("assets/Spritesheets/shield_anim.png").convert())
+        else:
+            sprite = scale_image(pygame.image.load("assets\Spritesheets\shield_anim.png").convert())
+        swap_color(sprite, wood_color, level_colors[level-1])
+        self.sheet = SpriteSheet(sprite, [4, 3], [255, 255, 255])
+        self.frame = [0, 0]
+        self.mask = pygame.mask.from_surface(self.sheet.get(self.frame))
+        self.health = self.level*8
+        self.health_bar_length = 96*self.level
+        self.unit_bar_length = self.health_bar_length/self.health
+        self.health_bar_rect = pygame.Rect(32, 32, self.health_bar_length, 16)
+        self.health_bar_rect_2 = pygame.Rect(32, 32, self.health_bar_length+4, 16)
+        self.dead = False
+    def update(self, renderer):
+        if not self.dead:
+            if self.health > 0:
+                self.mask = pygame.mask.from_surface(self.sheet.get(self.frame))
+                win.blit(self.sheet.get(self.frame), self.pos)
+                pygame.draw.rect(win, [255, 0, 0], self.health_bar_rect)
+                pygame.draw.rect(win, [255, 255, 255], self.health_bar_rect_2, 4)
+                for i in range(self.level*8):
+                    pygame.draw.rect(win, [255, 255, 255], pygame.Rect(32+(i*self.unit_bar_length), 32, 4, 16), 4)
+            else:
+                renderer.death_anims.append(DeathAnim(self.sheet.get(self.frame), self.pos, 4))
+                self.dead = True
 def reset(player, renderer, fell=False):
         
         renderer.levels = [json.load(open("levels.json", "r"))["level_1"], json.load(open("levels.json", "r"))["level_2"]]
@@ -195,5 +230,5 @@ def reset(player, renderer, fell=False):
         player.just_jumped = False
         renderer.bullet_manager.bullets = []
         player.is_alive = True
-        player.shield.__init__(player.pos)
+        player.shield = Shield(player.pos, renderer.shop.shield_level)
         

@@ -26,8 +26,22 @@ class SaveSystem:
                         renderer.queue[0].tiles_unlocked.append(121)
                     if saved["fire_bought"]:
                         renderer.queue[0].tiles_unlocked.append(116)
-                    if saved["shield_bought"]:
+                    if saved["wooden_shield_bought"]:
                         renderer.queue[0].using_shield = True
+                        renderer.queue[0].tiles_unlocked.append(200)
+                        renderer.shop.shield_level = 1
+                    if saved["iron_shield_bought"]:
+                        renderer.queue[0].using_shield = True
+                        renderer.queue[0].tiles_unlocked.append(201)
+                        renderer.shop.shield_level = 2
+                    if saved["gold_shield_bought"]:
+                        renderer.queue[0].using_shield = True
+                        renderer.queue[0].tiles_unlocked.append(202)
+                        renderer.shop.shield_level = 3
+                    if saved["diamond_shield_bought"]:
+                        renderer.queue[0].using_shield = True
+                        renderer.queue[0].tiles_unlocked.append(203)
+                        renderer.shop.shield_level = 4
                     renderer.coin_channel.set_volume(float(saved["volume"]))
                     renderer.queue[0].channel.set_volume(float(saved["volume"]))
                     renderer.def_frame = int(saved["fps"])
@@ -39,7 +53,7 @@ class SaveSystem:
                 saved = json.loads(str(saved))
                 renderer.level = int(saved["level"])
                 if len(renderer.queue) > 0:
-                    renderer.queue[0].coins = 1000
+                    renderer.queue[0].coins = int(saved["coins"])
                     renderer.queue[0].deaths = int(saved["deaths"])
                     if not (6 in renderer.queue[0].tiles_unlocked):
                         renderer.queue[0].tiles_unlocked.append(6)
@@ -51,8 +65,22 @@ class SaveSystem:
                         renderer.queue[0].tiles_unlocked.append(121)
                     if saved["fire_bought"]:
                         renderer.queue[0].tiles_unlocked.append(116)
-                    if saved["shield_bought"]:
+                    if saved["wooden_shield_bought"]:
                         renderer.queue[0].using_shield = True
+                        renderer.queue[0].tiles_unlocked.append(200)
+                        renderer.shop.shield_level = 1
+                    if saved["iron_shield_bought"]:
+                        renderer.queue[0].using_shield = True
+                        renderer.queue[0].tiles_unlocked.append(201)
+                        renderer.shop.shield_level = 2
+                    if saved["gold_shield_bought"]:
+                        renderer.queue[0].using_shield = True
+                        renderer.queue[0].tiles_unlocked.append(202)
+                        renderer.shop.shield_level = 3
+                    if saved["diamond_shield_bought"]:
+                        renderer.queue[0].using_shield = True
+                        renderer.queue[0].tiles_unlocked.append(203)
+                        renderer.shop.shield_level = 4
                     renderer.coin_channel.set_volume(float(saved["volume"]))
                     renderer.queue[0].channel.set_volume(float(saved["volume"]))
                     renderer.def_frame = int(saved["fps"])
@@ -67,7 +95,10 @@ class SaveSystem:
         hiddenspike_bought = "false"
         swing_bought = "false"
         fire_bought = "false"
-        shield_bought = "false"
+        wooden_shield_bought = "false"
+        iron_shield_bought = "false"
+        gold_shield_bought = "false"
+        diamond_shield_bought = "false"
         if 117 in renderer.queue[0].tiles_unlocked:
             spike_bought = "true"
         if 118 in renderer.queue[0].tiles_unlocked:
@@ -77,8 +108,14 @@ class SaveSystem:
         if 116 in renderer.queue[0].tiles_unlocked:
             fire_bought = "true"
         if 200 in renderer.queue[0].tiles_unlocked:
-            shield_bought = "true"
-        tiles_unlocked_str = '"spike_bought":'+str(spike_bought)+","+'"hiddenspike_bought":'+str(hiddenspike_bought)+","+'"swing_bought":'+str(swing_bought)+","+'"fire_bought":'+str(fire_bought)+","+'"shield_bought":'+str(shield_bought)+","
+            wooden_shield_bought = "true"
+        if 201 in renderer.queue[0].tiles_unlocked:
+            iron_shield_bought = "true"
+        if 202 in renderer.queue[0].tiles_unlocked:
+            gold_shield_bought = "true"
+        if 203 in renderer.queue[0].tiles_unlocked:
+            diamond_shield_bought = "true"
+        tiles_unlocked_str = '"spike_bought":'+str(spike_bought)+","+'"hiddenspike_bought":'+str(hiddenspike_bought)+","+'"swing_bought":'+str(swing_bought)+","+'"fire_bought":'+str(fire_bought)+","+'"wooden_shield_bought":'+str(wooden_shield_bought)+","+'"iron_shield_bought":'+str(iron_shield_bought)+","+'"gold_shield_bought":'+str(gold_shield_bought)+","+'"diamond_shield_bought":'+str(diamond_shield_bought)+","
         #print(renderer.queue[0].tiles_unlocked)
         dat = '{"coins":'+str(0)+","+'"level":'+str(renderer.level)+","+'"deaths":'+str(renderer.queue[0].deaths)+","+tiles_unlocked_str+'"volume":'+str(renderer.coin_channel.get_volume())+","+'"fps":'+str(renderer.def_frame)+"}"
         b = base64.b64encode(bytes(dat, 'utf-8'))

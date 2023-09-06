@@ -453,10 +453,8 @@ class LevelRenderer:
                 if isinstance(obj, FireBox):
                     if obj.rect.colliderect(self.camera.rect) and self.queue[0].is_alive:
                         self.firebox_in_cam = True
-                if isinstance(obj, DeathAnim):
-                    if len(obj.particles) > 0:
-                        obj.update(self)
-                    else:
+                if isinstance(obj, DeathParticle):
+                    if obj.alpha <= 0:
                         self.queue.remove(obj)
             self.spike_update()
         self.bullet_manager.update_physics(self)

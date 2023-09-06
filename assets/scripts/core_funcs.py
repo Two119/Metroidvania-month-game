@@ -63,18 +63,6 @@ class SpriteSheet:
                 self.sheet[i].append(image)
     def get(self, loc):
         return self.sheet[loc[1]][loc[0]]
-class DeathAnim:
-    def __init__(self, image, pos, scale):
-        self.particle_sheet = SpriteSheet(image, [image.get_width()//scale, image.get_height()//scale], [0, 0, 0])
-        self.particles = []
-        for j, sheet in enumerate(self.particle_sheet.sheet):
-            for i, surf in enumerate(sheet):
-                self.particles.append(DeathParticle(surf, [pos[0]+(i*scale), pos[1]+(j*scale)], [0, 0, 0]))
-    def update(self, renderer):
-        for particle in self.particles:
-            particle.update(renderer.dt)
-            if particle.alpha <= 0:
-                self.particles.remove(particle)
 class DeathParticle:
     def __init__(self, tex, pos, colkey = [0, 0, 0]):
         self.tex = tex
@@ -83,13 +71,13 @@ class DeathParticle:
         self.colkey = colkey
         self.alpha = 255
         self.colkey = colkey
-    def update(self, dt):
+    def update(self, renderer):
         if self.alpha > 0:
-            self.alpha -= (2*dt)
-        self.pos[1] -= (1*dt)
+            self.alpha -= (1*renderer.dt)
+        self.pos[1] -= (1*renderer.dt)
         self.pos[0] = self.orig_x+randint(-5, 5)
         self.tex.set_alpha(self.alpha)
-        win.blit(self.tex, self.pos)
+        win.blit(self.tex, [self.pos[0]+renderer.camera.cam_change[0], self.pos[1]])
 class Shield:
     def __init__(self, pos, level) -> None:
         self.pos = [pos[0]*1, pos[1]*1]
@@ -123,7 +111,10 @@ class Shield:
                 for i in range(self.level*8):
                     pygame.draw.rect(win, [255, 255, 255], pygame.Rect(32+(i*self.unit_bar_length), 32, 4, 16), 4)
             else:
-                renderer.queue.append(DeathAnim(self.sheet.get(self.frame), self.pos, 4))
+                particle_sheet = SpriteSheet(self.sheet.get(self.frame), [self.sheet.get(self.frame).get_width()//4, self.sheet.get(self.frame).get_height()//4], [0, 0, 0])
+                for j, sheet in enumerate(particle_sheet.sheet):
+                    for i, surf in enumerate(sheet):
+                        renderer.queue.append(DeathParticle(surf, [self.pos[0]+(i*4), self.pos[1]+(j*4)], [0, 0, 0]))
                 self.dead = True
 def reset(player, renderer, fell=False):
         

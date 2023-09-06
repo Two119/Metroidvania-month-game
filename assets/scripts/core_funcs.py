@@ -74,7 +74,7 @@ class DeathParticle:
     def update(self, renderer):
         if self.alpha > 0:
             self.alpha -= (2*renderer.dt)
-        self.pos[1] -= (1*renderer.dt)
+        self.pos[1] -= (1.5*renderer.dt)
         self.pos[0] = self.orig_x+randint(-5, 5)
         self.tex.set_alpha(self.alpha)
         win.blit(self.tex, [self.pos[0]+renderer.camera.cam_change[0], self.pos[1]])

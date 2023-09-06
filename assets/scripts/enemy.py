@@ -255,15 +255,20 @@ class Sword:
                     renderer.queue[0].is_alive = False
                     renderer.queue[0].deaths += 1
             else:
-                if renderer.queue[0].shield.health >= 0:
-                    if not self.just_hit:
-                        renderer.queue[0].shield.health -= self.level
-                        renderer.queue[0].shield.health_bar_rect.w -= renderer.queue[0].shield.unit_bar_length*self.level
-                        self.just_hit = True
+                if renderer.queue[0].using_shield:
+                    if renderer.queue[0].shield.health >= 0:
+                        if not self.just_hit:
+                            renderer.queue[0].shield.health -= self.level
+                            renderer.queue[0].shield.health_bar_rect.w -= renderer.queue[0].shield.unit_bar_length*self.level
+                            self.just_hit = True
+                    else:
+                        if self.mask.overlap(renderer.queue[0].mask, [renderer.queue[0].pos[0]-self.pos[0], renderer.queue[0].pos[1]-self.pos[1]])!=None:
+                            renderer.queue[0].is_alive = False
+                            renderer.queue[0].deaths += 1
                 else:
                     if self.mask.overlap(renderer.queue[0].mask, [renderer.queue[0].pos[0]-self.pos[0], renderer.queue[0].pos[1]-self.pos[1]])!=None:
-                        renderer.queue[0].is_alive = False
-                        renderer.queue[0].deaths += 1
+                            renderer.queue[0].is_alive = False
+                            renderer.queue[0].deaths += 1
             win.blit(pygame.transform.flip(self.spritesheet.get(self.frame), self.dir, False), self.pos)
        
             

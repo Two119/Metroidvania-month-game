@@ -438,7 +438,7 @@ class Player:
                 self.shield.pos = [self.pos[0]-20, self.pos[1]+20]
             if self.using_shield:
                 self.shield.update(renderer)
-            self.inventory.items = self.tiles_unlocked
+            self.inventory.items = [x*1 for x in self.tiles_unlocked]
             for i in range(200, 204):
                 if i in self.inventory.items:
                     self.inventory.items.remove(i)

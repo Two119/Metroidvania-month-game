@@ -411,7 +411,6 @@ class EnemySwordsman:
         
         if not self.collided:
             self.just_col = []
-
         if self.standing:
             #self.chasing = False
             if self.rect.colliderect(renderer.camera.rect):
@@ -486,7 +485,9 @@ class EnemySwordsman:
             else:
                 self.weapon.pos = [self.pos[0]+40, self.pos[1]+32]
             self.weapon.dir = 1-self.dir
-            self.weapon.attacking =self.chasing
+            self.weapon.attacking = self.chasing
+            if self.rect.colliderect(renderer.queue[0].rect):
+                self.weapon.attacking = True
             self.weapon.update(renderer)
             #win.blit(self.staff, self.staff_pos)
         

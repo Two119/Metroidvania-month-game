@@ -21,7 +21,11 @@ def back_to_menu(args):
 def settings(args):
     args.screen = 2
 def back(args):
+    if hasattr(args.renderer, "camera"):
+        reset(args.renderer.queue[0], args.renderer)
+        args.spare_surf = None
     args.screen = 0
+    args.playing  = False
 def game_menu(args):
     pygame.image.save(win, "win.png")
     args.spare_surf = pygame.image.load("win.png").convert()

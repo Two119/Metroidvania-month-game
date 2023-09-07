@@ -23,8 +23,7 @@ class SwingingAxe:
             if self.cycles == 1:
                 for obj in renderer.queue:
                     if obj.__class__.__name__ == "MovingPlatform":
-                        if sqrt((obj.pos[1]-self.pos[1])**2) < 72:
-                            if sqrt((obj.pos[0]-self.pos[0])**2) < (obj.l*64):
+                        if obj.rect.collidepoint(self.pos):
                                 obj.objects.append(self)
                                 if renderer.cur_cycle == 0:
                                     self.pos[0]+=32

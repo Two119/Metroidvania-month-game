@@ -56,34 +56,32 @@ class HiddenSpike:
                 for obj in renderer.queue:
                     if obj.__class__.__name__ == "MovingPlatform":
                         if self.ang != -90:
-                            if sqrt((obj.pos[1]-self.pos[1])**2) < 72:
-                                if sqrt((obj.pos[0]-self.pos[0])**2) < (obj.l*64):
-                                        obj.objects.append(self)
-                                        if renderer.cur_cycle == 0:
-                                            if self.ang == 90:
-                                                self.pos[0]+=22
-                                                self.pos[1]-=4
-                                            if self.down:
-                                                self.pos[0]-=32
-                                                self.pos[1]+=4
-                                            if self.ang == 0 and not self.down:
-                                                self.pos[0]+=36
-                                        else:
-                                            if self.down:
-                                                self.pos[0]-=64
-                                                self.pos[1]+=4
-                                            if self.ang == 90:
-                                                self.pos[0]-=8
-                                                self.pos[1]-=4
+                            if obj.rect.collidepoint(self.pos):
+                                obj.objects.append(self)
+                                if renderer.cur_cycle == 0:
+                                    if self.ang == 90:
+                                        self.pos[0]+=22
+                                        self.pos[1]-=4
+                                    if self.down:
+                                        self.pos[0]-=32
+                                        self.pos[1]+=4
+                                    if self.ang == 0 and not self.down:
+                                        self.pos[0]+=36
+                                else:
+                                    if self.down:
+                                        self.pos[0]-=64
+                                        self.pos[1]+=4
+                                    if self.ang == 90:
+                                        self.pos[0]-=8
+                                        self.pos[1]-=4
                         else:
-                            if sqrt((obj.pos[1]-self.pos[1])**2) < 72:
-                                if sqrt((obj.pos[0]-self.pos[0])**2) < ((obj.l+1)*64):
-                                    obj.objects.append(self)
-                                    if renderer.cur_cycle == 0:
-                                        self.pos[0]+=26
-                                    else:
-                                        self.pos[0]-=4
-                                    self.pos[1]-=4
+                            if obj.rect.collidepoint(self.pos):
+                                obj.objects.append(self)
+                                if renderer.cur_cycle == 0:
+                                    self.pos[0]+=26
+                                else:
+                                    self.pos[0]-=4
+                                self.pos[1]-=4
             self.rect = self.spritesheet.get(self.frame).get_rect(topleft=self.pos)
             self.rect.x += 10
             self.rect.width -= 10

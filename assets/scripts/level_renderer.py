@@ -121,26 +121,23 @@ class LevelRenderer:
                     for obj in self.queue:
                         if obj.__class__.__name__ == "MovingPlatform":
                             if spike[len(spike)-2] != -90:
-                                if sqrt((obj.pos[1]-spike[self.attr_dict["pos"]][1])**2) < 72:
-                                    if sqrt((obj.pos[0]-spike[self.attr_dict["pos"]][0])**2) < (obj.l*64):
-                                            obj.spikes.append(spike)
-                                            if self.cur_cycle == 0:
-                                                if spike[len(spike)-3] and spike[len(spike)-2]==0:
-                                                    spike[self.attr_dict["pos"]][0]-=32
-                                                if spike[len(spike)-2]==90:
-                                                    spike[self.attr_dict["pos"]][0]+=36
-                                                if spike[len(spike)-2]==0 and not spike[len(spike)-3] :
-                                                    spike[self.attr_dict["pos"]][0]+=32
-                                            else:
-                                                if spike[len(spike)-3] and spike[len(spike)-2]==0:
-                                                    spike[self.attr_dict["pos"]][0]-=64
+                                if obj.rect.collidepoint(spike[self.attr_dict["pos"]]):
+                                    obj.spikes.append(spike)
+                                    if self.cur_cycle == 0:
+                                        if spike[len(spike)-3] and spike[len(spike)-2]==0:
+                                            spike[self.attr_dict["pos"]][0]-=32
+                                        if spike[len(spike)-2]==90:
+                                            spike[self.attr_dict["pos"]][0]+=36
+                                        if spike[len(spike)-2]==0 and not spike[len(spike)-3] :
+                                            spike[self.attr_dict["pos"]][0]+=32
+                                    else:
+                                        if spike[len(spike)-3] and spike[len(spike)-2]==0:
+                                            spike[self.attr_dict["pos"]][0]-=64
                             else:
-                                if sqrt((obj.pos[1]-spike[self.attr_dict["pos"]][1])**2) < 72:
-                                    if sqrt((obj.pos[0]-spike[self.attr_dict["pos"]][0])**2) < ((obj.l+1)*64):
-                      
-                                            obj.spikes.append(spike)
-                                            if self.cur_cycle == 0:
-                                                spike[self.attr_dict["pos"]][0]+=32
+                                if obj.rect.collidepoint(spike[self.attr_dict["pos"]]):
+                                    obj.spikes.append(spike)
+                                    if self.cur_cycle == 0:
+                                        spike[self.attr_dict["pos"]][0]+=32
                 if spike[self.attr_dict["just_spawned"]]:
                     self.spawn_animation(4, spike)
                 if spike[7]==0:
@@ -444,7 +441,7 @@ class LevelRenderer:
                                     length += 1
                                 else:
                                     break
-                        self.queue.append(MovingPlatform(length, [self.x*self.tile_size[0], self.y*self.tile_size[1]], 3, 200))
+                        self.queue.append(MovingPlatform(length, [self.x*self.tile_size[0], self.y*self.tile_size[1]], 3, 192))
                 elif tile == 116:
                     if self.coin_appending:
                         self.queue.append(FireBox([self.x*self.tile_size[0], self.y*self.tile_size[1]+self.level_firebox_y_offset_dict[self.level]]))

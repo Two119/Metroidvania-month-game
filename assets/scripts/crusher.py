@@ -1,6 +1,7 @@
 from assets.scripts.core_funcs import *
 class Crusher:
     def __init__(self, pos):
+        self.tile_pos = [int(pos[0]/64), int(pos[1]/64)]
         if not web:
             img = scale_image(pygame.image.load("assets\Spritesheets\crusher.png").convert(), 4)
             swap_color(img, [87, 114, 119], [255, 255, 255])
@@ -22,6 +23,7 @@ class Crusher:
         self.falling = False
         self.adder = 1
         self.delay = 0
+        self.cycles = 0
     def update_animation(self, delay_wait, renderer):
         if hasattr(renderer, "dt"):
             if round(delay_wait/renderer.dt) != 0:
@@ -39,6 +41,13 @@ class Crusher:
         self.mask = pygame.mask.from_surface(self.spritesheet.get(self.frame))
     def update(self, renderer):
         if hasattr(renderer, "dt") and hasattr(renderer.queue[0], "rect"):
+            self.cycles += 1
+            if self.cycles == 1:
+                for obj in renderer.queue:
+                    if obj.__class__.__name__ == "MovingPlatform":
+                        if sqrt((obj.pos[1]-self.pos[1])**2) < 72:
+                            if sqrt((obj.pos[0]-self.pos[0])**2) < (obj.l*64):
+                                obj.objects.append(self)
             self.rect = pygame.Rect(self.pos[0]+(16*4), self.pos[1], 32*4, 64*4)
             if self.rect.colliderect(renderer.queue[0].rect):
                 self.falling = True

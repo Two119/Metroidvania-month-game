@@ -30,7 +30,7 @@ class LevelRenderer:
         self.attr_dict = {"pos":0, "delay":1, "just_spawned":2, "rect_surf":3, "is_hovered":4, "played":5}
         self.frame = [0, 0]
         self.button = None
-        #self.pos = pos
+        #spike[self.attr_dict["pos"]] = pos
         #self.delay = 0
         self.def_frame = 60
         self.enemies = []
@@ -95,6 +95,8 @@ class LevelRenderer:
         self.exceptions = [60, 116, 117, 118, 119, 120, 121, 122, 129, 135, 136, 137, 138, 139, 140]
         self.ground = ["SpikeBall", "MovingPlatform", "FireBox"]
         self.bullet_manager = BulletManager(self)
+        self.cycles = 0 
+        self.cur_cycle = -1
     def spawn_animation(self, delay_wait, spike):
         renderer = self
         if (renderer.clock.get_fps()) != 0 and spike[self.attr_dict["just_spawned"]]:
@@ -112,8 +114,33 @@ class LevelRenderer:
                 
     def spike_update(self):
         renderer = self
+        self.cycles += 1
         if hasattr(renderer, "dt"):
             for spike in self.spikes:
+                if self.cycles == 1:
+                    for obj in self.queue:
+                        if obj.__class__.__name__ == "MovingPlatform":
+                            if spike[len(spike)-2] != -90:
+                                if sqrt((obj.pos[1]-spike[self.attr_dict["pos"]][1])**2) < 72:
+                                    if sqrt((obj.pos[0]-spike[self.attr_dict["pos"]][0])**2) < (obj.l*64):
+                                            obj.spikes.append(spike)
+                                            if self.cur_cycle == 0:
+                                                if spike[len(spike)-3] and spike[len(spike)-2]==0:
+                                                    spike[self.attr_dict["pos"]][0]-=32
+                                                if spike[len(spike)-2]==90:
+                                                    spike[self.attr_dict["pos"]][0]+=36
+                                                if spike[len(spike)-2]==0 and not spike[len(spike)-3] :
+                                                    spike[self.attr_dict["pos"]][0]+=32
+                                            else:
+                                                if spike[len(spike)-3] and spike[len(spike)-2]==0:
+                                                    spike[self.attr_dict["pos"]][0]-=64
+                            else:
+                                if sqrt((obj.pos[1]-spike[self.attr_dict["pos"]][1])**2) < 72:
+                                    if sqrt((obj.pos[0]-spike[self.attr_dict["pos"]][0])**2) < ((obj.l+1)*64):
+                      
+                                            obj.spikes.append(spike)
+                                            if self.cur_cycle == 0:
+                                                spike[self.attr_dict["pos"]][0]+=32
                 if spike[self.attr_dict["just_spawned"]]:
                     self.spawn_animation(4, spike)
                 if spike[7]==0:
@@ -410,7 +437,14 @@ class LevelRenderer:
                         self.queue.append(SwingingAxe([self.x*self.tile_size[0], self.y*self.tile_size[1]]))
                 elif tile == 122:
                     if self.coin_appending:
-                        self.queue.append(MovingPlatform(5, [self.x*self.tile_size[0], self.y*self.tile_size[1]], 3, 200))
+                        length = 1
+                        if self.x < len(row)-1:
+                            for i in range(self.x+1, len(row)):
+                                if row[i] == 108:
+                                    length += 1
+                                else:
+                                    break
+                        self.queue.append(MovingPlatform(length, [self.x*self.tile_size[0], self.y*self.tile_size[1]], 3, 200))
                 elif tile == 116:
                     if self.coin_appending:
                         self.queue.append(FireBox([self.x*self.tile_size[0], self.y*self.tile_size[1]+self.level_firebox_y_offset_dict[self.level]]))

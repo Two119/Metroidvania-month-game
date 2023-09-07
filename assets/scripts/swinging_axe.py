@@ -15,9 +15,19 @@ class SwingingAxe:
         self.adder = 1.2
         self.shifted = False
         self.swing_angle = 45
+        self.cycles = 0
         self.img = pygame.transform.rotate(self.image, self.angle)
     def update(self, renderer):
         if hasattr(renderer, "dt") and hasattr(renderer.queue[0], "mask"):
+            self.cycles += 1
+            if self.cycles == 1:
+                for obj in renderer.queue:
+                    if obj.__class__.__name__ == "MovingPlatform":
+                        if sqrt((obj.pos[1]-self.pos[1])**2) < 72:
+                            if sqrt((obj.pos[0]-self.pos[0])**2) < (obj.l*64):
+                                obj.objects.append(self)
+                                if renderer.cur_cycle == 0:
+                                    self.pos[0]+=32
             self.img = pygame.transform.rotate(self.image, self.angle)
             if (not(self.angle < self.swing_angle) and self.angle > 0 and not self.shifted) or (not(self.angle > 0-self.swing_angle) and self.angle < 0 and self.shifted):
                 self.shifted = not(self.shifted)
@@ -32,7 +42,7 @@ class SwingingAxe:
                 #reset(renderer.queue[0], renderer)
                 renderer.queue[0].deaths += 1
                 #del self
-                return
+                
             
             win.blit(self.img, [self.pos[0]-int(self.img.get_width()/2), self.pos[1]-int(self.img.get_height()/2)])
             pygame.draw.circle(win, (0, 0, 0), self.pos, 10)

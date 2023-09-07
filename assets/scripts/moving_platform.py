@@ -49,50 +49,7 @@ class MovingPlatform:
                         pass
                     else:
                         renderer.queue[0].pos[0]+=round(self.speed*self.dir*renderer.dt)
-                    if self.cycles == 1:
-                        for spike in renderer.spikes:
-                            spike_y = int((spike[renderer.attr_dict["pos"]][1])/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))
-                            if not spike[6]:
-                                if self.y - spike_y == 1 and (spike[renderer.attr_dict["pos"]][0] in range(self.pos[0]-32, self.pos[0]+self.image.get_width()-32)):
-                                    spike.append(1)
-                                    self.spikes.append(spike)
-                            else:
-                                if spike_y-self.y == 1 and (spike[renderer.attr_dict["pos"]][0] in range(self.pos[0]-32, self.pos[0]+self.image.get_width()-32)):
-                                    spike.append(1)
-                                    self.spikes.append(spike)
-                        for obj_ in renderer.queue:
-                            if obj_.__class__.__name__ in ["Crusher", "SwingingAxe"]:
-                                obj_y = int((obj_.pos[1])/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))
-                                if obj_y-self.y == 1 and (obj_.pos[0] in range(self.pos[0]-32, self.pos[0]+self.image.get_width()-32)):
-                                    self.objects.append(obj_)
-                            if obj_.__class__.__name__ == "Coin":
-                                obj_y = int((obj_.pos[1])/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))
-                                if self.y-obj_y in range(1, 4) and (obj_.pos[0] in range(self.pos[0]-32, self.pos[0]+self.image.get_width()-32)):
-                                    obj_.shiftable = False
-                                    self.objects.append(obj_)
-                            if obj_.__class__.__name__ == "HiddenSpike":
-                                if obj_.ang == 0:
-                                    if not obj_.down:
-                                        obj_y = int((obj_.pos[1])/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))
-                                        if self.y-obj_y == 1 and (obj_.pos[0] in range(self.pos[0]-32, self.pos[0]+self.image.get_width()-32)):
-                                            obj_.shiftable = False
-                                            self.objects.append(obj_)
-                                    else:
-                                        obj_y = int((obj_.pos[1])/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))
-                                        if self.y-obj_y == -1 and (obj_.pos[0] in range(self.pos[0]-32, self.pos[0]+self.image.get_width()-32)):
-                                            obj_.shiftable = False
-                                            self.objects.append(obj_)
-                                else:
-                                    if obj_.ang == 90:
-                                        obj_y = int((obj_.pos[1]-28)/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))
-                                        if self.y==obj_y and ((obj_.pos[0]-32) in range(self.pos[0]-72, self.pos[0]+self.image.get_width()+72)):
-                                            obj_.shiftable = False
-                                            self.objects.append(obj_)
-                                    else:
-                                        obj_y = int((obj_.pos[1]-28)/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))
-                                        if self.y==obj_y and ((obj_.pos[0]-36) in range(self.pos[0]-72, self.pos[0]+self.image.get_width()+72)):
-                                            obj_.shiftable = False
-                                            self.objects.append(obj_)
+                    
                     for spike in self.spikes:
                         spike[renderer.attr_dict["pos"]][0]+=round(self.speed*self.dir*renderer.dt)
                     for obj in self.objects:

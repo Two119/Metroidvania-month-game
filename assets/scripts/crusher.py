@@ -40,13 +40,14 @@ class Crusher:
                     self.falling = False
         self.mask = pygame.mask.from_surface(self.spritesheet.get(self.frame))
     def update(self, renderer):
+        self.cycles += 1
+        if self.cycles == 1:
+            for obj in renderer.queue:
+                if obj.__class__.__name__ == "MovingPlatform":
+                    if obj.rect.collidepoint(self.pos):
+                        obj.objects.append(self)
         if hasattr(renderer, "dt") and hasattr(renderer.queue[0], "rect"):
-            self.cycles += 1
-            if self.cycles == 1:
-                for obj in renderer.queue:
-                    if obj.__class__.__name__ == "MovingPlatform":
-                        if obj.rect.collidepoint(self.pos):
-                            obj.objects.append(self)
+           
             self.rect = pygame.Rect(self.pos[0]+(16*4), self.pos[1], 32*4, 64*4)
             if self.rect.colliderect(renderer.queue[0].rect):
                 self.falling = True

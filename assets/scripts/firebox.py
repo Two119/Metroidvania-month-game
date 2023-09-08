@@ -28,7 +28,21 @@ class FireBox:
         self.mask = pygame.mask.from_surface(self.fire.get([0, 0]))
         self.delay = 0
         self.is_hovered = False
+        self.cycles = 0
+        self.on_platform = False
+    def append_rects(self, renderer):
+        self.rects = [pygame.Rect(self.pos[0], self.pos[1]+72, 1, 56), pygame.Rect(self.pos[0]+64, self.pos[1]+72, 1, 56)]
+        pygame.draw.rect(win, [255, 0, 0], self.rects[0])
+        pygame.draw.rect(win, [255, 0, 0], self.rects[1])
     def update(self, renderer):
+        self.cycles += 1
+        if self.cycles == 1:
+            for obj in renderer.queue:
+                if obj.__class__.__name__ == "MovingPlatform":
+                    if obj.rect.collidepoint([self.pos[0], self.pos[1]+64]):
+                        obj.objects.append(self)
+                        self.on_platform = True
+                        break
         if (hasattr(renderer, "dt")):
             if renderer.dt != 0:
                 self.rect = pygame.Rect(self.pos[0], self.pos[1], 64, 128)
@@ -48,6 +62,13 @@ class FireBox:
                         renderer.firebox_channel.play(self.sfx)
                 else:
                     renderer.firebox_channel.stop()
+                for rect in self.rects:
+                    if hasattr(renderer.queue[0], "rect"):
+                        if rect.colliderect(renderer.queue[0].rect):
+                            renderer.queue[0].pos[0] -= renderer.queue[0].vel[0]
+                            if renderer.queue[0].jumping:
+                                renderer.queue[0].vel[1] = 0
+                                renderer.queue[0].jumping = False
                 win.blit(self.fire.get([renderer.firebox_frame, 0]), self.pos)
                 win.blit(self.firebox.get([renderer.firebox_frame, 0]), self.pos)
                 renderer.standing_masks.append([pygame.mask.from_surface(self.firebox.get([renderer.firebox_frame, 0])), self.pos, self])

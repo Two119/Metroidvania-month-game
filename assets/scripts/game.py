@@ -6,6 +6,11 @@ from assets.scripts.button import *
 from assets.scripts.slider import *
 from assets.scripts.checkbox import *
 from assets.scripts.save_system import *
+def ismovingfirebox(box):
+    if isinstance(box, FireBox):
+        if box.on_platform:
+            return True
+    return False
 def start(args):
     if hasattr(args.renderer, "camera"):
         reset(args.renderer.queue[0], args.renderer)
@@ -137,7 +142,7 @@ class Game:
                             if (self.cursor_mask.overlap(double_list[0], (double_list[1][0]-cursor_pos[0], double_list[1][1]-cursor_pos[1])) == None):
                                 pass
                             else:
-                                if double_list[2] != 122 and not isinstance(double_list[2], SpikeBall):
+                                if double_list[2] != 122 and not isinstance(double_list[2], SpikeBall) and not ismovingfirebox(double_list[2]):
                                     if not isinstance(double_list[2], FireBox):
                                         if pygame.mouse.get_pressed()[2] and double_list[2] != self.renderer.queue[0].tile:
                                             self.renderer.levels[self.renderer.level][int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1]))][int((double_list[1][0]-self.camera.cam_change[0])/self.renderer.tile_size[0])] = self.renderer.queue[0].tile
@@ -259,7 +264,11 @@ class Game:
                             if (self.cursor_mask.overlap(obj.mask, (obj.pos[0]-cursor_pos[0], obj.pos[1]-cursor_pos[1])) == None) and not isinstance(obj, SpikeBall):
                                 obj.is_hovered = False
                             else:
-                                obj.is_hovered = True
+                                if not hasattr(obj, 'on_platform'):
+                                    obj.is_hovered = True
+                                else:
+                                    if not obj.on_platform:
+                                        obj.is_hovered = True
                 self.small_menu_button.update(self.renderer)
             if not self.playing:
                 if self.spare_surf == None:

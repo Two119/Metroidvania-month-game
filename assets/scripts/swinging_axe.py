@@ -18,15 +18,16 @@ class SwingingAxe:
         self.cycles = 0
         self.img = pygame.transform.rotate(self.image, self.angle)
     def update(self, renderer):
+        self.cycles += 1
+        if self.cycles == 1:
+            for obj in renderer.queue:
+                if obj.__class__.__name__ == "MovingPlatform":
+                    if obj.rect.collidepoint(self.pos):
+                            obj.objects.append(self)
+                            if renderer.cur_cycle == 0:
+                                self.pos[0]+=32
         if hasattr(renderer, "dt") and hasattr(renderer.queue[0], "mask"):
-            self.cycles += 1
-            if self.cycles == 1:
-                for obj in renderer.queue:
-                    if obj.__class__.__name__ == "MovingPlatform":
-                        if obj.rect.collidepoint(self.pos):
-                                obj.objects.append(self)
-                                if renderer.cur_cycle == 0:
-                                    self.pos[0]+=32
+            
             self.img = pygame.transform.rotate(self.image, self.angle)
             if (not(self.angle < self.swing_angle) and self.angle > 0 and not self.shifted) or (not(self.angle > 0-self.swing_angle) and self.angle < 0 and self.shifted):
                 self.shifted = not(self.shifted)

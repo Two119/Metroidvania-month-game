@@ -12,7 +12,7 @@ class SpikeBall:
         self.spikeball_spikes.size = [50*4, 50*4]
         self.frame = [0, 0]
         self.angle = 0
-        self.pos = pos
+        self.pos = [pos[0]+32, pos[1]+32]
         self.cur_img = self.spikeball_spikes.get(self.frame)
         self.delay = 0
         self.standing = False

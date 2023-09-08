@@ -33,6 +33,8 @@ def back(args):
         args.spare_surf = None
     args.screen = 0
     args.playing  = False
+    m_pos = pygame.mouse.get_pos()
+    pygame.mouse.set_pos([m_pos[0]-120, m_pos[1]])
 def game_menu(args):
     pygame.image.save(win, "win.png")
     args.spare_surf = pygame.image.load("win.png").convert()
@@ -41,6 +43,8 @@ def open_shop(args):
     args.screen = 3
 def open_shop_2(args):
     args.screen = 4
+    m_pos = pygame.mouse.get_pos()
+    pygame.mouse.set_pos([m_pos[0], m_pos[1]-90])
 class Game:
     def __init__(self):
         self.save_system = SaveSystem()
@@ -345,7 +349,7 @@ class Game:
             
             self.shop.update(self.renderer)
             self.back_button_3.update(self.renderer)
-            win.blit(self.back_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+(5.2*self.button_sprites.get([0, 0]).get_height())+(4*self.back_button_.current)])
+            win.blit(self.back_text, [center_pos(self.button_sprites.get([0, 0]))[0]+15, center_pos(self.button_sprites.get([0, 0]))[1]+(5.2*self.button_sprites.get([0, 0]).get_height())+(4*self.back_button_3.current)])
         elif self.screen == 5:
             if self.spare_surf != None:
                 win.blit(self.spare_surf, (0, 0))

@@ -32,6 +32,8 @@ class FireBox:
         self.on_platform = False
     def append_rects(self, renderer):
         self.rects = [pygame.Rect(self.pos[0], self.pos[1]+72, 1, 56), pygame.Rect(self.pos[0]+64, self.pos[1]+72, 1, 56)]
+        renderer.side_rects.append([self.rects[0], 1, 116])
+        renderer.side_rects.append([self.rects[1], 1, 116])
         pygame.draw.rect(win, [255, 0, 0], self.rects[0])
         pygame.draw.rect(win, [255, 0, 0], self.rects[1])
     def update(self, renderer):

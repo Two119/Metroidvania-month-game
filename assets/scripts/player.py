@@ -77,7 +77,7 @@ class Inventory:
                 if pygame.key.get_pressed()[pygame.K_DOWN]:
                     self.cur_tile = 1
                 renderer.queue[0].tile = self.spike_dir_list[self.cur_tile]
-                print(self.spike_dir_list[self.cur_tile])
+                #print(self.spike_dir_list[self.cur_tile])
             if self.items[self.current] == 118:
                 if pygame.key.get_pressed()[pygame.K_LEFT]:
                     self.cur_tile = 2
@@ -123,6 +123,7 @@ class Player:
         self.harmful = ["Crusher"]
         self.spinning = False
         self.dir = 0
+        self.shield_dir = 0
         self.shots = []
         self.particle_surf = None
         self.has_staff = False
@@ -236,17 +237,18 @@ class Player:
                         self.jumping = False
                         
             for rect in renderer.side_rects:
-                if self.rect.colliderect(rect[0]):
-                    if not [rect[0].x, rect[0].y] in self.just_col:
-                        self.jumping = False
-                        self.just_col.append([rect[0].x, rect[0].y])
-                        if rect[1] != 2:
-                            self.vel[0] = (0-(self.vel[0]*(dt)))/2
-                        else:
-                            self.vel[1] = (0-(((self.vel[1])*dt)))/2
-                    self.standing = False
-                    self.collided = True
-                    break
+                if len(rect) < 3:
+                    if self.rect.colliderect(rect[0]):
+                        if not [rect[0].x, rect[0].y] in self.just_col:
+                            self.jumping = False
+                            self.just_col.append([rect[0].x, rect[0].y])
+                            if rect[1] != 2:
+                                self.vel[0] = (0-(self.vel[0]*(dt)))/2
+                            else:
+                                self.vel[1] = (0-(((self.vel[1])*dt)))/2
+                        self.standing = False
+                        self.collided = True
+                        break
             
             if not self.collided:
                 self.just_col = []
@@ -317,17 +319,18 @@ class Player:
                         self.jumping = False
       
             for rect in renderer.side_rects:
-                if self.rect.colliderect(rect[0]):
-                    if not [rect[0].x, rect[0].y] in self.just_col:
-                        self.jumping = False
-                        self.just_col.append([rect[0].x, rect[0].y])
-                        if rect[1] != 2:
-                            self.vel[0] = (0-(self.vel[0]*(dt)))/2
-                        else:
-                            self.vel[1] = (0-(((self.vel[1])*dt)))/2
-                    self.standing = False
-                    self.collided = True
-                    break
+                if len(rect) < 3:
+                    if self.rect.colliderect(rect[0]):
+                        if not [rect[0].x, rect[0].y] in self.just_col:
+                            self.jumping = False
+                            self.just_col.append([rect[0].x, rect[0].y])
+                            if rect[1] != 2:
+                                self.vel[0] = (0-(self.vel[0]*(dt)))/2
+                            else:
+                                self.vel[1] = (0-(((self.vel[1])*dt)))/2
+                        self.standing = False
+                        self.collided = True
+                        break
             
             if not self.collided:
                 self.just_col = []
@@ -433,10 +436,14 @@ class Player:
                 for tile in self.tiles_unlocked:
                     l.append(tile*1)
                 self.tiles_unlocked = l
-            if self.dir == 1:
-                self.shield.pos = [self.pos[0]+24, self.pos[1]+20]
+            if pygame.key.get_pressed()[pygame.K_x] and not pygame.key.get_pressed()[pygame.K_z]:
+                self.shield_dir = 1
+            if pygame.key.get_pressed()[pygame.K_z] and not pygame.key.get_pressed()[pygame.K_x]:
+                self.shield_dir = 0
+            if self.shield_dir == 1:
+                self.shield.pos = [self.pos[0]+24, self.pos[1]+24]
             else:
-                self.shield.pos = [self.pos[0]-20, self.pos[1]+20]
+                self.shield.pos = [self.pos[0]-20, self.pos[1]+24]
             if self.using_shield:
                 self.shield.update(renderer)
             self.inventory.items = [x*1 for x in self.tiles_unlocked]

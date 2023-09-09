@@ -137,7 +137,7 @@ def reset(player, renderer, fell=False):
             case 0:
                 player.pos = [64, -3*64]
             case 1:
-                player.pos = [1628, -3*64]
+                player.pos = [1756, 4*64]
         #player.spritesheet = SpriteSheet(spritesheet, sheet_size)
         player.frame = [0, 0]
         player.fell = False

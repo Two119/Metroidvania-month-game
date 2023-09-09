@@ -120,7 +120,7 @@ class Game:
         self.finished = False
         self.radius = 0
         self.add_rad = 0.12
-        self.level_spike_dicts = {0: 522, 1:712}
+        self.level_spike_dicts = {0: 522, 1:200}
         self.shop = Shop(self.renderer)
         self.renderer.shop = self.shop
         self.save_system.load(self.renderer)

@@ -1,6 +1,6 @@
 from assets.scripts.core_funcs import *
 def calculate_angle(time):
-    return (45*(math.sin((1/sqrt(50/300.5))*time)))
+    return degrees(radians(45)*(math.sin((1/sqrt(50/300.5))*time)))
 class SwingingAxe:
     def __init__(self, pos):
         if not web:

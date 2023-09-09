@@ -461,33 +461,34 @@ class EnemySwordsman:
             del self
     def update(self, renderer):
         if renderer.clock.get_fps() != 0:
-            if self.just_spawned:
-                    self.update_animation(7, 15/2, renderer.dt)
-            
-            self.standing = False
-            #if renderer.clock.get_fps() != 0:
-            self.update_physics(renderer, renderer.dt)
-            if self.standing and not self.chasing:
-                if self.dir == 1:
-                    self.update_animation(0, 15/2, renderer.dt)
+            if renderer.camera.bigger_window_rect.collidepoint(self.pos):
+                if self.just_spawned:
+                        self.update_animation(7, 15/2, renderer.dt)
+                
+                self.standing = False
+                #if renderer.clock.get_fps() != 0:
+                self.update_physics(renderer, renderer.dt)
+                if self.standing and not self.chasing:
+                    if self.dir == 1:
+                        self.update_animation(0, 15/2, renderer.dt)
+                    else:
+                        self.update_animation(11, 15/2, renderer.dt)
+                if self.frame[1] == 1:
+                    self.rect = pygame.Rect(self.pos[0]+(22*2)-8-3, self.pos[1]-20+(17*3), (12*4)+15, (16*4)+17)
+                    self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-3, self.pos[1]-20+(17*3), (12*4)+15, 1)
                 else:
-                    self.update_animation(11, 15/2, renderer.dt)
-            if self.frame[1] == 1:
-                self.rect = pygame.Rect(self.pos[0]+(22*2)-8-3, self.pos[1]-20+(17*3), (12*4)+15, (16*4)+17)
-                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-3, self.pos[1]-20+(17*3), (12*4)+15, 1)
-            else:
-                self.rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, (16*4)+17)
-                self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, 1)
-            #pygame.draw.rect(win, [255, 0, 0], self.rect)
-            win.blit(self.spritesheet.get(self.frame), self.pos)
-            if self.dir == 0:
-                self.weapon.pos = [self.pos[0]-40, self.pos[1]+32]
-            else:
-                self.weapon.pos = [self.pos[0]+40, self.pos[1]+32]
-            self.weapon.dir = 1-self.dir
-            self.weapon.attacking = self.chasing
-            if self.rect.colliderect(renderer.queue[0].rect):
-                self.weapon.attacking = True
-            self.weapon.update(renderer)
+                    self.rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, (16*4)+17)
+                    self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, 1)
+                #pygame.draw.rect(win, [255, 0, 0], self.rect)
+                win.blit(self.spritesheet.get(self.frame), self.pos)
+                if self.dir == 0:
+                    self.weapon.pos = [self.pos[0]-40, self.pos[1]+32]
+                else:
+                    self.weapon.pos = [self.pos[0]+40, self.pos[1]+32]
+                self.weapon.dir = 1-self.dir
+                self.weapon.attacking = self.chasing
+                if self.rect.colliderect(renderer.queue[0].rect):
+                    self.weapon.attacking = True
+                self.weapon.update(renderer)
             #win.blit(self.staff, self.staff_pos)
         

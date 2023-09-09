@@ -27,23 +27,23 @@ class SwingingAxe:
                             if renderer.cur_cycle == 0:
                                 self.pos[0]+=32
         if hasattr(renderer, "dt") and hasattr(renderer.queue[0], "mask"):
-            
-            self.img = pygame.transform.rotate(self.image, self.angle)
-            if (not(self.angle < self.swing_angle) and self.angle > 0 and not self.shifted) or (not(self.angle > 0-self.swing_angle) and self.angle < 0 and self.shifted):
-                self.shifted = not(self.shifted)
-                self.adder*= -1
-            self.angle += self.adder*renderer.dt
-            self.mask = pygame.mask.from_surface(self.img)
-            if self.mask.overlap(renderer.queue[0].mask, (renderer.queue[0].pos[0]-(self.pos[0]-(self.img.get_width()/2)), renderer.queue[0].pos[1]-(self.pos[1]-(self.img.get_height()/2)))) == None:
-                pass
-            else:
-                renderer.queue[0].is_alive = False
-                #renderer.queue = [ob for ob in renderer.queue if ob != self]
-                #reset(renderer.queue[0], renderer)
-                renderer.queue[0].deaths += 1
-                #del self
+            if renderer.camera.bigger_window_rect.collidepoint(self.pos):    
+                self.img = pygame.transform.rotate(self.image, self.angle)
+                if (not(self.angle < self.swing_angle) and self.angle > 0 and not self.shifted) or (not(self.angle > 0-self.swing_angle) and self.angle < 0 and self.shifted):
+                    self.shifted = not(self.shifted)
+                    self.adder*= -1
+                self.angle += self.adder*renderer.dt
+                self.mask = pygame.mask.from_surface(self.img)
+                if self.mask.overlap(renderer.queue[0].mask, (renderer.queue[0].pos[0]-(self.pos[0]-(self.img.get_width()/2)), renderer.queue[0].pos[1]-(self.pos[1]-(self.img.get_height()/2)))) == None:
+                    pass
+                else:
+                    renderer.queue[0].is_alive = False
+                    #renderer.queue = [ob for ob in renderer.queue if ob != self]
+                    #reset(renderer.queue[0], renderer)
+                    renderer.queue[0].deaths += 1
+                    #del self
+                    
                 
-            
-            win.blit(self.img, [self.pos[0]-int(self.img.get_width()/2), self.pos[1]-int(self.img.get_height()/2)])
-            pygame.draw.circle(win, (0, 0, 0), self.pos, 10)
+                win.blit(self.img, [self.pos[0]-int(self.img.get_width()/2), self.pos[1]-int(self.img.get_height()/2)])
+                pygame.draw.circle(win, (0, 0, 0), self.pos, 10)
         

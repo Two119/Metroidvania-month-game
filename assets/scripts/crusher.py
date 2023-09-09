@@ -47,15 +47,15 @@ class Crusher:
                     if obj.rect.collidepoint(self.pos):
                         obj.objects.append(self)
         if hasattr(renderer, "dt") and hasattr(renderer.queue[0], "rect"):
-           
-            self.rect = pygame.Rect(self.pos[0]+(16*4), self.pos[1], 32*4, 64*4)
-            if self.rect.colliderect(renderer.queue[0].rect):
-                self.falling = True
-            for enemy in renderer.enemies:
-                e = renderer.queue[enemy]
-                if (e.__class__.__name__ == "EnemySwordsman" or e.__class__.__name__ == "EnemyWizard") and hasattr(e, "rect"):
-                    if self.rect.colliderect(e.rect):
-                        self.falling = True
-            if self.falling:
-                self.update_animation(6, renderer)
-            win.blit(self.spritesheet.get(self.frame), self.pos)
+            if renderer.camera.bigger_window_rect.collidepoint(self.pos):
+                self.rect = pygame.Rect(self.pos[0]+(16*4), self.pos[1], 32*4, 64*4)
+                if self.rect.colliderect(renderer.queue[0].rect):
+                    self.falling = True
+                for enemy in renderer.enemies:
+                    e = renderer.queue[enemy]
+                    if (e.__class__.__name__ == "EnemySwordsman" or e.__class__.__name__ == "EnemyWizard") and hasattr(e, "rect"):
+                        if self.rect.colliderect(e.rect):
+                            self.falling = True
+                if self.falling:
+                    self.update_animation(6, renderer)
+                win.blit(self.spritesheet.get(self.frame), self.pos)

@@ -121,7 +121,7 @@ def reset(player, renderer, fell=False):
         renderer.levels = [json.load(open("levels.json", "r"))["level_1"], json.load(open("levels.json", "r"))["level_2"]]
         #renderer.level = 0
         renderer.side_rects = []
-        renderer.init_render_pos = [[-1, -13.2], [-1, -12.2]]
+        renderer.init_render_pos = [[-1, -13.2], [-1, -4.2]]
         #renderer.coin_channel = pygame.mixer.Channel(2)
         renderer.queue = [player]
         renderer.first_cycle = True
@@ -137,7 +137,7 @@ def reset(player, renderer, fell=False):
             case 0:
                 player.pos = [64, -3*64]
             case 1:
-                player.pos = [64, 4.5*64]
+                player.pos = [1628, -3*64]
         #player.spritesheet = SpriteSheet(spritesheet, sheet_size)
         player.frame = [0, 0]
         player.fell = False

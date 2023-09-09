@@ -362,5 +362,5 @@ class Game:
             self.renderer.coin_channel.set_volume(self.settings[0].value/10)
             self.renderer.queue[0].channel.set_volume(self.settings[0].value/10)
         win.blit(self.cursor_img_, cursor_pos)
-        if self.auto_save and ((self.cycles%20)==0):
+        if ((self.cycles%20)==0):
             self.save_system.update(self.renderer)

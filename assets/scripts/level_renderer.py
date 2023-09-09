@@ -438,7 +438,7 @@ class LevelRenderer:
                                     length += 1
                                 else:
                                     break
-                        self.queue.append(MovingPlatform(length, [self.x*self.tile_size[0], self.y*self.tile_size[1]], length, 192))
+                        self.queue.append(MovingPlatform(length, [self.x*self.tile_size[0], self.y*self.tile_size[1]], 3, length*64))
                 elif tile == 116:
                     if self.coin_appending:
                         self.queue.append(FireBox([self.x*self.tile_size[0], self.y*self.tile_size[1]+self.level_firebox_y_offset_dict[self.level]]))

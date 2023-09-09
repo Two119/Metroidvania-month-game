@@ -15,6 +15,7 @@ class Coin:
         self.rect_surf.set_alpha(50)
         self.is_hovered = False
         self.shiftable = True
+        self.cycles = 0
         if not web:
             pygame.mixer.music.load("assets\Audio\coin.ogg")
             self.sound = (pygame.mixer.Sound("assets\Audio\coin.ogg"))
@@ -32,6 +33,16 @@ class Coin:
                     if self.frame[0] > 11:
                         self.frame[0] = 0
     def update_physics(self, renderer):
+        self.cycles += 1
+        if self.cycles == 1:
+            for obj in renderer.queue:
+                if obj.__class__.__name__ == 'MovingPlatform':
+                    if (obj.pos[1] - self.pos[1]) <= 200 and obj.rect.collidepoint([self.pos[0], obj.pos[1]]):
+                        obj.objects.append(self)
+                        if renderer.cur_cycle == 0:
+                            self.pos[0]+=32
+                        self.shiftable = False
+                        break
         if hasattr(renderer.queue[0], "mask") and hasattr(renderer.queue[0], "pos"):
             if self.mask.overlap(renderer.queue[0].mask, (renderer.queue[0].pos[0]-self.pos[0], renderer.queue[0].pos[1]-self.pos[1])):
                 if not self.collected:

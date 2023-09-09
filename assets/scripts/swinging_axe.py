@@ -1,4 +1,6 @@
 from assets.scripts.core_funcs import *
+def calculate_angle(time):
+    return (45*(math.sin((1/sqrt(50/300.5))*time)))
 class SwingingAxe:
     def __init__(self, pos):
         if not web:
@@ -12,10 +14,12 @@ class SwingingAxe:
         self.image.set_colorkey([236, 28, 36])
         self.pos = [pos[0]+32, pos[1]+4]
         self.angle = 0
-        self.adder = 1.2
+        self.adder = 0
         self.shifted = False
         self.swing_angle = 45
+        self.gravity = 0.5
         self.cycles = 0
+        self.init_time = time.time()
         self.img = pygame.transform.rotate(self.image, self.angle)
     def update(self, renderer):
         self.cycles += 1
@@ -32,7 +36,8 @@ class SwingingAxe:
                 if (not(self.angle < self.swing_angle) and self.angle > 0 and not self.shifted) or (not(self.angle > 0-self.swing_angle) and self.angle < 0 and self.shifted):
                     self.shifted = not(self.shifted)
                     self.adder*= -1
-                self.angle += self.adder*renderer.dt
+                self.angle = calculate_angle(time.time()-self.init_time)
+                #self.angle += self.adder*renderer.dt
                 self.mask = pygame.mask.from_surface(self.img)
                 if self.mask.overlap(renderer.queue[0].mask, (renderer.queue[0].pos[0]-(self.pos[0]-(self.img.get_width()/2)), renderer.queue[0].pos[1]-(self.pos[1]-(self.img.get_height()/2)))) == None:
                     pass

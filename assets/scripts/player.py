@@ -418,9 +418,9 @@ class Player:
                     self.update_animation(11, 15/2, renderer.dt)
             if self.jumping:
                 if self.dir == 1:
-                    self.update_animation(3, 60/2, renderer.dt)
+                    self.update_animation(1, 60/2, renderer.dt)
                 else:
-                    self.update_animation(14, 60/2, renderer.dt)
+                    self.update_animation(12, 60/2, renderer.dt)
             if self.frame[1] == 1:
                 self.rect = pygame.Rect(self.pos[0]+(22*2)-8-3, self.pos[1]-20+(17*3), (12*4)+15, (16*4)+17)
                 self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-3, self.pos[1]-20+(17*3), (12*4)+15, 1)

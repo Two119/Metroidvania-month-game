@@ -189,7 +189,7 @@ class LevelRenderer:
                     if spike[self.attr_dict["is_hovered"]]:
                         if pygame.mouse.get_pressed()[2]:
                             if not (renderer.queue[0].tile in [117, 129, 138, 139, 121]):
-                                if self.level == 1:
+                                if self.level != 0:
                                     renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][4+int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
                                 else:
                                     renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile

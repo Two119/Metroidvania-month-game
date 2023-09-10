@@ -82,7 +82,7 @@ class FireBox:
                     self.mask = pygame.mask.from_surface(self.firebox.get([renderer.firebox_frame, 0]))
                 if self.is_hovered:
                     if pygame.mouse.get_pressed()[2]:
-                        if renderer.level == 1:
+                        if renderer.level != 0:
                             if not self.shifted:
                                 if renderer.queue[0].tile == 117:
                                     renderer.add_spike_u([self.init_tile_pos[0]*64+renderer.camera.cam_change[0], self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-4], True)

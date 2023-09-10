@@ -12,19 +12,20 @@ from assets.scripts.shop import *
 from assets.scripts.bullet_manager import *
 class CheckPoint:
     def __init__(self, position:tuple, type_of:int):
-        self.type_of = type_of
+        self.type_of = type_of*-1
         self.orig_pos = [position[0]*1, position[1]*1]
         self.pos = [position[0], position[1]]
         self.rect = pygame.Rect(self.pos[0], self.pos[1], 64, 128)
         t_d = {1:1, -1:0}
-        self.tex = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/doors.png").convert()), [2, 1], [255, 255, 255]).get(t_d[type_of]).copy()
+        self.tex = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/doors.png").convert()), [2, 1], [255, 255, 255]).get([t_d[type_of], 0]).copy()
     def update(self, renderer):
         self.rect = pygame.Rect(self.pos[0], self.pos[1], 64, 128)
-        if self.rect.colliderect(renderer.queue[0].rect):
-            if pygame.key.get_pressed()[pygame.K_TAB]:
-                renderer.queue[0].is_alive = False
-                renderer.levels += self.type_of
-        win.blit(self.tex)
+        if hasattr(renderer.queue[0], "rect"):
+            if self.rect.colliderect(renderer.queue[0].rect):
+                if pygame.key.get_pressed()[pygame.K_TAB]:
+                    renderer.queue[0].is_alive = False
+                    renderer.level += self.type_of
+        win.blit(self.tex, self.pos)
 class LevelRenderer:
     def __init__(self, levels : tuple, tilesheet : pygame.Surface, tilesheet_size : tuple, spike_images : tuple, colors : tuple, background : pygame.Surface, coin_image):
         final_color = [30, 30, 30]

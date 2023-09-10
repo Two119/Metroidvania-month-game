@@ -204,7 +204,7 @@ class HiddenSpike:
                                     if renderer.queue[0].tile == 121:
                                         renderer.queue.append(SwingingAxe(self.orig_pos))
                                     if renderer.queue[0].tile == 116:
-                                        renderer.queue.append(FireBox(self.orig_pos))
+                                        renderer.queue.append(FireBox(self.orig_pos, True))
                                         renderer.queue[0].shapeshifting=False
                                         renderer.queue_updating = True
                                     renderer.levels[renderer.level][int((self.pos[1]-28)/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int(((self.pos[0]-32)-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
@@ -253,7 +253,7 @@ class HiddenSpike:
                                     if renderer.queue[0].tile == 121:
                                         renderer.queue.append(SwingingAxe(self.orig_pos))
                                     if renderer.queue[0].tile == 116:
-                                        renderer.queue.append(FireBox(self.orig_pos))
+                                        renderer.queue.append(FireBox(self.orig_pos, True))
                                         renderer.queue[0].shapeshifting=False
                                         renderer.queue_updating = True
                                     renderer.levels[renderer.level][int((self.pos[1]-28)/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int(((self.pos[0]-36)-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
@@ -302,7 +302,7 @@ class HiddenSpike:
                                 if renderer.queue[0].tile == 121:
                                     renderer.queue.append(SwingingAxe(self.orig_pos))
                                 if renderer.queue[0].tile == 116:
-                                    renderer.queue.append(FireBox(self.orig_pos))
+                                    renderer.queue.append(FireBox(self.orig_pos, True))
                                     renderer.queue[0].shapeshifting=False
                                     renderer.queue_updating = True
                                 renderer.levels[renderer.level][int((self.pos[1]+4)/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int(((self.pos[0]+8)-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile

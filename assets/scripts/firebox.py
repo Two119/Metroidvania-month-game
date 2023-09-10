@@ -1,8 +1,12 @@
 from assets.scripts.core_funcs import *
 class FireBox:
-    def __init__(self, init_pos):
+    def __init__(self, init_pos, shifted=False, spike_shifted=False):
+        self.shifted = shifted
+        self.spike_shifted = spike_shifted
         self.pos = [init_pos[0]+4, init_pos[1]-60]
+        self.init_tile_pos = [int(init_pos[0]/64), int(init_pos[1]/64)]
         self.rect = pygame.Rect(self.pos[0], self.pos[1], 64, 128)
+        self.level_spike_dicts = {0: 524, 1:-64}
         if web:
             fb = pygame.image.load("assets/Spritesheets/FireBox.png")
             swap_color(fb, [255, 255, 255], [47, 54, 92])
@@ -74,47 +78,159 @@ class FireBox:
                                     renderer.queue[0].jumping = False
                     win.blit(self.fire.get([renderer.firebox_frame, 0]), self.pos)
                     win.blit(self.firebox.get([renderer.firebox_frame, 0]), self.pos)
-                    renderer.standing_masks.append([pygame.mask.from_surface(self.firebox.get([renderer.firebox_frame, 0])), self.pos, self])
+                    renderer.standing_masks.append([pygame.mask.from_surface(self.firebox.get([renderer.firebox_frame, 0])), self.pos, self, self.init_tile_pos])
                     self.mask = pygame.mask.from_surface(self.firebox.get([renderer.firebox_frame, 0]))
                 if self.is_hovered:
                     if pygame.mouse.get_pressed()[2]:
-                        if renderer.queue[0].tile == 117:
-                            renderer.add_spike_u([self.pos[0]-4, self.pos[1]+52])
-                            renderer.added_spikes += 1
-                            renderer.spike_count += 1
-                            if renderer.spike_count > renderer.added_spikes:
-                                renderer.add_spike_u([self.pos[0]-4, self.pos[1]+52])
+                        if renderer.level == 1:
+                            if not self.shifted:
+                                if renderer.queue[0].tile == 117:
+                                    renderer.add_spike_u([self.init_tile_pos[0]*64+renderer.camera.cam_change[0], self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-4], True)
+                                    renderer.added_spikes += 1
+                                    renderer.spike_count += 1
+                                    if renderer.spike_count > renderer.added_spikes:
+                                        renderer.add_spike_u([self.init_tile_pos[0]*64+renderer.camera.cam_change[0], self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-4], True)
+                                        renderer.added_spikes += 1
+                                    renderer.queue[0].shapeshifting=False
+                                    renderer.queue_updating = True
+                                if renderer.queue[0].tile == 129:
+                                    renderer.add_spike_d([self.init_tile_pos[0]*64+renderer.camera.cam_change[0], self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-1], True)
+                                    renderer.added_spikes += 1
+                                    renderer.spike_count += 1
+                                    if renderer.spike_count > renderer.added_spikes:
+                                        renderer.add_spike_d([self.init_tile_pos[0]*64+renderer.camera.cam_change[0], self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-1], True)
+                                        renderer.added_spikes += 1
+                                    renderer.queue[0].shapeshifting=False
+                                    renderer.queue_updating = True
+                                if renderer.queue[0].tile == 138:
+                                    renderer.add_spike_r([self.init_tile_pos[0]*64+renderer.camera.cam_change[0]+1, self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-4], True)
+                                    renderer.added_spikes += 1
+                                    renderer.spike_count += 1
+                                    if renderer.spike_count > renderer.added_spikes:
+                                        renderer.add_spike_r([self.init_tile_pos[0]*64+renderer.camera.cam_change[0]+1, self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-4], True)
+                                        renderer.added_spikes += 1
+                                    renderer.queue[0].shapeshifting=False
+                                    renderer.queue_updating = True
+                                if renderer.queue[0].tile == 139:
+                                    renderer.add_spike_l([self.init_tile_pos[0]*64+renderer.camera.cam_change[0]-1, self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-1], True)
+                                    renderer.added_spikes += 1
+                                    renderer.spike_count += 1
+                                    if renderer.spike_count > renderer.added_spikes:
+                                        renderer.add_spike_l([self.init_tile_pos[0]*64+renderer.camera.cam_change[0]-1, self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-1], True)
+                                        renderer.added_spikes += 1
+                                    renderer.queue[0].shapeshifting=False
+                                    renderer.queue_updating = True
+                            elif self.spike_shifted:
+                                if renderer.queue[0].tile == 117:
+                                    renderer.add_spike_u([(self.init_tile_pos[0])*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
+                                    renderer.added_spikes += 1
+                                    renderer.spike_count += 1
+                                    if renderer.spike_count > renderer.added_spikes:
+                                        renderer.add_spike_u([(self.init_tile_pos[0])*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
+                                        renderer.added_spikes += 1
+                                    renderer.queue[0].shapeshifting=False
+                                    renderer.queue_updating = True
+                                if renderer.queue[0].tile == 129:
+                                    renderer.add_spike_d([(self.init_tile_pos[0])*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
+                                    renderer.added_spikes += 1
+                                    renderer.spike_count += 1
+                                    if renderer.spike_count > renderer.added_spikes:
+                                        renderer.add_spike_d([(self.init_tile_pos[0])*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
+                                        renderer.added_spikes += 1
+                                    renderer.queue[0].shapeshifting=False
+                                    renderer.queue_updating = True
+                                if renderer.queue[0].tile == 138:
+                                    renderer.add_spike_r([(self.init_tile_pos[0])*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
+                                    renderer.added_spikes += 1
+                                    renderer.spike_count += 1
+                                    if renderer.spike_count > renderer.added_spikes:
+                                        renderer.add_spike_r([(self.init_tile_pos[0])*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
+                                        renderer.added_spikes += 1
+                                    renderer.queue[0].shapeshifting=False
+                                    renderer.queue_updating = True
+                                if renderer.queue[0].tile == 139:
+                                    renderer.add_spike_l([(self.init_tile_pos[0])*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
+                                    renderer.added_spikes += 1
+                                    renderer.spike_count += 1
+                                    if renderer.spike_count > renderer.added_spikes:
+                                        renderer.add_spike_l([(self.init_tile_pos[0])*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
+                                        renderer.added_spikes += 1
+                                    renderer.queue[0].shapeshifting=False
+                                    renderer.queue_updating = True
+                            else:
+                                if renderer.queue[0].tile == 117:
+                                    renderer.add_spike_u([(self.init_tile_pos[0]+1)*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
+                                    renderer.added_spikes += 1
+                                    renderer.spike_count += 1
+                                    if renderer.spike_count > renderer.added_spikes:
+                                        renderer.add_spike_u([(self.init_tile_pos[0]+1)*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
+                                        renderer.added_spikes += 1
+                                    renderer.queue[0].shapeshifting=False
+                                    renderer.queue_updating = True
+                                if renderer.queue[0].tile == 129:
+                                    renderer.add_spike_d([(self.init_tile_pos[0]+1)*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
+                                    renderer.added_spikes += 1
+                                    renderer.spike_count += 1
+                                    if renderer.spike_count > renderer.added_spikes:
+                                        renderer.add_spike_d([(self.init_tile_pos[0]+1)*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
+                                        renderer.added_spikes += 1
+                                    renderer.queue[0].shapeshifting=False
+                                    renderer.queue_updating = True
+                                if renderer.queue[0].tile == 138:
+                                    renderer.add_spike_r([(self.init_tile_pos[0]+1)*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
+                                    renderer.added_spikes += 1
+                                    renderer.spike_count += 1
+                                    if renderer.spike_count > renderer.added_spikes:
+                                        renderer.add_spike_r([(self.init_tile_pos[0]+1)*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
+                                        renderer.added_spikes += 1
+                                    renderer.queue[0].shapeshifting=False
+                                    renderer.queue_updating = True
+                                if renderer.queue[0].tile == 139:
+                                    renderer.add_spike_l([(self.init_tile_pos[0]+1)*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
+                                    renderer.added_spikes += 1
+                                    renderer.spike_count += 1
+                                    if renderer.spike_count > renderer.added_spikes:
+                                        renderer.add_spike_l([(self.init_tile_pos[0]+1)*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
+                                        renderer.added_spikes += 1
+                                    renderer.queue[0].shapeshifting=False
+                                    renderer.queue_updating = True
+                        else:
+                            if renderer.queue[0].tile == 117:
+                                renderer.add_spike_u([self.init_tile_pos[0]*64+renderer.camera.cam_change[0], self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-4], True)
                                 renderer.added_spikes += 1
-                            renderer.queue[0].shapeshifting=False
-                            renderer.queue_updating = True
-                        if renderer.queue[0].tile == 129:
-                            renderer.add_spike_d([self.pos[0]-4, self.pos[1]+56])
-                            renderer.added_spikes += 1
-                            renderer.spike_count += 1
-                            if renderer.spike_count > renderer.added_spikes:
-                                renderer.add_spike_d([self.pos[0]-4, self.pos[1]+56])
+                                renderer.spike_count += 1
+                                if renderer.spike_count > renderer.added_spikes:
+                                    renderer.add_spike_u([self.init_tile_pos[0]*64+renderer.camera.cam_change[0], self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-4], True)
+                                    renderer.added_spikes += 1
+                                renderer.queue[0].shapeshifting=False
+                                renderer.queue_updating = True
+                            if renderer.queue[0].tile == 129:
+                                renderer.add_spike_d([self.init_tile_pos[0]*64+renderer.camera.cam_change[0], self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-1], True)
                                 renderer.added_spikes += 1
-                            renderer.queue[0].shapeshifting=False
-                            renderer.queue_updating = True
-                        if renderer.queue[0].tile == 138:
-                            renderer.add_spike_r([self.pos[0]-4, self.pos[1]+52])
-                            renderer.added_spikes += 1
-                            renderer.spike_count += 1
-                            if renderer.spike_count > renderer.added_spikes:
-                                renderer.add_spike_r([self.pos[0]-4, self.pos[1]+52])
+                                renderer.spike_count += 1
+                                if renderer.spike_count > renderer.added_spikes:
+                                    renderer.add_spike_d([self.init_tile_pos[0]*64+renderer.camera.cam_change[0], self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-1], True)
+                                    renderer.added_spikes += 1
+                                renderer.queue[0].shapeshifting=False
+                                renderer.queue_updating = True
+                            if renderer.queue[0].tile == 138:
+                                renderer.add_spike_r([self.init_tile_pos[0]*64+renderer.camera.cam_change[0]+1, self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-4], True)
                                 renderer.added_spikes += 1
-                            renderer.queue[0].shapeshifting=False
-                            renderer.queue_updating = True
-                        if renderer.queue[0].tile == 139:
-                            renderer.add_spike_l([self.pos[0]-4, self.pos[1]+56])
-                            renderer.added_spikes += 1
-                            renderer.spike_count += 1
-                            if renderer.spike_count > renderer.added_spikes:
-                                renderer.add_spike_l([self.pos[0]-4, self.pos[1]+56])
+                                renderer.spike_count += 1
+                                if renderer.spike_count > renderer.added_spikes:
+                                    renderer.add_spike_r([self.init_tile_pos[0]*64+renderer.camera.cam_change[0]+1, self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-4], True)
+                                    renderer.added_spikes += 1
+                                renderer.queue[0].shapeshifting=False
+                                renderer.queue_updating = True
+                            if renderer.queue[0].tile == 139:
+                                renderer.add_spike_l([self.init_tile_pos[0]*64+renderer.camera.cam_change[0]-1, self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-1], True)
                                 renderer.added_spikes += 1
-                            renderer.queue[0].shapeshifting=False
-                            renderer.queue_updating = True
-                        
+                                renderer.spike_count += 1
+                                if renderer.spike_count > renderer.added_spikes:
+                                    renderer.add_spike_l([self.init_tile_pos[0]*64+renderer.camera.cam_change[0]-1, self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-1], True)
+                                    renderer.added_spikes += 1
+                                renderer.queue[0].shapeshifting=False
+                                renderer.queue_updating = True
                         if renderer.queue[0].tile != 116:
                             renderer.queue.remove(self)
                             del self

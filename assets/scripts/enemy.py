@@ -277,9 +277,7 @@ class EnemySwordsman:
         self.pos = position
         self.staff_pos = [position[0], position[1]]
         self.frame = [0, 0]
-        tex_list = ["enemy_1.png", "enemy_2.png", "enemy_3.png"]
-        self.type = randint(0, len(tex_list)-1)
-        self.tex = tex_list[self.type]
+        self.tex = "enemy_2.png"
         self.tile = 115
         self.is_alive = True
         self.levels_unlocked = [0]
@@ -307,11 +305,16 @@ class EnemySwordsman:
         self.spinning = False
         self.dir = 0
         self.particle_surf = None
+        red_color = [202, 89, 84]
+        blue_color = [92, 105, 159]
+        green_color = [85, 125, 85]
+        colors = [red_color, blue_color, green_color]
         #self.walk_particles = Particles(win, )
         if not web:
             sheets = [pygame.image.load("assets\Spritesheets\\"+self.tex).convert()]
             [s.set_colorkey([255, 255, 255]) for s in sheets]
             [swap_color(s, [53, 53, 64], [1, 1, 1])  for s in sheets]
+            [swap_color(s, red_color, colors[randint(0, len(colors)-1)])  for s in sheets]
             sheets = [scale_image(s) for s in sheets]
             pygame.mixer.music.load("assets\Audio\land.ogg")
             self.sounds.append(pygame.mixer.Sound("assets\Audio\land.ogg"))
@@ -324,6 +327,7 @@ class EnemySwordsman:
             sheets = [pygame.image.load("assets/Spritesheets/"+self.tex).convert()]
             [s.set_colorkey([255, 255, 255]) for s in sheets]
             [swap_color(s, [53, 53, 64], [1, 1, 1])  for s in sheets]
+            [swap_color(s, red_color, colors[randint(0, len(colors)-1)])  for s in sheets]
             sheets = [scale_image(s) for s in sheets]
             pygame.mixer.music.load("assets/Audio/land.ogg")
             self.sounds.append(pygame.mixer.Sound("assets/Audio/land.ogg"))
@@ -461,7 +465,7 @@ class EnemySwordsman:
             del self
     def update(self, renderer):
         if renderer.clock.get_fps() != 0:
-            if renderer.camera.bigger_window_rect.collidepoint(self.pos):
+            
                 if self.just_spawned:
                         self.update_animation(7, 15/2, renderer.dt)
                 

@@ -5,6 +5,7 @@ class MovingPlatform:
         self.speed = speed
         self.l = length
         self.pos = init_pos
+        self.init_tile_pos = [int(init_pos[0]/64), int(init_pos[1]/64)]
         self.image = pygame.Surface([(64*length)+16, 96])
         self.cycles = 0
         self.offset = 0
@@ -55,7 +56,7 @@ class MovingPlatform:
                         spike[renderer.attr_dict["pos"]][0]+=round(self.speed*self.dir*renderer.dt)
                     for obj in self.objects:
                         obj.pos[0]+=round(self.speed*self.dir*renderer.dt)
-            renderer.standing_masks.append([self.mask, self.pos, 122])
+            renderer.standing_masks.append([self.mask, self.pos, 122, self.init_tile_pos])
             self.rect = pygame.Rect(self.pos[0]-72, self.pos[1]-64, ((self.l+1)*64)+72, 192)
             #pygame.draw.rect(win, [255, 0, 0], self.rect)
             win.blit(self.image, self.pos)

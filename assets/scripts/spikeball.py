@@ -12,6 +12,7 @@ class SpikeBall:
         self.spikeball_spikes.size = [50*4, 50*4]
         self.frame = [0, 0]
         self.angle = 0
+        self.init_tile_pos = [int(pos[0]/64), int(pos[1]/64)]
         self.pos = [pos[0]+32, pos[1]+32]
         self.cur_img = self.spikeball_spikes.get(self.frame)
         self.delay = 0
@@ -60,6 +61,6 @@ class SpikeBall:
                                 e.is_alive = False
                                 
 
-                renderer.standing_masks.append([self.mask_s, [self.pos[0]-int(img.get_width()/2), self.pos[1]-int(img.get_height()/2)], self])
+                renderer.standing_masks.append([self.mask_s, [self.pos[0]-int(img.get_width()/2), self.pos[1]-int(img.get_height()/2)], self, self.init_tile_pos])
                 win.blit(img, [self.pos[0]-int(img.get_width()/2), self.pos[1]-int(img.get_height()/2)])
                 win.blit(img_, [self.pos[0]-int(img_.get_width()/2), self.pos[1]-int(img_.get_height()/2)])

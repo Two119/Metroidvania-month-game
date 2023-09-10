@@ -78,7 +78,7 @@ class LevelRenderer:
         self.decorative_tiles = [74, 75, 76, 87, 88, 89, 100, 101, 102, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 104, 105, 106, 107, 108, 110, 111, 112, 113, 114, 123, 124, 125, 126, 127]
         self.changed = []
         self.deleted = []
-        self.player_death_limit = [1500, 1500]
+        self.player_death_limit = [1500, 10000]
         self.first_tile_pos = []
         self.queue_updating = True
         self.first_cycle = True
@@ -189,10 +189,17 @@ class LevelRenderer:
                     if spike[self.attr_dict["is_hovered"]]:
                         if pygame.mouse.get_pressed()[2]:
                             if not (renderer.queue[0].tile in [117, 129, 138, 139, 121]):
-                                renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
+                                if self.level == 1:
+                                    renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][4+int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
+                                else:
+                                    renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
+                                    
                                 self.spikes = [sp for sp in self.spikes if sp != spike]
                                 if renderer.queue[0].tile == 116:
-                                    self.queue.append(FireBox([spike[8][0]+self.camera.cam_change[0], spike[8][1]+self.camera.cam_change[1]]))
+                                    if not spike[3]:
+                                        self.queue.append(FireBox([spike[8][0]+self.camera.cam_change[0], spike[8][1]+self.camera.cam_change[1]+8], True))
+                                    else:
+                                        self.queue.append(FireBox([spike[8][0], spike[8][1]+4], True, True))
                                     renderer.queue[0].shapeshifting=False
                                     renderer.queue_updating = True
                         if self.rect_surf.get_alpha() != 50:
@@ -268,16 +275,16 @@ class LevelRenderer:
                         else:
                             renderer.coin_channel.play(pygame.mixer.Sound("assets/Audio/spike_spawn.ogg"))
                     self.played = True
-    def add_spike_u(self, pos):
-        self.spikes.append([[pos[0], pos[1]], 0, True, 0, False, False, False, 0, pos])
-    def add_spike_d(self, pos):
-        self.spikes.append([[pos[0], pos[1]+4], 0, True, 0, False, False, True, 0, pos])
-    def add_spike_r(self, pos):
+    def add_spike_u(self, pos, shifted=False):
+        self.spikes.append([[pos[0], pos[1]], 0, True, shifted, False, False, False, 0, pos])
+    def add_spike_d(self, pos, shifted=False):
+        self.spikes.append([[pos[0], pos[1]+4], 0, True, shifted, False, False, True, 0, pos])
+    def add_spike_r(self, pos, shifted=False):
         selfpos = [pos[0]+((16*90)/90)+((20*90)/90)-int(self.spikesheet.get([3, 0]).get_width()/2)-8, pos[1]+44-int(self.spikesheet.get([3, 0]).get_height()/2)]
-        self.spikes.append([selfpos, 0, True, 0, False, False, True, 90, pos])
-    def add_spike_l(self, pos):
+        self.spikes.append([selfpos, 0, True, shifted, False, False, True, 90, pos])
+    def add_spike_l(self, pos, shifted=False):
         selfpos = [pos[0]+((16*-90)/-90)+((26*-90)/-90)-int(self.spikesheet.get([3, 0]).get_width()/2)-4, pos[1]+38-int(self.spikesheet.get([3, 0]).get_height()/2)]
-        self.spikes.append([selfpos, 0, True, 0, False, False, True, -90, pos])
+        self.spikes.append([selfpos, 0, True, shifted, False, False, True, -90, pos])
     def render(self):
         self.coin_count = 0
         self.spike_count = 0
@@ -292,12 +299,12 @@ class LevelRenderer:
         self.num_row = -1
         self.num_col = -1
         self.y = self.init_render_pos[self.level][1]
-        for row in tilemap:
+        for abs_j, row in enumerate(tilemap):
             self.y += 1
             self.num_col = -1
             self.num_row += 1
             self.x = self.init_render_pos[self.level][0]
-            for tile in row:
+            for abs_x, tile in enumerate(row):
                 self.num_col += 1
                 self.x+=1
                 #if not [self.x*self.tile_size[0], self.y*self.tile_size[1]] in self.deleted:
@@ -311,26 +318,26 @@ class LevelRenderer:
                                 if self.queue_updating:
                                     if not tile == 19:
                                         if (tilemap[self.num_row-1][self.num_col] in [-1, 60]) or (tilemap[self.num_row-1][self.num_col] in self.decorative_tiles):
-                                            self.standing_masks.append([pygame.mask.from_surface(self.images[tile]), [self.x*self.tile_size[0], self.y*self.tile_size[1]], tile])
+                                            self.standing_masks.append([pygame.mask.from_surface(self.images[tile]), [self.x*self.tile_size[0], self.y*self.tile_size[1]], tile, [abs_x, abs_j]])
                                 else:
-                                    self.standing_masks.append([pygame.mask.from_surface(self.images[tile]), [self.x*self.tile_size[0], self.y*self.tile_size[1]], tile])
+                                    self.standing_masks.append([pygame.mask.from_surface(self.images[tile]), [self.x*self.tile_size[0], self.y*self.tile_size[1]], tile, [abs_x, abs_j]])
                             if not tile in [26, 27, 28, 29]:
                                 if not tile == 116:
                                     if tilemap[self.num_row][self.num_col-1] in [-1, 60] or tilemap[self.num_row][self.num_col-1] in self.decorative_tiles:
                                         if not tilemap[self.num_row-1][self.num_col] in [-1, 60] and not(tilemap[self.num_row-1][self.num_col] in self.decorative_tiles):
-                                            self.side_rects.append([pygame.Rect(self.x*self.tile_size[0]+4, (self.y*self.tile_size[1]), 1, (self.tile_size[1])), -1])
-                                            pygame.draw.rect(win, (255, 0, 0), pygame.Rect(self.x*self.tile_size[0]+4, (self.y*self.tile_size[1]), 1, (self.tile_size[1])))
+                                            self.side_rects.append([pygame.Rect(self.x*self.tile_size[0]+4, (self.y*self.tile_size[1]+4), 1, (self.tile_size[1])), -1])
+                                            pygame.draw.rect(win, (255, 0, 0), pygame.Rect(self.x*self.tile_size[0]+4, (self.y*self.tile_size[1]+4), 1, (self.tile_size[1])))
                                         else:
-                                            self.side_rects.append([pygame.Rect(self.x*self.tile_size[0]+4, (self.y*self.tile_size[1]+10), 1, (self.tile_size[1]-10)), -1])
-                                            pygame.draw.rect(win, (255, 0, 0), pygame.Rect(self.x*self.tile_size[0]+4, (self.y*self.tile_size[1]+10), 1, (self.tile_size[1]-10)))
+                                            self.side_rects.append([pygame.Rect(self.x*self.tile_size[0]+4, (self.y*self.tile_size[1]+14), 1, (self.tile_size[1]-10)), -1])
+                                            pygame.draw.rect(win, (255, 0, 0), pygame.Rect(self.x*self.tile_size[0]+4, (self.y*self.tile_size[1]+14), 1, (self.tile_size[1]-10)))
                                     if self.num_col+1 < len(tilemap[self.num_row]):
                                         if tilemap[self.num_row][self.num_col+1] in [-1, 60] or tilemap[self.num_row][self.num_col+1] in self.decorative_tiles:
                                             if not tilemap[self.num_row-1][self.num_col] in [-1, 60] and not(tilemap[self.num_row-1][self.num_col] in self.decorative_tiles):
-                                                self.side_rects.append([pygame.Rect((self.x+1)*self.tile_size[0]+4, (self.y*self.tile_size[1]), 1, (self.tile_size[1])), 1])
-                                                pygame.draw.rect(win, (255, 0, 0), pygame.Rect((self.x+1)*self.tile_size[0]+4, (self.y*self.tile_size[1]), 1, (self.tile_size[1])))
+                                                self.side_rects.append([pygame.Rect((self.x+1)*self.tile_size[0]+4, (self.y*self.tile_size[1])+4, 1, (self.tile_size[1])), 1])
+                                                pygame.draw.rect(win, (255, 0, 0), pygame.Rect((self.x+1)*self.tile_size[0]+4, (self.y*self.tile_size[1])+4, 1, (self.tile_size[1])))
                                             else:
-                                                self.side_rects.append([pygame.Rect((self.x+1)*self.tile_size[0]+4, (self.y*self.tile_size[1]+10), 1, (self.tile_size[1]-10)), 1])
-                                                pygame.draw.rect(win, (255, 0, 0), pygame.Rect((self.x+1)*self.tile_size[0]+4, (self.y*self.tile_size[1]+10), 1, (self.tile_size[1]-10)))
+                                                self.side_rects.append([pygame.Rect((self.x+1)*self.tile_size[0]+4, (self.y*self.tile_size[1]+10)+4, 1, (self.tile_size[1]-10)), 1])
+                                                pygame.draw.rect(win, (255, 0, 0), pygame.Rect((self.x+1)*self.tile_size[0]+4, (self.y*self.tile_size[1]+14), 1, (self.tile_size[1]-10)))
                                     if self.num_row+1 < len(tilemap):
                                         if tilemap[self.num_row+1][self.num_col] in [-1, 60] or tilemap[self.num_row+1][self.num_col] in self.decorative_tiles:
                                             self.side_rects.append([pygame.Rect((self.x*self.tile_size[0])+7.5, ((self.y+1)*self.tile_size[1])+7.5, (self.tile_size[0]), 1), 2])
@@ -432,16 +439,14 @@ class LevelRenderer:
                 elif tile == 122:
                     if self.coin_appending:
                         length = 1
-                        if self.x < len(row)-1:
-                            for i in range(self.x+1, len(row)):
-                                if row[i] == 108:
-                                    length += 1
-                                else:
-                                    break
+                        for i in range(self.x+1, self.x+7):
+                            if row[i] == 108:
+                                length += 1
+                          
                         self.queue.append(MovingPlatform(length, [self.x*self.tile_size[0], self.y*self.tile_size[1]], 3, length*64))
                 elif tile == 116:
                     if self.coin_appending:
-                        self.queue.append(FireBox([self.x*self.tile_size[0], self.y*self.tile_size[1]+self.level_firebox_y_offset_dict[self.level]]))
+                        self.queue.append(FireBox([self.x*self.tile_size[0], self.y*self.tile_size[1]+self.level_firebox_y_offset_dict[self.level]], True))
                 elif tile == 140:
                     if self.coin_appending:
                         self.enemies.append(len(self.queue))

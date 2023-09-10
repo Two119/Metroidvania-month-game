@@ -10,6 +10,21 @@ from assets.scripts.firebox import *
 from assets.scripts.enemy import *
 from assets.scripts.shop import *
 from assets.scripts.bullet_manager import *
+class CheckPoint:
+    def __init__(self, position:tuple, type_of:int):
+        self.type_of = type_of
+        self.orig_pos = [position[0]*1, position[1]*1]
+        self.pos = [position[0], position[1]]
+        self.rect = pygame.Rect(self.pos[0], self.pos[1], 64, 128)
+        t_d = {1:1, -1:0}
+        self.tex = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/doors.png").convert()), [2, 1], [255, 255, 255]).get(t_d[type_of]).copy()
+    def update(self, renderer):
+        self.rect = pygame.Rect(self.pos[0], self.pos[1], 64, 128)
+        if self.rect.colliderect(renderer.queue[0].rect):
+            if pygame.key.get_pressed()[pygame.K_TAB]:
+                renderer.queue[0].is_alive = False
+                renderer.levels += self.type_of
+        win.blit(self.tex)
 class LevelRenderer:
     def __init__(self, levels : tuple, tilesheet : pygame.Surface, tilesheet_size : tuple, spike_images : tuple, colors : tuple, background : pygame.Surface, coin_image):
         final_color = [30, 30, 30]
@@ -75,7 +90,7 @@ class LevelRenderer:
         self.x = self.init_render_pos[self.level][0]
         self.y = self.init_render_pos[self.level][1]
         self.queue = []
-        self.decorative_tiles = [74, 75, 76, 87, 88, 89, 100, 101, 102, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 104, 105, 106, 107, 108, 110, 111, 112, 113, 114, 123, 124, 125, 126, 127]
+        self.decorative_tiles = [74, 75, 76, 87, 89, 100, 101, 102, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 104, 105, 106, 107, 108, 110, 112, 113, 114, 123, 124, 125, 126, 127]
         self.changed = []
         self.deleted = []
         self.player_death_limit = [1500, 10000]
@@ -92,7 +107,7 @@ class LevelRenderer:
         self.added_spikes_h = 0
         self.firebox_in_cam = False
         self.camera = None
-        self.exceptions = [60, 116, 117, 118, 119, 120, 121, 122, 129, 135, 136, 137, 138, 139, 140]
+        self.exceptions = [60, 88, 111, 116, 117, 118, 119, 120, 121, 122, 129, 135, 136, 137, 138, 139, 140]
         self.ground = ["SpikeBall", "MovingPlatform", "FireBox"]
         self.bullet_manager = BulletManager(self)
         self.cycles = 0 
@@ -452,6 +467,9 @@ class LevelRenderer:
                     if self.coin_appending:
                         self.enemies.append(len(self.queue))
                         self.queue.append(EnemySwordsman([self.x*self.tile_size[0], self.y*self.tile_size[1]], self))
+                elif tile == 88:
+                    if self.coin_appending:
+                        self.queue.append(CheckPoint([self.x*self.tile_size[0], self.y*self.tile_size[1]+self.level_firebox_y_offset_dict[self.level]], True))
         self.first_cycle = False
         self.coin_appending = False
     def update(self):

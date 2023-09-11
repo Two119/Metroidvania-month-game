@@ -82,6 +82,7 @@ class FireBox:
                     self.mask = pygame.mask.from_surface(self.firebox.get([renderer.firebox_frame, 0]))
                 if self.is_hovered:
                     if pygame.mouse.get_pressed()[2]:
+                        renderer.queue[0].shapeshifts -= 1
                         if renderer.level != 0:
                             if not self.shifted:
                                 if renderer.queue[0].tile == 117:

@@ -101,6 +101,7 @@ class Player:
         self.levels_unlocked = [0]
         self.vel = [0, 0]
         self.gravity = 0.24
+        self.shapeshifts = 3
         self.just_spawned = True
         self.delay = 0
         self.deaths = 0
@@ -115,6 +116,7 @@ class Player:
         self.coins = 0
         self.moving = True
         self.channel = pygame.mixer.Channel(1)
+        self.on_door = False
         self.channel.set_volume(0.5)
         self.sounds = []
         self.sounds_dict = {"land":0, "jump":1}
@@ -126,6 +128,7 @@ class Player:
         self.shield_dir = 0
         self.shots = []
         self.particle_surf = None
+        self.just_tried = False
         self.has_staff = False
         self.just_shot = False
         self.staffs = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/staffs.png").convert()), [5, 1], [255, 255, 255])
@@ -209,10 +212,17 @@ class Player:
             self.fell = True
             return
         if not self.shapeshifting and self.is_alive:
-            if (pygame.key.get_pressed()[pygame.K_LSHIFT] or pygame.key.get_pressed()[pygame.K_RSHIFT]) and not(pygame.key.get_pressed()[pygame.K_LCTRL] or pygame.key.get_pressed()[pygame.K_RCTRL]):
+            if (pygame.key.get_pressed()[pygame.K_LSHIFT] or pygame.key.get_pressed()[pygame.K_RSHIFT]) and not(pygame.key.get_pressed()[pygame.K_LCTRL] or pygame.key.get_pressed()[pygame.K_RCTRL]) and self.shapeshifts > 0:
                     self.shapeshifting = True
                     renderer.queue_updating = False
                     return
+            if (pygame.key.get_pressed()[pygame.K_LSHIFT] or pygame.key.get_pressed()[pygame.K_RSHIFT]) and not(pygame.key.get_pressed()[pygame.K_LCTRL] or pygame.key.get_pressed()[pygame.K_RCTRL]) and self.shapeshifts <= 0 and not self.just_tried:
+                text = renderer.font.render("No shapeshifts left!", False, [255, 0, 0], [0, 0, 0])
+                text.set_colorkey([0, 0, 0])
+                renderer.notifications.append(Notification(text, 1))
+                self.just_tried = True
+            if not ((pygame.key.get_pressed()[pygame.K_LSHIFT] or pygame.key.get_pressed()[pygame.K_RSHIFT]) and not(pygame.key.get_pressed()[pygame.K_LCTRL] or pygame.key.get_pressed()[pygame.K_RCTRL])):
+                self.just_tried = False
             global def_frame
             self.collided = False
             if not self.standing:

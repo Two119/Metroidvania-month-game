@@ -78,6 +78,20 @@ class DeathParticle:
         self.pos[0] = self.orig_x+randint(-5, 5)
         self.tex.set_alpha(self.alpha)
         win.blit(self.tex, [self.pos[0]+renderer.camera.cam_change[0], self.pos[1]])
+class Notification:
+    def __init__(self, surf: pygame.Surface, type_):
+        self.surf = surf
+        self.alpha = 255
+        self.pos = [(1280-self.surf.get_width())/2, (900-self.surf.get_height())/2]
+        self.speed = 1
+        self.type = type_
+    def update(self, dt):
+        self.pos[1]-=(self.speed*dt)
+        self.alpha -= (self.speed*dt*2)
+        if self.alpha <= 0:
+            self.alpha = 0
+        self.surf.set_alpha(int(self.alpha))
+        win.blit(self.surf, self.pos)
 class Shield:
     def __init__(self, pos, level) -> None:
         self.pos = [pos[0]*1, pos[1]*1]
@@ -118,7 +132,7 @@ class Shield:
                 self.dead = True
 def reset(player, renderer, fell=False):
         
-        renderer.levels = [json.load(open("levels.json", "r"))["level_1"], json.load(open("levels.json", "r"))["level_2"]]
+        renderer.levels = [json.load(open("levels.json", "r"))["level_1"], json.load(open("levels.json", "r"))["level_2"], json.load(open("levels.json", "r"))["level_3"]]
         #renderer.level = 0
         renderer.side_rects = []
         renderer.init_render_pos = [[-1, -13.2], [-5, 0]]
@@ -135,10 +149,14 @@ def reset(player, renderer, fell=False):
         renderer.camera.cam_change = [0, 0]
         match renderer.level:
             case 0:
-                player.pos = [64, -3*64]
+                if not player.on_door:
+                    player.pos = [64, -3*64]
+                else:
+                    player.pos = [1604, -5*64]
             case 1:
                 player.pos = [2816, 5952]
         #player.spritesheet = SpriteSheet(spritesheet, sheet_size)
+        player.on_door = False
         player.frame = [0, 0]
         player.fell = False
         player.vel = [0, 0]

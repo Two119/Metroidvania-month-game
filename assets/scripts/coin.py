@@ -40,7 +40,7 @@ class Coin:
         if self.cycles == 1:
             for obj in renderer.queue:
                 if obj.__class__.__name__ == 'MovingPlatform':
-                    if (obj.pos[1] - self.pos[1]) <= 200 and obj.rect.collidepoint([self.pos[0], obj.pos[1]]):
+                    if (obj.pos[1] - self.pos[1]) <= 200 and (obj.pos[1] - self.pos[1]) >= 0 and obj.rect.collidepoint([self.pos[0], obj.pos[1]]):
                         obj.objects.append(self)
                         if renderer.cur_cycle == 0:
                             self.pos[0]+=32
@@ -132,6 +132,7 @@ class Coin:
                         renderer.queue.append(SwingingAxe(self.pos))
                     if renderer.queue[0].tile == 116:
                         renderer.queue.append(FireBox(self.pos, True))
+                    renderer.queue[0].shapeshifts -= 1
                     renderer.queue = [ob for ob in renderer.queue if ob != self]
                     del self
                     return

@@ -1,19 +1,12 @@
 from assets.scripts.core_funcs import *
 from assets.scripts.button import *
-from assets.scripts.player import Shield
-class Notification:
-    def __init__(self, surf: pygame.Surface, type):
-        self.surf = surf
-        self.alpha = 255
-        self.pos = [(1280-self.surf.get_width())/2, (900-self.surf.get_height())/2]
-        self.speed = 1
-        self.type = type
-    def update(self, dt):
-        self.pos[1]-=(self.speed*dt)
-        self.alpha -= (self.speed*dt*2)
-        if int(self.alpha) >= 0:
-            self.surf.set_alpha(int(self.alpha))
-        win.blit(self.surf, self.pos)
+def buy_shapeshift(args):
+    if args[1].coins >= 1:
+        args[1].coins -= 1
+        args[1].shapeshifts += 3
+        args[0].notifications.append(Notification(args[0].purchase_text, 1))
+    else:
+        args[0].notifications.append(Notification(args[0].poor_text, 2))
 def buy(args):
     renderer = args[0]
     price = args[1]
@@ -147,6 +140,7 @@ class Shop:
         self.price_texts = [self.font.render(str(self.prices[i])+" coins", False, [255, 255, 255], [0, 0, 0]) for i in range(len(self.tiles))]
         [item.set_colorkey([0, 0, 0]) for item in self.item_names]
         [item.set_colorkey([0, 0, 0]) for item in self.price_texts]
+        
         self.firebox_frame = 0
         self.spike_frame = 0
         self.delay = 0
@@ -170,6 +164,12 @@ class Shop:
         y = -128
         
         win.blit(self.bg_tex, [(1280-self.bg_tex.get_width())/2, (720-self.bg_tex.get_height())/2])
+        coin_text = self.font.render("Coins: "+str(renderer.queue[0].coins), False, (255, 255, 255), (0, 0, 0))
+        coin_text.set_colorkey([0, 0, 0])
+        shift_text = self.font.render("Shapeshifts: "+str(renderer.queue[0].shapeshifts), False, (255, 255, 255), (0, 0, 0))
+        shift_text.set_colorkey([0, 0, 0])
+        #shift_text
+        #win.blit(coin_text, [(1280-self.bg_tex.get_width())/2, (720-self.bg_tex.get_height())/2])
         for i in range(len(self.tile_images)):
             if i % 3 == 0:
                 y += 192
@@ -214,6 +214,11 @@ class Shop:
                 if not ([x, y-64] in self.tile_positions) and i == len(self.tile_images)-1:
                     self.tile_positions.append([x, y-64])
                 win.blit(self.item_names[i], [x-((self.item_names[i].get_width()-self.tile_images[i].get_width())/2), y+72])
+                if i == 6:
+                    win.blit(coin_text, [x-((self.item_names[i].get_width()-self.tile_images[i].get_width())/2), ((720-self.bg_tex.get_height())/2)+30])
+                    win.blit(shift_text, [x-((self.item_names[i].get_width()-self.tile_images[i].get_width())/2)+128, ((720-self.bg_tex.get_height())/2)+30])
+                    if not hasattr(self, "buy_shapeshift_button"):
+                        self.buy_shapeshift_button = Button([x-((self.item_names[i].get_width()-self.tile_images[i].get_width())/2)+480, ((720-self.bg_tex.get_height())/2)+10], [self.button_sprites.sheet[0][0].copy(), self.button_sprites.sheet[0][1].copy()], [buy_shapeshift, [self, renderer.queue[0]]], win)
                 win.blit(self.price_texts[i], [x-((self.price_texts[i].get_width()-self.tile_images[i].get_width())/2), y+140])
             x += 192
         
@@ -262,6 +267,7 @@ class Shop:
                     self.buttons[i].update(renderer)
                 else:
                     self.equip_buttons[i].update(renderer)
+        self.buy_shapeshift_button.update(renderer)
         for notification in self.notifications:
             if renderer.clock.get_fps() != 0:
                 notification.update((60/renderer.clock.get_fps()))

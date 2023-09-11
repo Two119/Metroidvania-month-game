@@ -165,6 +165,7 @@ class HiddenSpike:
                         if not self.ang == 0:
                             if self.ang == 90:
                                 if pygame.mouse.get_pressed()[2] and renderer.queue[0].tile not in [118, 135, 136, 137]:
+                                    renderer.queue[0].shapeshifts -= 1
                                     if renderer.queue[0].tile == 117:
                                         renderer.add_spike_u([self.pos[0]-4, self.pos[1]+52])
                                         renderer.added_spikes += 1
@@ -214,6 +215,7 @@ class HiddenSpike:
                                 win.blit(self.rect_surf, [self.pos[0]-32, self.pos[1]-28])
                             else:
                                 if pygame.mouse.get_pressed()[2] and renderer.queue[0].tile not in [118, 135, 136, 137]:
+                                    renderer.queue[0].shapeshifts -= 1
                                     if renderer.queue[0].tile == 117:
                                         renderer.add_spike_u([self.pos[0]-4, self.pos[1]+52])
                                         renderer.added_spikes += 1
@@ -263,6 +265,7 @@ class HiddenSpike:
                                 win.blit(self.rect_surf, [self.pos[0]-36, self.pos[1]-28])
                         else:
                             if pygame.mouse.get_pressed()[2] and renderer.queue[0].tile not in [118, 135, 136, 137]:
+                                renderer.queue[0].shapeshifts -= 1
                                 if renderer.queue[0].tile == 117:
                                     renderer.add_spike_u([self.pos[0]-4, self.pos[1]+52])
                                     renderer.added_spikes += 1

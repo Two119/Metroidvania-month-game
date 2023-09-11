@@ -150,6 +150,7 @@ class Game:
                                 if double_list[2] != 122 and not isinstance(double_list[2], SpikeBall) and not ismovingfirebox(double_list[2]):
                                     if not isinstance(double_list[2], FireBox):
                                         if pygame.mouse.get_pressed()[2] and double_list[2] != self.renderer.queue[0].tile:
+                                            self.renderer.queue[0].shapeshifts -= 1
                                             self.renderer.levels[self.renderer.level][double_list[3][1]][double_list[3][0]] = self.renderer.queue[0].tile
                                             if self.renderer.level == 0:
                                                 if self.renderer.queue[0].tile == 117:
@@ -299,6 +300,7 @@ class Game:
                                         win.blit(self.rect_surf, [double_list[1][0]+4, double_list[1][1]+4])
                                     else:
                                         if pygame.mouse.get_pressed()[2] and not self.renderer.queue[0].tile==116:
+                                            self.renderer.queue[0].shapeshifts -= 1
                                             old_value = self.renderer.levels[self.renderer.level][double_list[3][1]][double_list[3][0]]*2
                                             if self.renderer.level == 0:
                                                 self.renderer.levels[self.renderer.level][double_list[3][1]+4][double_list[3][0]] = self.renderer.queue[0].tile

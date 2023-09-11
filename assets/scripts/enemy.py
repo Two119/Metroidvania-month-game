@@ -338,7 +338,20 @@ class EnemySwordsman:
             self.spritesheet = SpriteSheet(sheets[0], [4, 22])
         self.renderer = renderer
         self.mask = pygame.mask.from_surface(self.spritesheet.get(self.frame))
-        self.weapon = Sword(self.pos)
+        if renderer.level == 0:
+            self.weapon = Sword(self.pos, 1)
+        if renderer.level == 1:
+            p = [1, 1, 1]
+            self.weapon = Sword(self.pos, p[randint(0, len(p)-1)])
+        if renderer.level == 2:
+            p = [1, 1, 2]
+            self.weapon = Sword(self.pos, p[randint(0, len(p)-1)])
+        if renderer.level == 3:
+            p = [2, 3, 4]
+            self.weapon = Sword(self.pos, p[randint(0, len(p)-1)])
+        if renderer.level == 4:
+            p = [3, 4, 4]
+            self.weapon = Sword(self.pos, p[randint(0, len(p)-1)])
     def update_animation(self, row, delay_wait, dt):
         if dt != 0:
             if round(delay_wait/(dt)) != 0:

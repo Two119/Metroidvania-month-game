@@ -64,20 +64,22 @@ class SpriteSheet:
     def get(self, loc):
         return self.sheet[loc[1]][loc[0]]
 class DeathParticle:
-    def __init__(self, tex, pos, colkey = [0, 0, 0]):
+    def __init__(self, tex, pos, renderer, colkey = [0, 0, 0]):
         self.tex = tex
         self.pos = pos
         self.orig_x = pos[0]*1
         self.colkey = colkey
         self.alpha = 255
         self.colkey = colkey
+        self.orig_pos = [pos[0], pos[1]]
+        self.orig_x_change = renderer.camera.cam_change[0]*1
     def update(self, renderer):
         if self.alpha > 0:
             self.alpha -= (2*renderer.dt)
         self.pos[1] -= (1.5*renderer.dt)
         self.pos[0] = self.orig_x+randint(-5, 5)
         self.tex.set_alpha(self.alpha)
-        win.blit(self.tex, [self.pos[0]+renderer.camera.cam_change[0], self.pos[1]])
+        win.blit(self.tex, [self.pos[0]+(renderer.camera.cam_change[0]-self.orig_x_change), self.pos[1]])
 class Notification:
     def __init__(self, surf: pygame.Surface, type_):
         self.surf = surf
@@ -128,7 +130,7 @@ class Shield:
                 particle_sheet = SpriteSheet(self.sheet.get(self.frame), [self.sheet.get(self.frame).get_width()//4, self.sheet.get(self.frame).get_height()//4], [0, 0, 0])
                 for j, sheet in enumerate(particle_sheet.sheet):
                     for i, surf in enumerate(sheet):
-                        renderer.queue.append(DeathParticle(surf, [self.pos[0]+(i*4), self.pos[1]+(j*4)], [0, 0, 0]))
+                        renderer.queue.append(DeathParticle(surf, [self.pos[0]+(i*4), self.pos[1]+(j*4)], renderer, [0, 0, 0]))
                 self.dead = True
 def reset(player, renderer, fell=False):
         

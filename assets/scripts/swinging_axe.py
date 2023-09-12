@@ -47,7 +47,13 @@ class SwingingAxe:
                     #reset(renderer.queue[0], renderer)
                     renderer.queue[0].deaths += 1
                     #del self
-                    
+                for enemy in renderer.enemies:
+                    if self.mask.overlap(renderer.queue[enemy].mask, (renderer.queue[enemy].pos[0]-(self.pos[0]-(self.img.get_width()/2)), renderer.queue[enemy].pos[1]-(self.pos[1]-(self.img.get_height()/2)))) == None:
+                        pass
+                    else:
+                        renderer.queue[enemy].is_alive = False
+                        #renderer.queue = [ob for ob in renderer.queue if ob != self]
+
                 
                 win.blit(self.img, [self.pos[0]-int(self.img.get_width()/2), self.pos[1]-int(self.img.get_height()/2)])
                 pygame.draw.circle(win, (0, 0, 0), self.pos, 10)

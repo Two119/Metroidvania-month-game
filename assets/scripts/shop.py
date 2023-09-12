@@ -93,6 +93,25 @@ def equip(args):
         renderer.shop.font.set_bold(False)
         notification_text.set_colorkey([0, 0, 0])
         renderer.shop.notifications.append(Notification(notification_text, 3))
+class InfoBar:
+    def __init__(self, font:pygame.font.Font):
+        self.font = font
+        self.tiles = [117, 118, 121, 6, 200, 201, 202, 203, 116]
+        self.tile_names_dict = {117: "Spike", 118: "Hidden Spike", 121: "Swinging Axe", 116: "Fire platform", 6: "Standard tile", 200:"Wooden Shield", 201:"Iron Shield", 202:"Golden Shield", 203:"Diamond Shield"}
+        self.info_dict = {117: "Ordinary spike, kills enemies and player on contact. Destroyed after killing one enemy.", 118: "Hidden Spike, erupts from ground and kills enemies and player on contact. Destroyed after killing two enemies.", 121: "Swinging axe, kills enemies and player on contact. Permanent but periodically swings high enough to let player or enemies pass.", 116: "Fire Platform, periodically emits blasts of flames which kill player and enemies on contact. Safe to walk accross while not burning.", 6: "Standard ground tile.", 200: "Wooden shield, blocks enemy attacks from killing player. Only blocks attacks if they touch the shield. Has 8 health. Breaks upon reaching 0 health but respawns when player dies and respawns.", 201: "Iron shield, blocks enemy attacks from killing player. Only blocks attacks if they touch the shield. Has 16 health. Breaks upon reaching 0 health but respawns when player dies and respawns.", 202: "Golden shield, blocks enemy attacks from killing player. Only blocks attacks if they touch the shield. Has 24 health. Breaks upon reaching 0 health but respawns when player dies and respawns.", 203: "Diamond shield, blocks enemy attacks from killing player. Only blocks attacks if they touch the shield. Has 32 health. Breaks upon reaching 0 health but respawns when player dies and respawns."}
+        self.bg_tex = scale_image(pygame.image.load("assets/Spritesheets/shop_info_bg.png").convert())
+        self.bg_tex.set_colorkey([255, 255, 255])
+        self.item_names = [self.font.render(self.tile_names_dict[self.tiles[i]], False, [255, 255, 255], [0, 0, 0]) for i in range(len(self.tiles))]
+        [item.set_colorkey([0, 0, 0]) for item in self.item_names]
+        self.item_descriptions = [self.font.render(self.info_dict[self.tiles[i]], False, [255, 255, 255], [0, 0, 0], 332) for i in range(len(self.tiles))]
+        [item.set_colorkey([0, 0, 0]) for item in self.item_descriptions]
+        self.current = -1
+        self.pos = [860, (720-self.bg_tex.get_height())/2]
+    def update(self, renderer):
+        win.blit(self.bg_tex, self.pos)
+        if self.current != -1:
+            win.blit(self.item_names[self.current], [self.pos[0]+16, self.pos[1]+16])
+            win.blit(self.item_descriptions[self.current], [self.pos[0]+16, self.pos[1]+48])
 class Shop:
     def  __init__(self, renderer):
         self.tiles = [117, 118, 121, 6, 200, 201, 202, 203, 116]
@@ -140,7 +159,6 @@ class Shop:
         self.price_texts = [self.font.render(str(self.prices[i])+" coins", False, [255, 255, 255], [0, 0, 0]) for i in range(len(self.tiles))]
         [item.set_colorkey([0, 0, 0]) for item in self.item_names]
         [item.set_colorkey([0, 0, 0]) for item in self.price_texts]
-        
         self.firebox_frame = 0
         self.spike_frame = 0
         self.delay = 0
@@ -159,11 +177,13 @@ class Shop:
         self.poor_text.set_colorkey([0, 0, 0])
         self.purchase_text.set_colorkey([0, 0, 0])
         self.notifications = []
+        self.infobar = InfoBar(self.font)
+        self.current = -1
     def update(self, renderer):
         x = ((1280-self.bg_tex.get_width())/2)+128
         y = -128
         
-        win.blit(self.bg_tex, [(1280-self.bg_tex.get_width())/2, (720-self.bg_tex.get_height())/2])
+        win.blit(self.bg_tex, [96, (720-self.bg_tex.get_height())/2])
         coin_text = self.font.render("Coins: "+str(renderer.queue[0].coins), False, (255, 255, 255), (0, 0, 0))
         coin_text.set_colorkey([0, 0, 0])
         shift_text = self.font.render("Shapeshifts: "+str(renderer.queue[0].shapeshifts), False, (255, 255, 255), (0, 0, 0))
@@ -173,7 +193,7 @@ class Shop:
         for i in range(len(self.tile_images)):
             if i % 3 == 0:
                 y += 192
-                x = ((1280-self.bg_tex.get_width())/2)+128
+                x = 224
             if i == 0:
                 if self.tiles[i] in renderer.queue[0].tiles_unlocked:
                     win.blit(self.tile_images[i], [x-4, y-8])
@@ -215,15 +235,16 @@ class Shop:
                     self.tile_positions.append([x, y-64])
                 win.blit(self.item_names[i], [x-((self.item_names[i].get_width()-self.tile_images[i].get_width())/2), y+72])
                 if i == 6:
-                    win.blit(coin_text, [x-((self.item_names[i].get_width()-self.tile_images[i].get_width())/2), ((720-self.bg_tex.get_height())/2)+30])
-                    win.blit(shift_text, [x-((self.item_names[i].get_width()-self.tile_images[i].get_width())/2)+128, ((720-self.bg_tex.get_height())/2)+30])
+                    win.blit(coin_text, [x-((self.item_names[i].get_width()-self.tile_images[i].get_width())/2)+32, ((720-self.bg_tex.get_height())/2)+30])
+                    win.blit(shift_text, [x-((self.item_names[i].get_width()-self.tile_images[i].get_width())/2)+288, ((720-self.bg_tex.get_height())/2)+30])
                     if not hasattr(self, "buy_shapeshift_button"):
                         self.buy_shapeshift_button = Button([x-((self.item_names[i].get_width()-self.tile_images[i].get_width())/2)+480, ((720-self.bg_tex.get_height())/2)+10], [self.button_sprites.sheet[0][0].copy(), self.button_sprites.sheet[0][1].copy()], [buy_shapeshift, [self, renderer.queue[0]]], win)
                 win.blit(self.price_texts[i], [x-((self.price_texts[i].get_width()-self.tile_images[i].get_width())/2), y+140])
             x += 192
-        
+        self.current = -1
         for i in range(len(self.tile_masks)):
             if cursor_mask.overlap(self.tile_masks[i], (self.tile_positions[i][0]-pygame.mouse.get_pos()[0], self.tile_positions[i][1]-pygame.mouse.get_pos()[1])) != None:
+                self.current = i
                 if i == len(self.tile_images)-1:
                     pygame.draw.rect(win, [234, 212, 170], pygame.Rect(self.tile_positions[i][0], self.tile_positions[i][1]+32, 64, 96))
                     win.blit(self.firebox_sheet.get([self.firebox_frame, 0]), self.tile_positions[i]) 
@@ -258,6 +279,8 @@ class Shop:
             self.equip_buttons[len(self.equip_buttons)-4].args.append(3)
             self.equip_buttons[len(self.equip_buttons)-5].args.append(4)
             [self.buttons[i].textures[0].blit(self.buy_text, [(self.buttons[i].textures[0].get_width()-self.buy_text.get_width())/2, 12]) for i in range(len(self.buttons))]
+            [self.buy_shapeshift_button.textures[i].blit(self.buy_text, [(self.buy_shapeshift_button.textures[0].get_width()-self.buy_text.get_width())/2, 12]) for i in range(0, 1)]
+            [self.buy_shapeshift_button.textures[i].blit(self.buy_text, [(self.buy_shapeshift_button.textures[1].get_width()-self.buy_text.get_width())/2, 16]) for i in range(1, 2)]
             [self.buttons[i].textures[1].blit(self.buy_text, [(self.buttons[i].textures[1].get_width()-self.buy_text.get_width())/2, 16]) for i in range(len(self.buttons))]
             [self.equip_buttons[i].textures[0].blit(self.equip_text, [(self.equip_buttons[i].textures[0].get_width()-self.equip_text.get_width())/2, 12]) for i in range(len(self.equip_buttons))]
             [self.equip_buttons[i].textures[1].blit(self.equip_text, [(self.equip_buttons[i].textures[1].get_width()-self.equip_text.get_width())/2, 16]) for i in range(len(self.equip_buttons))]
@@ -265,14 +288,21 @@ class Shop:
             for i in range(len(self.buttons)):
                 if not ((self.tiles[self.buttons[i].args[2]] in renderer.queue[0].tiles_unlocked) or self.tiles[i]==6):
                     self.buttons[i].update(renderer)
+                    if self.buttons[i].current == 1:
+                        self.current = i
                 else:
                     self.equip_buttons[i].update(renderer)
+                    self.equip_buttons[i].update(renderer)
+                    if self.equip_buttons[i].current == 1:
+                        self.current = i
         self.buy_shapeshift_button.update(renderer)
         for notification in self.notifications:
             if renderer.clock.get_fps() != 0:
                 notification.update((60/renderer.clock.get_fps()))
                 if notification.alpha < 0:
                     self.notifications.remove(notification)
+        self.infobar.current = self.current
+        self.infobar.update(renderer)
                 
                 
         

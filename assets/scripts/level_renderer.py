@@ -29,7 +29,7 @@ class CheckPoint:
                         renderer.queue[0].on_door = True
         win.blit(self.tex, self.pos)
         pygame.draw.rect(win, [255, 0, 0], self.rect)
-        print(self.pos)
+        #print(self.pos)
 class LevelRenderer:
     def __init__(self, levels : tuple, tilesheet : pygame.Surface, tilesheet_size : tuple, spike_images : tuple, colors : tuple, background : pygame.Surface, coin_image):
         final_color = [30, 30, 30]
@@ -46,6 +46,8 @@ class LevelRenderer:
         else:
             self.spike_image = pygame.image.load("assets/Spritesheets/spikes.png").convert()
             self.button_sprites = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/buttons.png").convert()), [2, 1], [255, 255, 255])
+        self.hit_sfx = pygame.mixer.Sound("assets/Audio/hit.ogg")
+        self.swoosh_sfx = pygame.mixer.Sound("assets/Audio/swoosh.ogg")
         self.spikesheet = SpriteSheet(scale_image(self.spike_image, 4).convert(), [4, 1], [236, 28, 36])
         self.attr_dict = {"pos":0, "delay":1, "just_spawned":2, "rect_surf":3, "is_hovered":4, "played":5}
         self.frame = [0, 0]
@@ -89,7 +91,11 @@ class LevelRenderer:
         self.special_blocks = []
         self.coin_channel = pygame.mixer.Channel(2)
         self.firebox_channel = pygame.mixer.Channel(4)
+        self.thwack_channel = pygame.mixer.Channel(5)
+        self.swoosh_channel = pygame.mixer.Channel(6)
         self.coin_channel.set_volume(0.5)
+        self.thwack_channel.set_volume(0.5)
+        self.swoosh_channel.set_volume(0.5)
         self.tile_size = [64, 64]
         self.init_render_pos = [[-1, -9.2], [-1, -12.2]]
         self.firebox_frame = 0
@@ -501,7 +507,7 @@ class LevelRenderer:
             self.dt = 1
         if self.dt > 1.5:
             self.dt = 1
-        self.delay += (1*self.dt)
+        self.delay += (1)
         if round(16/self.dt) != 0:
             if (int(self.delay)%round(16/self.dt)==0):
                 self.firebox_frame+=1
@@ -510,6 +516,8 @@ class LevelRenderer:
         if not self.firebox_in_cam:
             self.firebox_channel.stop()
         self.firebox_channel.set_volume(self.coin_channel.get_volume())
+        self.thwack_channel.set_volume(self.coin_channel.get_volume())
+        self.swoosh_channel.set_volume(self.coin_channel.get_volume())
         self.render()
         self.enemies = []
         self.firebox_in_cam = False
@@ -540,7 +548,7 @@ class LevelRenderer:
         self.bullet_manager.update_graphics(self)
         for notification in self.notifications:
             notification.update(self.dt)
-        #if not web:
-            #print(self.clock.get_fps())
+        if not web:
+            print(self.clock.get_fps())
 
         

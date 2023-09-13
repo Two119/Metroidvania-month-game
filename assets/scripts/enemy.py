@@ -80,7 +80,7 @@ class EnemyWizard:
                 self.frame[1] = row
                 if self.just_spawned:
                     self.frame[1] == 0
-                    self.delay += (1*dt)
+                    self.delay += (1)
                     if int(self.delay) % round(delay_wait/(dt)) == 0:
                         self.frame[0] += 1
                     
@@ -91,7 +91,7 @@ class EnemyWizard:
                         if not self.renderer.coin_channel.get_busy():
                             self.renderer.coin_channel.play(self.sounds[self.sounds_dict["land"]])
                 else:
-                    self.delay += (1*dt)
+                    self.delay += (1)
                     if int(self.delay) % round(delay_wait/(dt)) == 0:
                         self.frame[0] += 1
                     if self.frame[0] > 3:
@@ -184,7 +184,7 @@ class EnemyWizard:
             renderer.bullet_manager.add_bullet(self.staff_pos, 270-ang)
             self.just_shot = True
         if self.just_shot:
-            self.shoot_delay += (1*dt)
+            self.shoot_delay += (1)
         if int(self.shoot_delay)%round(60/dt)==0:
             self.just_shot = False
             self.shoot_delay = 0
@@ -239,10 +239,12 @@ class Sword:
         self.just_hit = False
         self.hit_delay = 1
     def update(self, renderer):
+        
         if not self.attacking:
             win.blit(pygame.transform.flip(self.spritesheet.get([0, 1]), self.dir, False), self.pos)
+            self.rect = pygame.transform.flip(self.spritesheet.get([0, 1]), self.dir, False).get_rect(topleft=self.pos)
         else:
-            self.delay += (1*renderer.dt)
+            self.delay += (1)
             if round(10/renderer.dt) != 0:
                 if (int(self.delay) % round(10/renderer.dt))==0:
                     self.frame[0] += 1
@@ -250,16 +252,24 @@ class Sword:
                 self.frame[0] = 0
                 self.just_hit = False
             self.mask = pygame.mask.from_surface(pygame.transform.flip(self.spritesheet.get(self.frame), self.dir, False))
+            if self.rect.colliderect(renderer.camera.window_rect):
+                if self.frame[0]==0:
+                        renderer.swoosh_channel.play(renderer.swoosh_sfx)
+            self.rect = pygame.transform.flip(self.spritesheet.get([0, 1]), self.dir, False).get_rect(topleft=self.pos)
             if self.mask.overlap(renderer.queue[0].shield.mask, [renderer.queue[0].shield.pos[0]-self.pos[0], renderer.queue[0].shield.pos[1]-self.pos[1]]) == None:
                 if self.mask.overlap(renderer.queue[0].mask, [renderer.queue[0].pos[0]-self.pos[0], renderer.queue[0].pos[1]-self.pos[1]])!=None:
                     renderer.queue[0].is_alive = False
                     renderer.queue[0].deaths += 1
+                
             else:
                 if renderer.queue[0].using_shield:
                     if renderer.queue[0].shield.health >= 0:
                         if not self.just_hit:
                             renderer.queue[0].shield.health -= self.level
                             renderer.queue[0].shield.health_bar_rect.w -= renderer.queue[0].shield.unit_bar_length*self.level
+                            if renderer.queue[0].shield.health > 0:
+                                if self.rect.colliderect(renderer.camera.window_rect):
+                                    renderer.thwack_channel.play(renderer.hit_sfx)
                             self.just_hit = True
                     else:
                         if self.mask.overlap(renderer.queue[0].mask, [renderer.queue[0].pos[0]-self.pos[0], renderer.queue[0].pos[1]-self.pos[1]])!=None:
@@ -358,7 +368,7 @@ class EnemySwordsman:
                 self.frame[1] = row
                 if self.just_spawned:
                     self.frame[1] == 0
-                    self.delay += (1*dt)
+                    self.delay += (1)
                     if int(self.delay) % round(delay_wait/(dt)) == 0:
                         self.frame[0] += 1
                     
@@ -369,7 +379,7 @@ class EnemySwordsman:
                         if not self.renderer.coin_channel.get_busy():
                             self.renderer.coin_channel.play(self.sounds[self.sounds_dict["land"]])
                 else:
-                    self.delay += (1*dt)
+                    self.delay += (1)
                     if int(self.delay) % round(delay_wait/(dt)) == 0:
                         self.frame[0] += 1
                     if self.frame[0] > 3:

@@ -24,7 +24,7 @@ class BulletManager:
     def update_physics(self, renderer):
         if hasattr(renderer, "dt"):
             if renderer.dt != 0:
-                self.delay += (1*renderer.dt)
+                self.delay += (1)
                 if round(8/(renderer.dt)) != 0:
                     if int(self.delay) % round(8/(renderer.dt)) == 0:
                         self.frame += 1

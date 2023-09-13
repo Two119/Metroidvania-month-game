@@ -21,7 +21,7 @@ class SpikeBall:
         self.rect = self.cur_img.get_rect(topleft=self.pos)
     def spawn_animation(self, row, delay_wait, renderer):
         if (renderer.dt) != 0 and self.just_spawned:
-            self.delay += (1*renderer.dt)
+            self.delay += (1)
             self.frame[1] = row
             if round(delay_wait/renderer.dt) != 0:
                 if int(self.delay) % round(delay_wait/renderer.dt) == 0:

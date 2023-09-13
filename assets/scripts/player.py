@@ -176,7 +176,7 @@ class Player:
                 self.frame[1] = row
                 if self.just_spawned:
                     self.frame[1] == 0
-                    self.delay += (1*dt)
+                    self.delay += (1)
                     if int(self.delay) % round(delay_wait/(dt)) == 0:
                         self.frame[0] += 1
                     
@@ -187,7 +187,7 @@ class Player:
                         if not self.channel.get_busy():
                             self.channel.play(self.sounds[self.sounds_dict["land"]])
                 else:
-                    self.delay += (1*dt)
+                    self.delay += (1)
                     if int(self.delay) % round(delay_wait/(dt)) == 0:
                         self.frame[0] += 1
                     if self.frame[0] > 3:

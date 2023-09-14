@@ -484,7 +484,8 @@ class EnemySwordsman:
             particle_sheet = SpriteSheet(self.spritesheet.get(self.frame), [self.spritesheet.get(self.frame).get_width()//4, self.spritesheet.get(self.frame).get_height()//4], [0, 0, 0])
             for j, sheet in enumerate(particle_sheet.sheet):
                 for i, surf in enumerate(sheet):
-                    renderer.queue.append(DeathParticle(surf, [self.pos[0]+(i*4), self.pos[1]+(j*4)], renderer, [0, 0, 0]))
+                    if not isequal(surf.get_at([0, 0]), [0, 0, 0]):
+                        renderer.queue.append(DeathParticle(surf, [self.pos[0]+(i*4), self.pos[1]+(j*4)], renderer, [0, 0, 0]))
             del self
     def update(self, renderer):
         if renderer.clock.get_fps() != 0:

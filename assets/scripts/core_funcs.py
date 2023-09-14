@@ -41,13 +41,11 @@ def scale_image(img, factor=4.0):
     return pygame.transform.scale(img, size).convert()
 def angle_between(points):
     return math.atan2(points[1][1] - points[0][1], points[1][0] - points[0][0])*180/math.pi
-#clip function from daflufflyportato
-def clip(surf,x,y,x_size,y_size):
-    handle_surf = surf.copy()
-    clipR = pygame.Rect(x,y,x_size,y_size)
-    handle_surf.set_clip(clipR)
-    image = surf.subsurface(handle_surf.get_clip())
-    return image.copy()
+def isequal(color1:pygame.Color, color2:tuple) -> bool:
+    if color1.r == color2[0] and color1.g == color2[1] and color1.b == color2[2]:
+        return True
+    else:
+        return False
 class SpriteSheet:
     def __init__(self, sheet, size, colorkey = [0, 0, 0]):
         self.spritesheet = sheet
@@ -163,7 +161,10 @@ def reset(player, renderer, fell=False):
                     if not  (2 in player.levels_unlocked):
                         player.pos = [2816, 5952]
                     else:
-                        player.pos = [2816, 5152]
+                        if not player.t:
+                            player.pos = [2816, 5152]
+                        else:
+                            player.pos = [2816, 5952]
                 else:
                     player.pos = [2816, 5152]
             case 2:
@@ -176,6 +177,7 @@ def reset(player, renderer, fell=False):
                     player.pos = [2816, 5152]
         #player.spritesheet = SpriteSheet(spritesheet, sheet_size)
         player.on_door = False
+        player.t = False
         player.frame = [0, 0]
         player.fell = False
         player.vel = [0, 0]

@@ -366,7 +366,10 @@ class Game:
                                 else:
                                     if not obj.on_platform:
                                         obj.is_hovered = True
+                
                 self.small_menu_button.update(self.renderer)
+                if pygame.key.get_pressed()[pygame.K_ESCAPE]:
+                    game_menu(self)
             if not self.playing:
                 if self.spare_surf == None:
                     pygame.image.save(win, "win.png")

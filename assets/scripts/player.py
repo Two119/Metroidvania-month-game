@@ -66,6 +66,31 @@ class Inventory:
                     renderer.queue[0].tile = self.items[self.current]
                 break
             index += 1
+        if pygame.key.get_pressed()[pygame.K_1]:
+            self.current = 0
+            if self.current < len(self.items):
+                self.cur_tile = 0
+                renderer.queue[0].tile = self.items[self.current]
+        if pygame.key.get_pressed()[pygame.K_2]:
+            self.current = 1
+            if self.current < len(self.items):
+                self.cur_tile = 0
+                renderer.queue[0].tile = self.items[self.current]
+        if pygame.key.get_pressed()[pygame.K_3]:
+            self.current = 2
+            if self.current < len(self.items):
+                self.cur_tile = 0
+                renderer.queue[0].tile = self.items[self.current]
+        if pygame.key.get_pressed()[pygame.K_4]:
+            self.current = 3
+            if self.current < len(self.items):
+                self.cur_tile = 0
+                renderer.queue[0].tile = self.items[self.current]
+        if pygame.key.get_pressed()[pygame.K_5]:
+            self.current = 4
+            if self.current < len(self.items):
+                self.cur_tile = 0
+                renderer.queue[0].tile = self.items[self.current]
         if self.current < len(self.items):
             if self.items[self.current] == 117:
                 if pygame.key.get_pressed()[pygame.K_LEFT]:
@@ -98,6 +123,7 @@ class Player:
         self.using_shield = False
         self.tiles_unlocked = [6]
         self.is_alive = True
+        self.t = False
         self.levels_unlocked = [0]
         self.vel = [0, 0]
         self.gravity = 0.24

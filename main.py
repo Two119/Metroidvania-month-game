@@ -6,7 +6,7 @@ async def main():
         game.update()
         if not web:
              for event in pygame.event.get():
-                    if event.type == pygame.QUIT or pygame.key.get_pressed()[pygame.K_ESCAPE]:
+                    if event.type == pygame.QUIT:
                         game.run = False
         pygame.display.update()
         await asyncio.sleep(0)

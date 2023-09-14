@@ -25,6 +25,7 @@ class CheckPoint:
                 if pygame.key.get_pressed()[pygame.K_TAB] and renderer.level + self.type_of >= 0:
                     renderer.queue[0].is_alive = False
                     renderer.level += self.type_of
+                    renderer.queue[0].t = True
                     if self.type_of == -1:
                         renderer.queue[0].on_door = True
                     if not renderer.level in renderer.queue[0].levels_unlocked:
@@ -290,13 +291,13 @@ class LevelRenderer:
                                 if (renderer.queue[enemy].mask.overlap(self.mask, (spike[self.attr_dict["pos"]][0]-renderer.queue[enemy].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[enemy].pos[1])) == None):
                                     pass
                                 else:
-                                    renderer.enemies.remove(enemy)
-                                    self.queue.remove(renderer.queue[enemy])
-                                    renderer.queue[enemy].is_alive = False
+                                    obj.is_alive = False
+                                    #self.queue.remove(renderer.queue[enemy])
+                                    #renderer.queue[enemy].is_alive = False
                                     if spike[3]:
                                         if spike in self.spikes:
                                             self.spikes.remove(spike)
-                                            break
+                                            return
                         else:
                             for obj in self.queue:
                                 if isinstance(obj, EnemySwordsman):
@@ -306,13 +307,13 @@ class LevelRenderer:
                                 if (renderer.queue[enemy].mask.overlap(self.mask_2, (spike[self.attr_dict["pos"]][0]-renderer.queue[enemy].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[enemy].pos[1])) == None):
                                     pass
                                 else:
-                                    renderer.enemies.remove(enemy)
-                                    renderer.queue[enemy].is_alive = False
-                                    self.queue.remove(renderer.queue[enemy])
+                                    obj.is_alive = False
+                                    #renderer.queue[enemy].is_alive = False
+                                    #self.queue.remove(renderer.queue[enemy])
                                     if spike[3]:
                                         if spike in self.spikes:
                                             self.spikes.remove(spike)
-                                            break
+                                            return
                     else:
                         if spike[7]==90:
                             for obj in self.queue:
@@ -323,13 +324,13 @@ class LevelRenderer:
                                 if (renderer.queue[enemy].mask.overlap(self.mask_3, (spike[self.attr_dict["pos"]][0]-renderer.queue[enemy].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[enemy].pos[1])) == None):
                                     pass
                                 else:
-                                    renderer.queue[enemy].is_alive = False
-                                    self.enemies.remove(enemy)
-                                    self.queue.remove(renderer.queue[enemy])
+                                    obj.is_alive = False
+                                    #self.enemies.remove(enemy)
+                                    #self.queue.remove(renderer.queue[enemy])
                                     if spike[3]:
                                         if spike in self.spikes:
                                             self.spikes.remove(spike)
-                                            break
+                                            return
                         else:
                             for obj in self.queue:
                                 if isinstance(obj, EnemySwordsman):
@@ -339,13 +340,13 @@ class LevelRenderer:
                                 if (renderer.queue[enemy].mask.overlap(self.mask_4, (spike[self.attr_dict["pos"]][0]-renderer.queue[enemy].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[enemy].pos[1])) == None):
                                     pass
                                 else:
-                                    renderer.queue[enemy].is_alive = False
-                                    self.queue.remove(renderer.queue[enemy])
-                                    renderer.enemies.remove(enemy)
+                                    obj.is_alive = False
+                                    #self.queue.remove(renderer.queue[enemy])
+                                    #renderer.enemies.remove(enemy)
                                     if spike[3]:
                                         if spike in self.spikes:
                                             self.spikes.remove(spike)
-                                            break
+                                            return
                     if not self.played:
                         if not web:
                             renderer.coin_channel.play(pygame.mixer.Sound("assets\Audio\spike_spawn.ogg"))

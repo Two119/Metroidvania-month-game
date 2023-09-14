@@ -54,7 +54,9 @@ class SwingingAxe:
                         renderer.queue[enemy].is_alive = False
                         #renderer.queue = [ob for ob in renderer.queue if ob != self]
 
-                
+                if int(self.angle) == 0:
+                    if not renderer.axe_channel.get_busy():
+                        renderer.axe_channel.play(renderer.axe_swoosh_sfx)
                 win.blit(self.img, [self.pos[0]-int(self.img.get_width()/2), self.pos[1]-int(self.img.get_height()/2)])
                 pygame.draw.circle(win, (0, 0, 0), self.pos, 10)
         

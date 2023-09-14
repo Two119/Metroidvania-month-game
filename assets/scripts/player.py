@@ -279,14 +279,14 @@ class Player:
                         if not self.jumping:
                             self.vel[0] = (0-(self.speed*(dt)))
                         else:
-                            self.vel[0] = 0.85*(0-(find_u(25, self.gravity*(dt))))
+                            self.vel[0] = 0.85*(0-(find_u(26, self.gravity*(dt))))
                         self.update_animation(12, 17.7/2, dt)
                         self.dir = 0
                     elif pygame.key.get_pressed()[pygame.K_d] :
                         if not self.jumping:
                             self.vel[0] = (self.speed*(dt))
                         else:
-                            self.vel[0] = 0.85*((find_u(25, self.gravity*(dt))))
+                            self.vel[0] = 0.85*((find_u(26, self.gravity*(dt))))
                         self.update_animation(1, 17.7/2, dt)
                         self.dir = 1
                     else:
@@ -361,14 +361,14 @@ class Player:
                         if not self.jumping:
                             self.vel[0] = (0-(self.speed*(dt)))
                         else:
-                            self.vel[0] = 0.85*(0-(find_u(25, self.gravity*(dt))))
+                            self.vel[0] = 0.85*(0-(find_u(26, self.gravity*(dt))))
                         self.update_animation(12, 17.7/2, dt)
                         self.dir = 0
                     elif pygame.key.get_pressed()[pygame.K_d] :
                         if not self.jumping:
                             self.vel[0] = (self.speed*(dt))
                         else:
-                            self.vel[0] = 0.85*((find_u(25, self.gravity*(dt))))
+                            self.vel[0] = 0.85*((find_u(26, self.gravity*(dt))))
                         self.update_animation(1, 17.7/2, dt)
                         self.dir = 1
                     else:
@@ -417,7 +417,8 @@ class Player:
         if renderer.clock.get_fps() != 0:
             if self.just_spawned:
                     self.update_animation(7, 15/2, renderer.dt)
-            
+            if self.shapeshifts < 0:
+                self.shapeshifts = 0
             self.standing = False
             #if renderer.clock.get_fps() != 0:
             self.update_physics(renderer, renderer.dt)

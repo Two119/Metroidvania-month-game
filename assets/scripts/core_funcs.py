@@ -24,7 +24,7 @@ global win_size
 win_size = [win.get_width(), win.get_height()]
 pygame.display.set_caption("Shiftania")
 global spawn_positions
-spawn_positions = [[64, -3*64], [64, 4.5*64]]
+spawn_positions = [[64, -3*64], [64, 4.5*64], [2816, 5120]]
 
 def max_height_vertical(u, g):
     return (u*u)/(2*g)
@@ -137,7 +137,7 @@ def reset(player, renderer, fell=False):
         renderer.levels = [json.load(open("levels.json", "r"))["level_1"], json.load(open("levels.json", "r"))["level_2"], json.load(open("levels.json", "r"))["level_3"]]
         #renderer.level = 0
         renderer.side_rects = []
-        renderer.init_render_pos = [[-1, -13.2], [-5, 0]]
+        renderer.init_render_pos = [[-1, -13.2], [-5, 0], [-5, 0]]
         #renderer.coin_channel = pygame.mixer.Channel(2)
         renderer.queue = [player]
         renderer.first_cycle = True
@@ -152,11 +152,28 @@ def reset(player, renderer, fell=False):
         match renderer.level:
             case 0:
                 if not player.on_door:
-                    player.pos = [64, -3*64]
+                    if not  (1 in player.levels_unlocked):
+                        player.pos = [64, -3*64]
+                    else:
+                        player.pos = [1604, -5*64]   
                 else:
-                    player.pos = [1604, -5*64]
+                    player.pos = [1604, -5*64]   
             case 1:
-                player.pos = [2816, 5952]
+                if not player.on_door:
+                    if not  (2 in player.levels_unlocked):
+                        player.pos = [2816, 5952]
+                    else:
+                        player.pos = [2816, 5152]
+                else:
+                    player.pos = [2816, 5152]
+            case 2:
+                if not player.on_door:
+                    if not  (3 in player.levels_unlocked):
+                        player.pos = [2816, 5952]
+                    else:
+                        player.pos = [2816, 5152]
+                else:
+                    player.pos = [2816, 5152]
         #player.spritesheet = SpriteSheet(spritesheet, sheet_size)
         player.on_door = False
         player.frame = [0, 0]

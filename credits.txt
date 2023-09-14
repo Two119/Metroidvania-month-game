@@ -8,4 +8,6 @@ Crusher animation from https://foozlecc.itch.io/
 Firebox animation from https://bdragon1727.itch.io/
 Staff sprites: https://butterymilk.itch.io/, https://ivoryred.itch.io/,  https://brullov.itch.io/
 UI: https://mounirtohami.itch.io/
+Dialogue sfx from https://freesound.org/people/tams_kp/
+Axe swoosh effect https://www.storyblocks.com/audio/stock/axe-swooshes---indoor-he5h_v32uvhk0wxrw70.html
 Font: https://www.1001fonts.com/users/codeman38/

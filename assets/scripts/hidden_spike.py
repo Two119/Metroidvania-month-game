@@ -2,8 +2,10 @@ from assets.scripts.core_funcs import *
 from assets.scripts.swinging_axe import *
 from assets.scripts.firebox import *
 class HiddenSpike:
-    def __init__(self, spritesheet, sheet_size, pos, down=False, ang=0):
+    def __init__(self, spritesheet, sheet_size, pos, down=False, ang=0, shifted=False):
         self.spritesheet = SpriteSheet(pygame.transform.flip(scale_image(spritesheet, 4).convert(), False, down), sheet_size, [236, 28, 36])
+        self.shifted = shifted
+        self.enemies_destroyed = 0
         rect_surf = pygame.Surface(self.spritesheet.size)
         rect_surf.fill([0, 0, 0])
         rect_surf.set_colorkey([0, 0, 0])
@@ -133,6 +135,7 @@ class HiddenSpike:
                                         pass
                                     else:
                                         e.is_alive = False
+                                        self.enemies_destroyed+=1
                                         #renderer.queue = [ob for ob in renderer.queue if ob != self]
                                         #del self
                                         #return
@@ -153,7 +156,7 @@ class HiddenSpike:
                                         pass
                                     else:
                                         e.is_alive = False
-                                        
+                                        self.enemies_destroyed+=1
                     if not self.just_spawned == None:
                         if self.ang == 0:
                             win.blit(self.spritesheet.get(self.frame), self.pos)
@@ -161,6 +164,7 @@ class HiddenSpike:
                             win.blit(self.spritesheet.get(self.frame), [self.pos[0]-int(self.spritesheet.get(self.frame).get_width()/2), self.pos[1]-int(self.spritesheet.get(self.frame).get_height()/2)])
                     if not self.shiftable:
                         self.is_hovered = False
+                
                     if self.is_hovered and not(self.just_spawned):
                         if not self.ang == 0:
                             if self.ang == 90:

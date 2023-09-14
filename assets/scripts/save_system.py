@@ -14,6 +14,7 @@ class SaveSystem:
                 saved = json.loads(str(saved))
                 renderer.level = int(saved["level"])
                 if len(renderer.queue) > 0:
+                    renderer.queue[0].levels_unlocked = [i for i in range(int(saved["max_level"]))]
                     renderer.queue[0].coins = int(saved["coins"])
                     renderer.queue[0].deaths = int(saved["deaths"])
                     if not (6 in renderer.queue[0].tiles_unlocked):
@@ -54,6 +55,7 @@ class SaveSystem:
                 saved = json.loads(str(saved))
                 renderer.level = int(saved["level"])
                 if len(renderer.queue) > 0:
+                    renderer.queue[0].levels_unlocked = [i for i in range(int(saved["max_level"])+1)]
                     renderer.queue[0].coins = int(saved["coins"])
                     renderer.queue[0].deaths = int(saved["deaths"])
                     if not (6 in renderer.queue[0].tiles_unlocked):
@@ -119,7 +121,7 @@ class SaveSystem:
             diamond_shield_bought = "true"
         tiles_unlocked_str = '"spike_bought":'+str(spike_bought)+","+'"hiddenspike_bought":'+str(hiddenspike_bought)+","+'"swing_bought":'+str(swing_bought)+","+'"fire_bought":'+str(fire_bought)+","+'"wooden_shield_bought":'+str(wooden_shield_bought)+","+'"iron_shield_bought":'+str(iron_shield_bought)+","+'"gold_shield_bought":'+str(gold_shield_bought)+","+'"diamond_shield_bought":'+str(diamond_shield_bought)+","
         #print(renderer.queue[0].tiles_unlocked)
-        dat = '{"coins":'+str(0)+","+'"level":'+str(renderer.level)+","+'"deaths":'+str(renderer.queue[0].deaths)+","+tiles_unlocked_str+'"volume":'+str(renderer.coin_channel.get_volume())+","+'"fps":'+str(renderer.def_frame)+","+'"shapeshifts":'+str(renderer.queue[0].shapeshifts)+"}"
+        dat = '{"coins":'+str(renderer.queue[0].coins)+","+'"level":'+str(renderer.level)+","+'"deaths":'+str(renderer.queue[0].deaths)+","+tiles_unlocked_str+'"volume":'+str(renderer.coin_channel.get_volume())+","+'"fps":'+str(renderer.def_frame)+","+'"shapeshifts":'+str(renderer.queue[0].shapeshifts)+","+'"max_level":'+str(max(renderer.queue[0].tiles_unlocked))+"}"
         b = base64.b64encode(bytes(dat, 'utf-8'))
         base64_str = b.decode('utf-8')
         if web:

@@ -120,11 +120,16 @@ class Game:
         self.finished = False
         self.radius = 0
         self.add_rad = 0.12
-        self.level_spike_dicts = {0: 780, 1:-64}
-        self.x_level_dicts = {0: 0, 1:256}
+        self.level_spike_dicts = {0: 780, 1:-64, 2:-64, 3:-64, 4:-64}
+        self.x_level_dicts = {0: 0, 1:256, 2:256, 3:256, 4:256}
         self.shop = Shop(self.renderer)
         self.renderer.shop = self.shop
         self.save_system.load(self.renderer)
+        swap_color(self.renderer.coin_img, [0, 0, 0], [1, 1, 1])
+        self.renderer.coin_img.set_colorkey([255, 255, 255])
+        self.coin_surf = SpriteSheet(scale_image(self.renderer.coin_img, 4), [12, 1]).get([0, 0])
+        self.skull_image = scale_image(pygame.image.load("assets/Spritesheets/skull.png").convert())
+        swap_color(self.skull_image, [64, 64, 64], [0, 0, 0])
     def update(self):
         self.renderer.clock.tick(self.renderer.def_frame)
         self.cycles += 1
@@ -139,9 +144,17 @@ class Game:
                     self.renderer.queue[0].levels_unlocked.append(self.renderer.level+1)
                     self.renderer.level+=1
                     self.screen = 0
-                s_urf = scale_image(self.ui_font.render(str(self.renderer.queue[0].coins), False, (255, 255, 255), (0, 0, 0))) 
+                s_urf = scale_image(self.ui_font.render(" : "+str(self.renderer.queue[0].coins), False, (255, 255, 255), (0, 0, 0)), 1.5)
+                s_urf_ = scale_image(self.ui_font.render(str(self.renderer.queue[0].shapeshifts)+" shapeshifts", False, (255, 255, 255), (0, 0, 0)), 1.5)
+                s_urf_d = scale_image(self.ui_font.render(" : "+str(self.renderer.queue[0].deaths), False, (255, 255, 255), (0, 0, 0)), 1.5)
                 s_urf.set_colorkey((0, 0, 0)) 
-                win.blit(s_urf, [100, 100])
+                s_urf_.set_colorkey((0, 0, 0)) 
+                s_urf_d.set_colorkey((0, 0, 0)) 
+                win.blit(self.coin_surf, [25, 60])
+                win.blit(s_urf, [75, 75])
+                win.blit(s_urf_, [25, 125])
+                win.blit(self.skull_image, [225, 72])
+                win.blit(s_urf_d, [265, 75])
                 if self.renderer.queue_updating == False:
                     for double_list in self.renderer.standing_masks:
                             if (self.cursor_mask.overlap(double_list[0], (double_list[1][0]-cursor_pos[0], double_list[1][1]-cursor_pos[1])) == None):
@@ -191,34 +204,34 @@ class Game:
                                                     self.renderer.queue_updating = True
                                                 if self.renderer.queue[0].tile == 118:
                                                     if True:
-                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0], double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-4]))
+                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0], double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-4], False, 0, True))
                                                         self.renderer.added_spikes_h += 1
                                                     self.renderer.spike_h_count += 1
                                                     if self.renderer.spike_h_count > self.renderer.added_spikes_h:
-                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0], double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-4]))
+                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0], double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-4], False, 0, True))
                                                         self.renderer.added_spikes_h += 1
                                                 if self.renderer.queue[0].tile == 135:
                                                     if True:
-                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0], double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]+4], True))
+                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0], double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]+4], True, 0, True))
                                                         self.renderer.added_spikes_h += 1
                                                     self.renderer.spike_h_count += 1
                                                     if self.renderer.spike_h_count > self.renderer.added_spikes_h:
-                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0], double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]+4], True))
+                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0], double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]+4], True, 0, True))
                                                         self.renderer.added_spikes_h += 1
                                                 if self.renderer.queue[0].tile == 136:
                                                     if True:
-                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-12, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, 90))
+                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-12, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, 90, True))
                                                         self.renderer.added_spikes_h += 1
                                                     self.renderer.spike_h_count += 1
                                                     if self.renderer.spike_h_count > self.renderer.added_spikes_h:
-                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-12, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, 90))
+                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-12, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, 90, True))
                                                         self.renderer.added_spikes_h += 1
                                                 if self.renderer.queue[0].tile == 137:
-                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-4, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, -90))
+                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-4, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, -90, True))
                                                     self.renderer.added_spikes_h += 1
                                                     self.renderer.spike_h_count += 1
                                                     if self.renderer.spike_h_count > self.renderer.added_spikes_h:
-                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-4, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, -90))
+                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-4, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, -90, True))
                                                         self.renderer.added_spikes_h += 1
                                             else:
                                                 if self.renderer.queue[0].tile == 117:
@@ -259,34 +272,34 @@ class Game:
                                                     self.renderer.queue_updating = True
                                                 if self.renderer.queue[0].tile == 118:
                                                     if True:
-                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-4]))
+                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-4], False, 0, True))
                                                         self.renderer.added_spikes_h += 1
                                                     self.renderer.spike_h_count += 1
                                                     if self.renderer.spike_h_count > self.renderer.added_spikes_h:
-                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-4]))
+                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-4], False, 0, True))
                                                         self.renderer.added_spikes_h += 1
                                                 if self.renderer.queue[0].tile == 135:
                                                     if True:
-                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]+4], True))
+                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]+4], True, 0, True))
                                                         self.renderer.added_spikes_h += 1
                                                     self.renderer.spike_h_count += 1
                                                     if self.renderer.spike_h_count > self.renderer.added_spikes_h:
-                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]+4], True))
+                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]+4], True, 0, True))
                                                         self.renderer.added_spikes_h += 1
                                                 if self.renderer.queue[0].tile == 136:
                                                     if True:
-                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-12-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, 90))
+                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-12-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, 90, True))
                                                         self.renderer.added_spikes_h += 1
                                                     self.renderer.spike_h_count += 1
                                                     if self.renderer.spike_h_count > self.renderer.added_spikes_h:
-                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-12-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, 90))
+                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-12-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, 90, True))
                                                         self.renderer.added_spikes_h += 1
                                                 if self.renderer.queue[0].tile == 137:
-                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-4-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, -90))
+                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-4-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, -90, True))
                                                     self.renderer.added_spikes_h += 1
                                                     self.renderer.spike_h_count += 1
                                                     if self.renderer.spike_h_count > self.renderer.added_spikes_h:
-                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-4-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, -90))
+                                                        self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-4-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, -90, True))
                                                         self.renderer.added_spikes_h += 1
                                             if self.renderer.queue[0].tile == 121:
                                                 self.renderer.queue.append(SwingingAxe([((int((double_list[1][0]-self.renderer.camera.cam_change[0])/self.renderer.tile_size[0]))*self.renderer.tile_size[0])+self.camera.cam_change[0], (int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1])))*self.renderer.tile_size[1]-self.level_spike_dicts[self.renderer.level]+self.camera.cam_change[1]]))
@@ -310,35 +323,37 @@ class Game:
                                                 self.renderer.queue.append(SwingingAxe([(int((double_list[1][0]-self.renderer.camera.cam_change[0])/self.renderer.tile_size[0]))*self.renderer.tile_size[0]+self.camera.cam_change[0], (int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1])))*self.renderer.tile_size[1]-self.level_spike_dicts[self.renderer.level]+64+self.camera.cam_change[1]]))
                                             if self.renderer.queue[0].tile == 118:
                                                 if True:
-                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-4, double_list[2].pos[1]+56]))
+                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-4, double_list[2].pos[1]+56], False, 0, True))
                                                     self.renderer.added_spikes_h += 1
                                                 self.renderer.spike_h_count += 1
                                                 if self.renderer.spike_h_count > self.renderer.added_spikes_h:
-                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-4, double_list[2].pos[1]+56]))
+                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-4, double_list[2].pos[1]+56], False, 0, True))
                                                     self.renderer.added_spikes_h += 1
                                             if self.renderer.queue[0].tile == 135:
                                                 if True:
-                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-4, double_list[2].pos[1]+60], True))
+                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-4, double_list[2].pos[1]+60], True, 0, True))
                                                     self.renderer.added_spikes_h += 1
                                                 self.renderer.spike_h_count += 1
                                                 if self.renderer.spike_h_count > self.renderer.added_spikes_h:
-                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-4, double_list[2].pos[1]+60], True))
+                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-4, double_list[2].pos[1]+60], True, 0, True))
                                                     self.renderer.added_spikes_h += 1
                                             if self.renderer.queue[0].tile == 136:
                                                 if True:
-                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-18, double_list[2].pos[1]+56], False, 90))
+                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-18, double_list[2].pos[1]+56], False, 90, True))
                                                     self.renderer.added_spikes_h += 1
                                                 self.renderer.spike_h_count += 1
                                                 if self.renderer.spike_h_count > self.renderer.added_spikes_h:
-                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-18, double_list[2].pos[1]+56], False, 90))
+                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-18, double_list[2].pos[1]+56], False, 90, True))
                                                     self.renderer.added_spikes_h += 1
                                             if self.renderer.queue[0].tile == 137:
-                                                self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-8, double_list[2].pos[1]+56], False, -90))
+                                                self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-8, double_list[2].pos[1]+56], False, -90, True))
                                                 self.renderer.added_spikes_h += 1
                                                 self.renderer.spike_h_count += 1
                                                 if self.renderer.spike_h_count > self.renderer.added_spikes_h:
-                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2][0]-8, double_list[2].pos[1]+56], False, -90))
+                                                    self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2][0]-8, double_list[2].pos[1]+56], False, -90, True))
                                                     self.renderer.added_spikes_h += 1
+                                            self.renderer.queue[0].shapeshifting=False
+                                            self.renderer.queue_updating = True
                                         pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
                                         win.blit(self.rect_surf, [double_list[1][0], double_list[1][1]+64])
                     for obj in self.renderer.queue:
@@ -440,5 +455,7 @@ class Game:
             self.renderer.coin_channel.set_volume(self.settings[0].value/10)
             self.renderer.queue[0].channel.set_volume(self.settings[0].value/10)
         win.blit(self.cursor_img_, cursor_pos)
+        if not self.playing:
+            self.objective_manager.dialogue_channel.stop()
         if ((self.cycles%20)==0):
             self.save_system.update(self.renderer)

@@ -139,6 +139,9 @@ class HiddenSpike:
                                         #renderer.queue = [ob for ob in renderer.queue if ob != self]
                                         #del self
                                         #return
+                                if self.shifted and self.enemies_destroyed > 1:
+                                    renderer.queue = [ob for ob in renderer.queue if ob != self]
+                                    return
                         else:
                             if self.mask.overlap(renderer.queue[0].mask, (renderer.queue[0].pos[0]-(self.pos[0]-int(self.spritesheet.get(self.frame).get_width()/2)), renderer.queue[0].pos[1]-(self.pos[1]-int(self.spritesheet.get(self.frame).get_height()/2)))) == None:
                                 pass
@@ -157,6 +160,9 @@ class HiddenSpike:
                                     else:
                                         e.is_alive = False
                                         self.enemies_destroyed+=1
+                                if self.shifted and self.enemies_destroyed > 1:
+                                    renderer.queue = [ob for ob in renderer.queue if ob != self]
+                                    return
                     if not self.just_spawned == None:
                         if self.ang == 0:
                             win.blit(self.spritesheet.get(self.frame), self.pos)
@@ -164,7 +170,7 @@ class HiddenSpike:
                             win.blit(self.spritesheet.get(self.frame), [self.pos[0]-int(self.spritesheet.get(self.frame).get_width()/2), self.pos[1]-int(self.spritesheet.get(self.frame).get_height()/2)])
                     if not self.shiftable:
                         self.is_hovered = False
-                
+                    
                     if self.is_hovered and not(self.just_spawned):
                         if not self.ang == 0:
                             if self.ang == 90:
@@ -194,5 +200,7 @@ class HiddenSpike:
                                 return
                             pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
                             win.blit(self.rect_surf, [self.pos[0]+8, self.pos[1]+8])
+                    if self.shifted:
+                        print(self.enemies_destroyed)
                     
                     

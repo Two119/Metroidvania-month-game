@@ -64,6 +64,13 @@ class Game:
             self.d_font = pygame.font.Font("assets/Fonts/yoster.ttf", 35)
             self.button_sprites = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/buttons.png")), [2, 1], [255, 255, 255])
             self.small_button_sprites = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/small_buttons.png")), [2, 1], [255, 255, 255])
+        self.menu_song = pygame.mixer.Sound("assets/Audio/MainTheme_Loop.ogg")
+        self.menu_channel = pygame.mixer.Channel(7)
+        self.combat_song = pygame.mixer.Sound("assets/Audio/combat_music_loop.ogg")
+        self.combat_channel = pygame.mixer.Channel(8)
+        self.bg_song_1 = pygame.mixer.Sound("assets/Audio/Background_Loop.ogg")
+        self.bg_channel = pygame.mixer.Channel(9)
+        self.bg_song_2 = pygame.mixer.Sound("assets/Audio/background_loop_2.ogg")
         self.camera = Camera()
         self.cursor_img_ = scale_image(cursor_img, 2)
         self.objective_manager = ObjectiveManager()
@@ -138,6 +145,13 @@ class Game:
         if self.screen == 1:
             if self.playing and self.renderer.queue[0].is_alive:
                 self.renderer.update()
+                if self.player.combat:
+                    self.combat_channel.play(self.combat_song, -1)
+                else:
+                    if self.combat_channel.get_busy():
+                        self.combat_channel.fadeout(3000)
+                    #num = randint(0, 1)
+                    self.bg_channel.play(self.bg_song_1)
                 self.camera.update(self.renderer)
                 self.renderer.camera = self.camera
                 if self.objective_manager.update(self.renderer):

@@ -131,6 +131,7 @@ class Player:
         self.just_spawned = True
         self.delay = 0
         self.deaths = 0
+        self.combat = False
         self.standing = False
         self.speed = 3
         self.cycles = 0
@@ -441,6 +442,7 @@ class Player:
         
     def update(self, renderer):
         if renderer.clock.get_fps() != 0:
+            self.combat = False
             if self.just_spawned:
                     self.update_animation(7, 15/2, renderer.dt)
             if self.shapeshifts < 0:

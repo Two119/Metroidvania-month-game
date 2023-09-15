@@ -513,6 +513,8 @@ class EnemySwordsman:
                     self.weapon.pos = [self.pos[0]-40, self.pos[1]+32]
                 else:
                     self.weapon.pos = [self.pos[0]+40, self.pos[1]+32]
+                if self.chasing:
+                    renderer.queue[0].combat = True
                 self.weapon.dir = 1-self.dir
                 self.weapon.attacking = self.chasing
                 if self.rect.colliderect(renderer.queue[0].rect):

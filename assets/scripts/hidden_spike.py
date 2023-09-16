@@ -123,6 +123,7 @@ class HiddenSpike:
                                 pass
                             else:
                                 renderer.queue[0].is_alive = False
+                                
                                 #renderer.queue = [ob for ob in renderer.queue if ob != self]
                                 #reset(renderer.queue[0], renderer)
                                 renderer.queue[0].deaths += 1
@@ -147,6 +148,7 @@ class HiddenSpike:
                                 pass
                             else:
                                 renderer.queue[0].is_alive = False
+                                
                                 #renderer.queue = [ob for ob in renderer.queue if ob != self]
                                 #reset(renderer.queue[0], renderer)
                                 renderer.queue[0].deaths += 1
@@ -200,7 +202,5 @@ class HiddenSpike:
                                 return
                             pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
                             win.blit(self.rect_surf, [self.pos[0]+8, self.pos[1]+8])
-                    if self.shifted:
-                        print(self.enemies_destroyed)
                     
                     

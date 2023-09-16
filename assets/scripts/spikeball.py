@@ -46,6 +46,7 @@ class SpikeBall:
                         pass
                     else:
                         renderer.queue[0].is_alive = False
+                        
                         #renderer.queue = [ob for ob in renderer.queue if ob != self]
                         #reset(renderer.queue[0], renderer)
                         renderer.queue[0].deaths += 1

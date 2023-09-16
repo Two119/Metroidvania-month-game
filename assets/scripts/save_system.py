@@ -43,6 +43,8 @@ class SaveSystem:
                         renderer.queue[0].using_shield = True
                         renderer.queue[0].tiles_unlocked.append(203)
                         renderer.shop.shield_level = 4
+                    if saved["has_staff"]:
+                        renderer.queue[0].has_staff = True
                     renderer.queue[0].shapeshifts = saved["shapeshifts"]
                     renderer.coin_channel.set_volume(float(saved["volume"]))
                     renderer.queue[0].channel.set_volume(float(saved["volume"]))
@@ -84,6 +86,8 @@ class SaveSystem:
                         renderer.queue[0].using_shield = True
                         renderer.queue[0].tiles_unlocked.append(203)
                         renderer.shop.shield_level = 4
+                    if saved["has_staff"]:
+                        renderer.queue[0].has_staff = True
                     renderer.queue[0].shapeshifts = saved["shapeshifts"]
                     renderer.coin_channel.set_volume(float(saved["volume"]))
                     renderer.queue[0].channel.set_volume(float(saved["volume"]))
@@ -103,6 +107,7 @@ class SaveSystem:
         iron_shield_bought = "false"
         gold_shield_bought = "false"
         diamond_shield_bought = "false"
+        has_staff = "false"
         if 117 in renderer.queue[0].tiles_unlocked:
             spike_bought = "true"
         if 118 in renderer.queue[0].tiles_unlocked:
@@ -119,9 +124,11 @@ class SaveSystem:
             gold_shield_bought = "true"
         if 203 in renderer.queue[0].tiles_unlocked:
             diamond_shield_bought = "true"
+        if renderer.queue[0].has_staff:
+            has_staff = "true"
         tiles_unlocked_str = '"spike_bought":'+str(spike_bought)+","+'"hiddenspike_bought":'+str(hiddenspike_bought)+","+'"swing_bought":'+str(swing_bought)+","+'"fire_bought":'+str(fire_bought)+","+'"wooden_shield_bought":'+str(wooden_shield_bought)+","+'"iron_shield_bought":'+str(iron_shield_bought)+","+'"gold_shield_bought":'+str(gold_shield_bought)+","+'"diamond_shield_bought":'+str(diamond_shield_bought)+","
         #print(renderer.queue[0].tiles_unlocked)
-        dat = '{"coins":'+str(renderer.queue[0].coins)+","+'"level":'+str(renderer.level)+","+'"deaths":'+str(renderer.queue[0].deaths)+","+tiles_unlocked_str+'"volume":'+str(renderer.coin_channel.get_volume())+","+'"fps":'+str(renderer.def_frame)+","+'"shapeshifts":'+str(renderer.queue[0].shapeshifts)+","+'"max_level":'+str(max(renderer.queue[0].tiles_unlocked))+"}"
+        dat = '{"coins":'+str(renderer.queue[0].coins)+","+'"level":'+str(renderer.level)+","+'"deaths":'+str(renderer.queue[0].deaths)+","+tiles_unlocked_str+'"volume":'+str(renderer.coin_channel.get_volume())+","+'"fps":'+str(renderer.def_frame)+","+'"shapeshifts":'+str(renderer.queue[0].shapeshifts)+","+'"max_level":'+str(max(renderer.queue[0].tiles_unlocked))+","+'"has_staff":'+has_staff+"}"
         b = base64.b64encode(bytes(dat, 'utf-8'))
         base64_str = b.decode('utf-8')
         if web:

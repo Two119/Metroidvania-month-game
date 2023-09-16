@@ -28,6 +28,7 @@ class Camera:
                         for spike in renderer.spikes:
                             spike[renderer.attr_dict["pos"]][0] -= (self.rect.w-self.spawn_pos[renderer.level][0])
                         self.cam_change[0] -= (self.rect.w-self.spawn_pos[renderer.level][0])
+                        renderer.queue[0].dust_pos[0] -= (self.rect.w-self.spawn_pos[renderer.level][0])
                     else:
                         renderer.init_render_pos[renderer.level][0] += ((self.rect.w-self.spawn_pos[renderer.level][0])/64)
                         for obj in renderer.queue:
@@ -38,6 +39,7 @@ class Camera:
                         for spike in renderer.spikes:
                             spike[renderer.attr_dict["pos"]][0] += (self.rect.w-self.spawn_pos[renderer.level][0])
                         self.cam_change[0] += (self.rect.w-self.spawn_pos[renderer.level][0])
+                        renderer.queue[0].dust_pos[0] += (self.rect.w-self.spawn_pos[renderer.level][0])
                 if self.rect.collidepoint(10, renderer.queue[0].rect.y):
                     pass
                 else:        
@@ -50,6 +52,7 @@ class Camera:
                         for spike in renderer.spikes:
                             spike[renderer.attr_dict["pos"]][1] -= (self.rect.h)
                         self.cam_change[1] -= (self.rect.h)
+                        renderer.queue[0].dust_pos[1] -= (self.rect.h)
                     else:
                         renderer.init_render_pos[renderer.level][1] += ((self.rect.h)/64)
                         for obj in renderer.queue:
@@ -59,3 +62,4 @@ class Camera:
                         for spike in renderer.spikes:
                             spike[renderer.attr_dict["pos"]][1] += (self.rect.h)
                         self.cam_change[1] += (self.rect.h)
+                        renderer.queue[0].dust_pos[1] += (self.rect.h)

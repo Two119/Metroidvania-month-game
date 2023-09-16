@@ -67,9 +67,9 @@ class Game:
         self.menu_song = pygame.mixer.Sound("assets/Audio/MainTheme_Loop.ogg")
         self.menu_channel = pygame.mixer.Channel(7)
         self.combat_song = pygame.mixer.Sound("assets/Audio/combat_music_loop.ogg")
-        self.combat_channel = pygame.mixer.Channel(8)
+        self.combat_channel = pygame.mixer.find_channel(8)
         self.bg_song_1 = pygame.mixer.Sound("assets/Audio/Background_Loop.ogg")
-        self.bg_channel = pygame.mixer.Channel(9)
+        self.bg_channel = pygame.mixer.find_channel(9)
         self.bg_song_2 = pygame.mixer.Sound("assets/Audio/background_loop_2.ogg")
         self.camera = Camera()
         self.cursor_img_ = scale_image(cursor_img, 2)
@@ -137,38 +137,45 @@ class Game:
         self.coin_surf = SpriteSheet(scale_image(self.renderer.coin_img, 4), [12, 1]).get([0, 0])
         self.skull_image = scale_image(pygame.image.load("assets/Spritesheets/skull.png").convert())
         swap_color(self.skull_image, [64, 64, 64], [0, 0, 0])
+        #self.menu_channel.set_volume(1)
+        
+        
     def update(self):
         self.renderer.clock.tick(self.renderer.def_frame)
         self.cycles += 1
         cursor_pos = pygame.mouse.get_pos()
-        win.fill((0, 0, 0))
+        win.fill((12, 12, 12))
+        self.combat_channel.set_volume(self.renderer.coin_channel.get_volume())
+        self.menu_channel.set_volume(self.renderer.coin_channel.get_volume())
+        self.bg_channel.set_volume(self.renderer.coin_channel.get_volume())
         if self.screen == 1:
+            if self.menu_channel.get_busy():
+                self.menu_channel.fadeout(5000)
+            if self.player.combat:
+                #
+                if not self.combat_channel.get_busy():
+                    self.bg_channel.fadeout(2000)
+                    self.combat_channel.play(self.combat_song, -1)
+            else:
+                #num = randint(0, 1)
+                #self.combat_channel.fadeout(2000)
+                if not self.bg_channel.get_busy():
+                    self.combat_channel.fadeout(2000)
+                    num = randint(0, 1)
+                    if num:
+                        self.bg_channel.play(self.bg_song_1, -1)
+                    else:
+                        self.bg_channel.play(self.bg_song_2, -1)
             if self.playing and self.renderer.queue[0].is_alive:
                 self.renderer.update()
-                if self.player.combat:
-                    self.combat_channel.play(self.combat_song, -1)
-                else:
-                    if self.combat_channel.get_busy():
-                        self.combat_channel.fadeout(3000)
-                    #num = randint(0, 1)
-                    self.bg_channel.play(self.bg_song_1)
+                
                 self.camera.update(self.renderer)
                 self.renderer.camera = self.camera
                 if self.objective_manager.update(self.renderer):
                     self.renderer.queue[0].levels_unlocked.append(self.renderer.level+1)
                     self.renderer.level+=1
                     self.screen = 0
-                s_urf = scale_image(self.ui_font.render(" : "+str(self.renderer.queue[0].coins), False, (255, 255, 255), (0, 0, 0)), 1.5)
-                s_urf_ = scale_image(self.ui_font.render(str(self.renderer.queue[0].shapeshifts)+" shapeshifts", False, (255, 255, 255), (0, 0, 0)), 1.5)
-                s_urf_d = scale_image(self.ui_font.render(" : "+str(self.renderer.queue[0].deaths), False, (255, 255, 255), (0, 0, 0)), 1.5)
-                s_urf.set_colorkey((0, 0, 0)) 
-                s_urf_.set_colorkey((0, 0, 0)) 
-                s_urf_d.set_colorkey((0, 0, 0)) 
-                win.blit(self.coin_surf, [25, 60])
-                win.blit(s_urf, [75, 75])
-                win.blit(s_urf_, [25, 125])
-                win.blit(self.skull_image, [225, 72])
-                win.blit(s_urf_d, [265, 75])
+                
                 if self.renderer.queue_updating == False:
                     for double_list in self.renderer.standing_masks:
                             if (self.cursor_mask.overlap(double_list[0], (double_list[1][0]-cursor_pos[0], double_list[1][1]-cursor_pos[1])) == None):
@@ -316,7 +323,7 @@ class Game:
                                                         self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-4-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, -90, True))
                                                         self.renderer.added_spikes_h += 1
                                             if self.renderer.queue[0].tile == 121:
-                                                self.renderer.queue.append(SwingingAxe([((int((double_list[1][0]-self.renderer.camera.cam_change[0])/self.renderer.tile_size[0]))*self.renderer.tile_size[0])+self.camera.cam_change[0], (int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1])))*self.renderer.tile_size[1]-self.level_spike_dicts[self.renderer.level]+self.camera.cam_change[1]]))
+                                                self.renderer.queue.append(SwingingAxe([((int((double_list[1][0]-self.renderer.camera.cam_change[0])/self.renderer.tile_size[0]))*self.renderer.tile_size[0])+self.camera.cam_change[0], (int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1])))*self.renderer.tile_size[1]-self.level_spike_dicts[self.renderer.level]+self.camera.cam_change[1]], True))
                                             if self.renderer.queue[0].tile == 116:
                                                 self.renderer.queue.append(FireBox([double_list[3][0]*64+self.renderer.camera.cam_change[0]-self.x_level_dicts[self.renderer.level], double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]], True))
                                                 self.renderer.queue[0].shapeshifting=False
@@ -334,7 +341,7 @@ class Game:
                                             else:
                                                 self.renderer.levels[self.renderer.level][int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1]))+1][4+int((double_list[1][0]-self.camera.cam_change[0])/self.renderer.tile_size[0])] = self.renderer.queue[0].tile 
                                             if self.renderer.queue[0].tile == 121:
-                                                self.renderer.queue.append(SwingingAxe([(int((double_list[1][0]-self.renderer.camera.cam_change[0])/self.renderer.tile_size[0]))*self.renderer.tile_size[0]+self.camera.cam_change[0], (int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1])))*self.renderer.tile_size[1]-self.level_spike_dicts[self.renderer.level]+64+self.camera.cam_change[1]]))
+                                                self.renderer.queue.append(SwingingAxe([(int((double_list[1][0]-self.renderer.camera.cam_change[0])/self.renderer.tile_size[0]))*self.renderer.tile_size[0]+self.camera.cam_change[0], (int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1])))*self.renderer.tile_size[1]-self.level_spike_dicts[self.renderer.level]+64+self.camera.cam_change[1]], 121))
                                             if self.renderer.queue[0].tile == 118:
                                                 if True:
                                                     self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-4, double_list[2].pos[1]+56], False, 0, True))
@@ -384,6 +391,17 @@ class Game:
                 self.small_menu_button.update(self.renderer)
                 if pygame.key.get_pressed()[pygame.K_ESCAPE]:
                     game_menu(self)
+                s_urf = scale_image(self.ui_font.render(" : "+str(self.renderer.queue[0].coins), False, (255, 255, 255), (0, 0, 0)), 1.5)
+                s_urf_ = scale_image(self.ui_font.render(str(self.renderer.queue[0].shapeshifts)+" shapeshifts", False, (255, 255, 255), (0, 0, 0)), 1.5)
+                s_urf_d = scale_image(self.ui_font.render(" : "+str(self.renderer.queue[0].deaths), False, (255, 255, 255), (0, 0, 0)), 1.5)
+                s_urf.set_colorkey((0, 0, 0)) 
+                s_urf_.set_colorkey((0, 0, 0)) 
+                s_urf_d.set_colorkey((0, 0, 0)) 
+                win.blit(self.coin_surf, [25, 60])
+                win.blit(s_urf, [75, 75])
+                win.blit(s_urf_, [37, 125])
+                win.blit(self.skull_image, [225, 72])
+                win.blit(s_urf_d, [265, 75])
             if not self.playing:
                 if self.spare_surf == None:
                     pygame.image.save(win, "win.png")
@@ -428,6 +446,10 @@ class Game:
             win.blit(self.renderer.background, (0, 0))
             for button in self.buttons:
                 button.update(self.renderer)
+            self.bg_channel.stop()
+            self.combat_channel.stop()
+            if not self.menu_channel.get_busy():
+                self.menu_channel.play(self.menu_song, -1)
             win.blit(self.start_text, [self.buttons[0].pos[0]+10, self.buttons[0].pos[1]+10+(4*self.buttons[0].current)])
             win.blit(self.set_text, [self.buttons[1].pos[0]+5, self.buttons[1].pos[1]+15+(4*self.buttons[1].current)])
             win.blit(self.shop_text, [self.buttons[2].pos[0]+(self.buttons[2].textures[0].get_width()-self.shop_text.get_width())/2, self.buttons[2].pos[1]+15+(4*self.buttons[2].current)])

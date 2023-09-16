@@ -2,7 +2,8 @@ from assets.scripts.core_funcs import *
 def calculate_angle(time):
     return degrees(radians(45)*(math.sin((1/sqrt(50/300.5))*time)))
 class SwingingAxe:
-    def __init__(self, pos):
+    def __init__(self, pos, shifted=False):
+        self.shifted = shifted
         if not web:
             img = pygame.image.load("assets\Spritesheets\swinging_axe.png").convert()
             self.image = scale_image(img).convert()
@@ -15,12 +16,12 @@ class SwingingAxe:
         self.pos = [pos[0]+32, pos[1]+4]
         self.angle = 0
         self.adder = 0
-        self.shifted = False
         self.swing_angle = 45
         self.gravity = 0.5
         self.cycles = 0
         self.init_time = time.time()
         self.img = pygame.transform.rotate(self.image, self.angle)
+        self.e_d = 0
     def update(self, renderer):
         self.cycles += 1
         if self.cycles == 1:
@@ -43,6 +44,7 @@ class SwingingAxe:
                     pass
                 else:
                     renderer.queue[0].is_alive = False
+                    
                     #renderer.queue = [ob for ob in renderer.queue if ob != self]
                     #reset(renderer.queue[0], renderer)
                     renderer.queue[0].deaths += 1
@@ -52,8 +54,17 @@ class SwingingAxe:
                         pass
                     else:
                         renderer.queue[enemy].is_alive = False
+                        self.e_d += 1
                         #renderer.queue = [ob for ob in renderer.queue if ob != self]
-
+                if self.e_d >= 3 and self.shifted:
+                    renderer.queue = [ob for ob in renderer.queue if ob != self]
+                    particle_sheet = SpriteSheet(self.img, [self.img.get_width()//4, self.img.get_height()//4], [0, 0, 0])
+                    for j, sheet in enumerate(particle_sheet.sheet):
+                        for i, surf in enumerate(sheet):
+                            if not isequal(surf.get_at([0, 0]), [0, 0, 0]):
+                                renderer.queue.append(DeathParticle(surf, [self.pos[0]+(i*4), self.pos[1]+(j*4)], renderer, [0, 0, 0]))
+                    del self
+                    return
                 if int(self.angle) == 0:
                     if not renderer.axe_channel.get_busy():
                         renderer.axe_channel.play(renderer.axe_swoosh_sfx)

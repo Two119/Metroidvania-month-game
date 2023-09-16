@@ -75,9 +75,10 @@ def equip(args):
         renderer.queue[0].inventory.items = renderer.queue[0].tiles_unlocked
         renderer.queue[0].inventory.current = renderer.queue[0].inventory.items.index(6)
     elif args[1] in [4, 5, 6, 7]:
-        renderer.queue[0].using_shield = True
         d = {4:1, 5:2, 6:3, 7:4}
-        renderer.queue[0].shield = Shield(renderer.queue[0].pos, d[args[1]])
+        renderer.queue[0].using_shield = True
+        if not renderer.queue[0].shield.level == d[args[1]]:
+            renderer.queue[0].shield = Shield(renderer.queue[0].pos, d[args[1]])
         renderer.shop.shield_level = d[args[1]]
     elif args[1] == 8:
         renderer.queue[0].tile = 116
@@ -90,6 +91,7 @@ def equip(args):
     if notify:
         renderer.shop.font.set_bold(True)
         notification_text = renderer.shop.font.render("Equipped "+str(renderer.shop.tile_names_dict[renderer.shop.tiles[args[1]]]), False, [0, 0, 255], [0, 0, 0])
+        #notification_text = renderer.shop.font.render("Equipped "+str(renderer.shop.tile_names_dict[renderer.shop.tiles[args[1]]]), False, [0, 0, 255], [0, 0, 0])
         renderer.shop.font.set_bold(False)
         notification_text.set_colorkey([0, 0, 0])
         renderer.shop.notifications.append(Notification(notification_text, 3))

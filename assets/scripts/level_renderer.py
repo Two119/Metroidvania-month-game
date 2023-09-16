@@ -33,6 +33,34 @@ class CheckPoint:
         win.blit(self.tex, self.pos)
         #pygame.draw.rect(win, [255, 0, 0], self.rect)
         #print(self.pos)
+class StaffIcon:
+    def __init__(self, staff, pos):
+        self.staff = staff
+        self.pos = pos
+        self.scale = 1
+        self.adder = 1
+    def update(self, renderer):
+        if self.adder == 1:
+            self.scale += 0.006*renderer.dt
+        else:
+            self.scale -= 0.006*renderer.dt
+        if self.scale > 1.1:
+            self.adder = -1
+        if self.scale < 0.9:
+            self.adder = 1
+        s = pygame.transform.scale_by(self.staff, self.scale)
+        win.blit(s, [self.pos[0]-(s.get_width()-self.staff.get_width()), self.pos[1]-(s.get_height()-self.staff.get_height())])
+        self.mask = pygame.mask.from_surface(s)
+        if hasattr(renderer.queue[0], "mask"):
+            if renderer.queue[0].mask.overlap(self.mask, [self.pos[0]-renderer.queue[0].pos[0], self.pos[1]-renderer.queue[0].pos[1]]):
+                renderer.queue[0].has_staff = True
+                renderer.queue.remove(self)
+                particle_sheet = SpriteSheet(self.staff, [self.staff.get_width()//4, self.staff.get_height()//4], [0, 0, 0])
+                for j, sheet in enumerate(particle_sheet.sheet):
+                    for i, surf in enumerate(sheet):
+                        if not isequal(surf.get_at([0, 0]), [0, 0, 0]):
+                            renderer.queue.append(DeathParticle(surf, [self.pos[0]+(i*4), self.pos[1]+(j*4)], renderer, [0, 0, 0]))
+                del self
 class LevelRenderer:
     def __init__(self, levels : tuple, tilesheet : pygame.Surface, tilesheet_size : tuple, spike_images : tuple, colors : tuple, background : pygame.Surface, coin_image):
         final_color = [30, 30, 30]
@@ -41,6 +69,7 @@ class LevelRenderer:
         swap_color(background, [0, 0, 0], final_color)
         tilesheet.set_colorkey([255, 255, 255])
         self.spikes = []
+        self.rects = []
         self.shop = None
         self.font = None
         self.delay = 0
@@ -94,11 +123,11 @@ class LevelRenderer:
         self.side_rects = []
         self.enemies = []
         self.special_blocks = []
-        self.coin_channel = pygame.mixer.Channel(2)
-        self.firebox_channel = pygame.mixer.Channel(4)
-        self.thwack_channel = pygame.mixer.Channel(5)
-        self.swoosh_channel = pygame.mixer.Channel(6)
-        self.axe_channel = pygame.Channel(7)
+        self.coin_channel = pygame.mixer.Channel(6)
+        self.firebox_channel = pygame.mixer.Channel(5)
+        self.thwack_channel = pygame.mixer.Channel(4)
+        self.swoosh_channel = pygame.mixer.Channel(3)
+        self.axe_channel = pygame.mixer.Channel(2)
         self.coin_channel.set_volume(0.5)
         self.thwack_channel.set_volume(0.5)
         self.swoosh_channel.set_volume(0.5)
@@ -112,7 +141,7 @@ class LevelRenderer:
         self.decorative_tiles = [74, 75, 76, 87, 89, 100, 101, 102, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 104, 105, 106, 107, 108, 110, 112, 113, 114, 123, 124, 125, 126, 127]
         self.changed = []
         self.deleted = []
-        self.player_death_limit = [1500, 10000, 10000]
+        self.player_death_limit = [1500, 10000, 10000, 10000, 10000]
         self.first_tile_pos = []
         self.queue_updating = True
         self.first_cycle = True
@@ -126,7 +155,7 @@ class LevelRenderer:
         self.added_spikes_h = 0
         self.firebox_in_cam = False
         self.camera = None
-        self.exceptions = [60, 88, 111, 116, 117, 118, 119, 120, 121, 122, 129, 135, 136, 137, 138, 139, 140]
+        self.exceptions = [60, 88, 111, 116, 117, 118, 119, 120, 121, 122, 129, 135, 136, 137, 138, 139, 140, 141, 142]
         self.ground = ["SpikeBall", "MovingPlatform", "FireBox"]
         self.bullet_manager = BulletManager(self)
         self.cycles = 0 
@@ -245,18 +274,25 @@ class LevelRenderer:
                                         renderer.queue_updating = True
                         if self.rect_surf.get_alpha() != 50:
                             self.rect_surf.set_alpha(50)
-                        if spike[7]==0:
-                            win.blit(self.rect_surf, [spike[self.attr_dict["pos"]][0]+4, spike[self.attr_dict["pos"]][1]+8])
-                        elif spike[7]==90:
-                            win.blit(self.rect_surf, [spike[self.attr_dict["pos"]][0]+4, spike[self.attr_dict["pos"]][1]])
-                        elif spike[7]==-90:
-                            win.blit(self.rect_surf, [spike[self.attr_dict["pos"]][0], spike[self.attr_dict["pos"]][1]+6])
+                        shiftable = True
+                        for obj in renderer.queue:
+                            if isinstance(obj, MovingPlatform):
+                                if spike in obj.spikes:
+                                    shiftable = False
+                        if shiftable:
+                            if spike[7]==0:
+                                win.blit(self.rect_surf, [spike[self.attr_dict["pos"]][0]+4, spike[self.attr_dict["pos"]][1]+8])
+                            elif spike[7]==90:
+                                win.blit(self.rect_surf, [spike[self.attr_dict["pos"]][0]+4, spike[self.attr_dict["pos"]][1]])
+                            elif spike[7]==-90:
+                                win.blit(self.rect_surf, [spike[self.attr_dict["pos"]][0], spike[self.attr_dict["pos"]][1]+6])
                     if spike[7]==0:
                         if not spike[6]:
                             if (renderer.queue[0].mask.overlap(self.mask, (spike[self.attr_dict["pos"]][0]-renderer.queue[0].pos[0], spike[self.attr_dict["pos"]][1]-renderer.queue[0].pos[1])) == None):
                                 pass
                             else:
                                 renderer.queue[0].is_alive = False
+                                
                                 #reset(renderer.queue[0], renderer)
                                 renderer.queue[0].deaths += 1
                         else:
@@ -264,6 +300,7 @@ class LevelRenderer:
                                 pass
                             else:
                                 renderer.queue[0].is_alive = False
+                                
                                 #reset(renderer.queue[0], renderer)
                                 renderer.queue[0].deaths += 1
                     else:
@@ -272,6 +309,7 @@ class LevelRenderer:
                                 pass
                             else:
                                 renderer.queue[0].is_alive = False
+                                
                                 #reset(renderer.queue[0], renderer)
                                 renderer.queue[0].deaths += 1
                         else:
@@ -279,12 +317,13 @@ class LevelRenderer:
                                 pass
                             else:
                                 renderer.queue[0].is_alive = False
+                                
                                 #reset(renderer.queue[0], renderer)
                                 renderer.queue[0].deaths += 1
                     if spike[7]==0:
                         if not spike[6]:
                             for obj in self.queue:
-                                if isinstance(obj, EnemySwordsman):
+                                if isinstance(obj, EnemySwordsman) or isinstance(obj, EnemyWizard):
                                     enemy = self.queue.index(obj)
                                 else:
                                     continue
@@ -300,7 +339,7 @@ class LevelRenderer:
                                             return
                         else:
                             for obj in self.queue:
-                                if isinstance(obj, EnemySwordsman):
+                                if isinstance(obj, EnemySwordsman) or isinstance(obj, EnemyWizard):
                                     enemy = self.queue.index(obj)
                                 else:
                                     continue
@@ -317,7 +356,7 @@ class LevelRenderer:
                     else:
                         if spike[7]==90:
                             for obj in self.queue:
-                                if isinstance(obj, EnemySwordsman):
+                                if isinstance(obj, EnemySwordsman) or isinstance(obj, EnemyWizard):
                                     enemy = self.queue.index(obj)
                                 else:
                                     continue
@@ -333,7 +372,7 @@ class LevelRenderer:
                                             return
                         else:
                             for obj in self.queue:
-                                if isinstance(obj, EnemySwordsman):
+                                if isinstance(obj, EnemySwordsman) or isinstance(obj, EnemyWizard):
                                     enemy = self.queue.index(obj)
                                 else:
                                     continue
@@ -364,6 +403,7 @@ class LevelRenderer:
         selfpos = [pos[0]+((16*-90)/-90)+((26*-90)/-90)-int(self.spikesheet.get([3, 0]).get_width()/2)-4, pos[1]+38-int(self.spikesheet.get([3, 0]).get_height()/2)]
         self.spikes.append([selfpos, 0, True, shifted, False, False, True, -90, pos])
     def render(self):
+        self.rects = []
         self.coin_count = 0
         self.spike_count = 0
         self.spike_h_count = 0
@@ -398,8 +438,10 @@ class LevelRenderer:
                                     if not tile == 19:
                                         if (tilemap[self.num_row-1][self.num_col] in [-1, 60]) or (tilemap[self.num_row-1][self.num_col] in self.decorative_tiles):
                                             self.standing_masks.append([pygame.mask.from_surface(self.images[tile]), [self.x*self.tile_size[0], self.y*self.tile_size[1]], tile, [abs_x, abs_j]])
+                                            #self.rects.append(pygame.Rect(self.x*self.tile_size[0], self.y*self.tile_size[1], 64, 64))
                                 else:
                                     self.standing_masks.append([pygame.mask.from_surface(self.images[tile]), [self.x*self.tile_size[0], self.y*self.tile_size[1]], tile, [abs_x, abs_j]])
+                                    #self.rects.append(pygame.Rect(self.x*self.tile_size[0], self.y*self.tile_size[1], 64, 64))
                             if not tile in [26, 27, 28, 29]:
                                 if not tile == 116:
                                     if tilemap[self.num_row][self.num_col-1] in [-1, 60] or tilemap[self.num_row][self.num_col-1] in self.decorative_tiles:
@@ -531,6 +573,13 @@ class LevelRenderer:
                     if self.coin_appending:
                         self.enemies.append(len(self.queue))
                         self.queue.append(EnemySwordsman([self.x*self.tile_size[0], self.y*self.tile_size[1]], self))
+                elif tile == 141:
+                    if self.coin_appending:
+                        self.enemies.append(len(self.queue))
+                        self.queue.append(EnemyWizard([self.x*self.tile_size[0], self.y*self.tile_size[1]], self))
+                elif tile == 142:
+                    if self.coin_appending and not self.queue[0].has_staff:
+                        self.queue.append(StaffIcon(self.queue[0].staff.copy(),[self.x*self.tile_size[0], self.y*self.tile_size[1]]))
                 elif tile == 88:
                     if self.coin_appending:
                         self.queue.append(CheckPoint([self.x*self.tile_size[0], self.y*self.tile_size[1]], -1))
@@ -558,6 +607,7 @@ class LevelRenderer:
         self.thwack_channel.set_volume(self.coin_channel.get_volume())
         self.swoosh_channel.set_volume(self.coin_channel.get_volume())
         self.axe_channel.set_volume(self.coin_channel.get_volume())
+        self.queue[0].combat = False
         self.render()
         self.enemies = []
         self.firebox_in_cam = False
@@ -570,9 +620,10 @@ class LevelRenderer:
             for obj in self.queue:
                 if obj.__class__.__name__ in self.ground:
                     obj.update(self)
-                if obj.__class__.__name__ == "EnemySwordsman":
+                if obj.__class__.__name__ == "EnemySwordsman" or obj.__class__.__name__ == "EnemyWizard":
                     if obj.is_alive:
                         self.enemies.append(self.queue.index(obj))
+            self.spike_update()
             for obj in self.queue:
                 if obj != None:
                     if not (obj.__class__.__name__ in self.ground) and not (isinstance(obj, CheckPoint)):
@@ -583,12 +634,13 @@ class LevelRenderer:
                 if isinstance(obj, DeathParticle):
                     if obj.alpha <= 0:
                         self.queue.remove(obj)
-            self.spike_update()
+            
+        
         self.bullet_manager.update_physics(self)
         self.bullet_manager.update_graphics(self)
         for notification in self.notifications:
             notification.update(self.dt)
-        #if not web:
-            #print(self.clock.get_fps())
+        if not web:
+            print(self.clock.get_fps())
 
         

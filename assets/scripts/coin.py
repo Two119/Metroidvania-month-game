@@ -129,7 +129,7 @@ class Coin:
                             renderer.added_spikes_h += 1
                     #[self.init_pos[0]*64+renderer.camera.cam_change[0], self.init_pos[1]*64+renderer.camera.cam_change[1]-64]
                     if renderer.queue[0].tile == 121:
-                        renderer.queue.append(SwingingAxe(self.pos))
+                        renderer.queue.append(SwingingAxe(self.pos, True))
                     if renderer.queue[0].tile == 116:
                         renderer.queue.append(FireBox(self.pos, True))
                     renderer.queue[0].shapeshifts -= 1

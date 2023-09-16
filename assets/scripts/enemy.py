@@ -100,6 +100,7 @@ class EnemyWizard:
 
         if self.pos[1] > (renderer.player_death_limit[renderer.level]+renderer.camera.cam_change[1]):
             self.is_alive = False
+            self.t = True
             #reset(self, renderer)
             return
         global def_frame
@@ -175,9 +176,7 @@ class EnemyWizard:
                         self.pos[1] = double_list[1][1]-self.spritesheet.get(self.frame).get_height()+24
                     self.jumping = False
         self.staff_pos = [self.pos[0]+(self.spritesheet.get(self.frame).get_width()/1.2), self.pos[1]+(self.spritesheet.get(self.frame).get_height()/1.9)]
-        ang = 270-angle_between([self.staff_pos, renderer.queue[0].staff_pos])
-        if self.vel[0] == 0 and self.rect.colliderect(renderer.camera.rect) and not self.just_shot and self.standing:
-            ang += randint(-10, 10)
+        ang = 290-angle_between([self.staff_pos, renderer.queue[0].staff_pos])
         self.staff = pygame.transform.rotate(self.orig_staff, ang)
         if self.vel[0] == 0 and self.rect.colliderect(renderer.camera.rect) and not self.just_shot and self.standing:
             self.shots.append(len(renderer.bullet_manager.bullets))
@@ -190,7 +189,14 @@ class EnemyWizard:
             self.shoot_delay = 0
         self.staff_pos = [self.staff_pos[0]-(self.staff.get_width()/2), self.staff_pos[1]-(self.staff.get_height()/2)]
         if not self.is_alive:
+            if renderer.queue.index(self) in renderer.enemies:
+                renderer.enemies.remove(renderer.queue.index(self))
             renderer.queue.remove(self)
+            particle_sheet = SpriteSheet(self.spritesheet.get(self.frame), [self.spritesheet.get(self.frame).get_width()//4, self.spritesheet.get(self.frame).get_height()//4], [0, 0, 0])
+            for j, sheet in enumerate(particle_sheet.sheet):
+                for i, surf in enumerate(sheet):
+                    if not isequal(surf.get_at([0, 0]), [0, 0, 0]):
+                        renderer.queue.append(DeathParticle(surf, [self.pos[0]+(i*4), self.pos[1]+(j*4)], renderer, [0, 0, 0]))
             del self
     def update(self, renderer):
         if renderer.clock.get_fps() != 0:
@@ -211,6 +217,8 @@ class EnemyWizard:
             else:
                 self.rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, (16*4)+17)
                 self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, 1)
+            if self.chasing:
+                    renderer.queue[0].combat = True
             #pygame.draw.rect(win, [255, 0, 0], self.rect)
             win.blit(self.spritesheet.get(self.frame), self.pos)
             win.blit(self.staff, self.staff_pos)
@@ -260,7 +268,7 @@ class Sword:
                 if self.mask.overlap(renderer.queue[0].mask, [renderer.queue[0].pos[0]-self.pos[0], renderer.queue[0].pos[1]-self.pos[1]])!=None:
                     renderer.queue[0].is_alive = False
                     renderer.queue[0].deaths += 1
-                
+                    
             else:
                 if renderer.queue[0].using_shield:
                     if renderer.queue[0].shield.health >= 0:
@@ -275,10 +283,12 @@ class Sword:
                         if self.mask.overlap(renderer.queue[0].mask, [renderer.queue[0].pos[0]-self.pos[0], renderer.queue[0].pos[1]-self.pos[1]])!=None:
                             renderer.queue[0].is_alive = False
                             renderer.queue[0].deaths += 1
+                            
                 else:
                     if self.mask.overlap(renderer.queue[0].mask, [renderer.queue[0].pos[0]-self.pos[0], renderer.queue[0].pos[1]-self.pos[1]])!=None:
                             renderer.queue[0].is_alive = False
                             renderer.queue[0].deaths += 1
+                            
             win.blit(pygame.transform.flip(self.spritesheet.get(self.frame), self.dir, False), self.pos)
        
             
@@ -394,7 +404,7 @@ class EnemySwordsman:
                             if obj.__class__.__name__ == "Crusher":
                                 renderer.coin_channel.play(self.sounds[2])
                             self.is_alive = False
-
+            
                             
         if self.pos[1] > (renderer.player_death_limit[renderer.level]+renderer.camera.cam_change[1]):
             self.is_alive = False

@@ -16,6 +16,9 @@ class Crusher:
             swap_color(img, [168, 181, 178], [195, 195, 195])
             self.spritesheet = SpriteSheet(img, [12, 1])
             self.sound = pygame.mixer.Sound("assets/Audio/crusher.ogg")
+        self.dust_sheet = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/dust_2.png").convert()), [8, 1], [255, 255, 255])
+        self.dust_frame = 0
+        self.dust_blowing = False
         self.spritesheet.size = [64*4, 64*4]
         self.frame = [0, 0]
         self.pos = [pos[0], pos[1]+4]
@@ -38,6 +41,8 @@ class Crusher:
                     self.frame[0] = 0
                     self.adder=1
                     self.falling = False
+                if self.frame[0] >= 10 and self.adder == 1:
+                    self.dust_blowing = True
         self.mask = pygame.mask.from_surface(self.spritesheet.get(self.frame))
     def update(self, renderer):
         self.cycles += 1
@@ -58,4 +63,16 @@ class Crusher:
                             self.falling = True
                 if self.falling:
                     self.update_animation(6, renderer)
+                if self.dust_blowing:
+                    if self.delay%(round(8/renderer.dt)) == 0:
+                        self.dust_frame += 1
+                        if self.dust_frame > 6:
+                            self.dust_frame = 0
+                            self.dust_blowing = False
+                            win.blit(self.spritesheet.get(self.frame), self.pos)
+                            return
+                    surf_ = self.dust_sheet.get([self.dust_frame, 0])
+                    win.blit(surf_, [self.pos[0]-self.dust_sheet.size[0]+64, self.pos[1]+self.spritesheet.size[1]-self.dust_sheet.size[1]])
+                    surf_ = pygame.transform.flip(self.dust_sheet.get([self.dust_frame, 0]), True, False)
+                    win.blit(surf_, [self.pos[0]+64+128, self.pos[1]+self.spritesheet.size[1]-self.dust_sheet.size[1]])
                 win.blit(self.spritesheet.get(self.frame), self.pos)

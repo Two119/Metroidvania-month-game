@@ -66,6 +66,7 @@ class FireBox:
                             if (self.mask.overlap(renderer.queue[0].mask, (renderer.queue[0].pos[0]-self.pos[0], renderer.queue[0].pos[1]-(self.pos[1])))!=None):
                                 renderer.queue[0].is_alive = False
                                 renderer.queue[0].deaths += 1
+                                
                     for enemy in renderer.enemies:
                         if (hasattr(renderer.queue[enemy], "rect")):
                             if (self.rect.colliderect(renderer.queue[enemy].rect)):

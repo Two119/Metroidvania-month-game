@@ -46,6 +46,76 @@ def isequal(color1:pygame.Color, color2:tuple) -> bool:
         return True
     else:
         return False
+def isequal(color1:pygame.Color, color2:tuple) -> bool:
+    if color1.r == color2[0] and color1.g == color2[1] and color1.b == color2[2]:
+        return True
+    else:
+        return False
+class FastMask:
+    def __init__(self, position:tuple, surface:pygame.Surface, background_color:tuple = [0, 0, 0], scale:int = 1) -> None:
+        self.outline = []
+        self.rects = []
+        self.on_border=False
+        self.overall_rect = pygame.Rect(position[0], position[1], surface.get_width()*scale, surface.get_height()*scale)
+        for j in range(surface.get_height()):
+            for i in range(surface.get_width()):
+                self.on_border=False
+                if (i>0 and j>0 and i<surface.get_width()-1 and j<surface.get_height()-1):
+                    color_1 = surface.get_at([i, j])
+                    color_2 = surface.get_at([i-1, j])
+                    color_3 = surface.get_at([i, j-1])
+                    color_4 = surface.get_at([i+1, j])
+                    color_5 = surface.get_at([i, j+1])
+                    if not isequal(color_1, background_color):
+                        if (i-1>=0):
+                            if isequal(color_2, background_color):
+                                self.on_border = True
+                        else:
+                            self.on_border = True
+                        if (j-1>=0):
+                            if isequal(color_3, background_color):
+                                self.on_border = True
+                        else:
+                            self.on_border = True
+                        if ((i+1)<surface.get_width()):
+                            if isequal(color_4, background_color):
+                                self.on_border = True
+                        else:
+                            self.on_border = True
+                        if ((j+1)<surface.get_height()):
+                            if isequal(color_5, background_color):
+                                self.on_border = True
+                        else:
+                            self.on_border = True
+                else:
+                    if not isequal(surface.get_at([i, j]), background_color):
+                        self.on_border=True
+                if self.on_border:
+                    self.outline.append([i, j])
+        self.scale = scale
+        for count, point in enumerate(self.outline):
+            self.rects.append(pygame.Rect(position[0]+self.outline[count][0]*scale, position[1]+self.outline[count][1]*scale, scale, scale)) #creates outline rects
+    def draw(self, screen:pygame.Surface, color:tuple=[255, 0, 0]):
+        for rect in self.rects:
+            pygame.draw.rect(screen, color, rect)
+    def move(self, movement):
+        for rect in self.rects:
+            rect.x += movement[0]
+            rect.y += movement[1]
+        self.overall_rect.x += movement[0]
+        self.overall_rect.y += movement[1]
+    def move_to(self, position):
+        self.rects = []
+        for count, point in enumerate(self.outline):
+            self.rects.append(pygame.Rect(position[0]+self.outline[count][0]*self.scale, position[1]+self.outline[count][1]*self.scale, self.scale, self.scale))
+        self.overall_rect = pygame.Rect(position[0], position[1], self.overall_rect.w, self.overall_rect.h)
+    def fast_collide(self, other_fast_mask):
+        #if self.overall_rect.colliderect(other_fast_mask.overall_rect):
+        for rect in self.rects:
+                if rect.collidelist(other_fast_mask.rects) != -1:
+                    return True
+        return False                        
+                    
 class SpriteSheet:
     def __init__(self, sheet, size, colorkey = [0, 0, 0]):
         self.spritesheet = sheet
@@ -170,11 +240,11 @@ def reset(player, renderer, fell=False):
             case 2:
                 if not player.on_door:
                     if not  (3 in player.levels_unlocked):
-                        player.pos = [2816, 5952]
+                        player.pos = [2846, 5952]
                     else:
-                        player.pos = [2816, 5152]
+                        player.pos = [2846, 5152]
                 else:
-                    player.pos = [2816, 5152]
+                    player.pos = [2846, 5152]
         #player.spritesheet = SpriteSheet(spritesheet, sheet_size)
         player.on_door = False
         player.t = False

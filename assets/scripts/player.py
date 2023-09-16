@@ -131,6 +131,7 @@ class Player:
         self.just_spawned = True
         self.delay = 0
         self.deaths = 0
+        self.ang = 0
         self.combat = False
         self.standing = False
         self.speed = 3
@@ -157,9 +158,13 @@ class Player:
         self.particle_surf = None
         self.just_tried = False
         self.has_staff = False
+        self.dust_pos = [0, 0]
         self.just_shot = False
         self.staffs = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/staffs.png").convert()), [5, 1], [255, 255, 255])
+        self.dust_sheet = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/smoke.png").convert()), [7, 1], [255, 255, 255])
         #self.walk_particles = Particles(win, )
+        self.dust_frame = 0
+        self.dust_blowing = False
         if not web:
             sheets = [pygame.image.load("assets\Spritesheets\\right_sheet.png").convert(), pygame.image.load("assets\Spritesheets\\left_sheet.png").convert()]
             [s.set_colorkey([255, 255, 255]) for s in sheets]
@@ -213,6 +218,8 @@ class Player:
                         self.just_spawned = False
                         if not self.channel.get_busy():
                             self.channel.play(self.sounds[self.sounds_dict["land"]])
+                            self.dust_blowing = True
+                            self.dust_pos = [self.pos[0], self.pos[1]+self.dust_sheet.size[1]-16]
                 else:
                     self.delay += (1)
                     if int(self.delay) % round(delay_wait/(dt)) == 0:
@@ -231,9 +238,11 @@ class Player:
                             self.is_alive = False
                             #reset(self, renderer)
                             self.deaths += 1
+                            self.t = True
                             return
         if self.pos[1] > (renderer.player_death_limit[renderer.level]+renderer.camera.cam_change[1]):
             self.is_alive = False
+            self.t = True
             #reset(self, renderer)
             self.deaths += 1
             self.fell = True
@@ -269,6 +278,8 @@ class Player:
                         if self.jumping:
                             if not self.channel.get_busy():
                                 self.channel.play(self.sounds[self.sounds_dict["land"]])
+                                self.dust_blowing = True
+                                self.dust_pos = [self.pos[0], self.pos[1]+self.dust_sheet.size[1]-16]
                         if not double_list[2] in renderer.queue:
                             self.pos[1] = double_list[1][1]-self.spritesheet.get(self.frame).get_height()+24
                         self.jumping = False
@@ -351,6 +362,8 @@ class Player:
                         if self.jumping:
                             if not self.channel.get_busy():
                                 self.channel.play(self.sounds[self.sounds_dict["land"]])
+                                self.dust_blowing = True
+                                self.dust_pos = [self.pos[0], self.pos[1]+self.dust_sheet.size[1]-16]
                         if not double_list[2] in renderer.queue:
                             self.pos[1] = double_list[1][1]-self.spritesheet.get(self.frame).get_height()+24
                         self.jumping = False
@@ -428,8 +441,9 @@ class Player:
             pygame.draw.rect(win, (0, 0, 255), pygame.Rect(self.pos[0]+(22*2)-8-8,  self.pos[1]-20, (12*4)+15, (16*4)+17))
             self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-8, self.pos[1]-20+(17*3), (12*4)+15, 1)
         """
-        self.staff_pos = [self.pos[0]+(self.spritesheet.get(self.frame).get_width()/1.2), self.pos[1]+(self.spritesheet.get(self.frame).get_height()/1.9)]
+        self.staff_pos = [self.pos[0]+(self.spritesheet.get(self.frame).get_width()/1.2), self.pos[1]+(self.spritesheet.get(self.frame).get_height()/1.9)-18]
         ang = 270-angle_between([self.staff_pos, pygame.mouse.get_pos()])
+        self.ang = 270-angle_between([self.staff_pos, pygame.mouse.get_pos()])
         self.staff = pygame.transform.rotate(self.orig_staff, ang)
         if self.has_staff:
             if pygame.mouse.get_pressed()[0] and not self.just_shot and not renderer.button.rect.collidepoint(pygame.mouse.get_pos()) and self.shapeshifting:
@@ -442,7 +456,7 @@ class Player:
         
     def update(self, renderer):
         if renderer.clock.get_fps() != 0:
-            self.combat = False
+     
             if self.just_spawned:
                     self.update_animation(7, 15/2, renderer.dt)
             if self.shapeshifts < 0:
@@ -467,6 +481,15 @@ class Player:
                 self.rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, (16*4)+17)
                 self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, 1)
             #pygame.draw.rect(win, [255, 0, 0], self.rect)
+            if self.dust_blowing:
+                if self.delay%(round(8/renderer.dt)) == 0:
+                    self.dust_frame += 1
+                    if self.dust_frame > 6:
+                        self.dust_frame = 0
+                        self.dust_blowing = False
+            if self.dust_blowing:
+                surf_ = self.dust_sheet.get([self.dust_frame, 0])
+                win.blit(surf_, self.dust_pos)
             win.blit(self.spritesheet.get(self.frame), self.pos)
             if self.has_staff:
                 win.blit(self.staff, self.staff_pos)

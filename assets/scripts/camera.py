@@ -9,7 +9,7 @@ class Camera:
         self.checking = True
         self.cycles = 0
         self.dir = -1
-        self.spawn_pos = [[64, 5*64], [64, 4.5*64], [104, 360]]
+        self.spawn_pos = [[64, 5*64], [64, 4.5*64], [104, 360],[104, 360],[104, 360]]
     def update(self, renderer):
         if renderer.clock.get_fps() != 0:
             self.transition_frames = 30*renderer.dt

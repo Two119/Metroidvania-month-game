@@ -367,7 +367,7 @@ class EnemySwordsman:
             p = [1, 2, 2]
             self.weapon = Sword(self.pos, p[randint(0, len(p)-1)])
         if renderer.level == 3:
-            p = [2, 3, 3]
+            p = [4, 3, 3]
             self.weapon = Sword(self.pos, p[randint(0, len(p)-1)])
         if renderer.level == 4:
             p = [3, 4, 4]

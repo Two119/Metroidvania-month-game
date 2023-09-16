@@ -149,7 +149,7 @@ class LevelRenderer:
         self.death_anims = []
         self.first_layer = []
         self.coin_appending = True
-        self.level_firebox_y_offset_dict = {0:0, 1:4, 2:4}
+        self.level_firebox_y_offset_dict = {0:0, 1:4, 2:4, 3:4, 4:4}
         self.added_coins = 0
         self.added_spikes = 0
         self.added_spikes_h = 0
@@ -258,18 +258,41 @@ class LevelRenderer:
                                         if spike in obj.spikes:
                                             shiftable = False
                                 if shiftable:
-                                    renderer.queue[0].shapeshifts -= 1
+                                    
                                     if self.level != 0:
-                                        renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][4+int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
+                                        if renderer.queue[0].tile == 116:
+                                            if renderer.queue[0].shapeshifts >= 4:
+                                                renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][4+int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
+                                                self.spikes = [sp for sp in self.spikes if sp != spike]
+                                                #renderer.queue[0].shapeshifts -= 1
+                                        else:
+                                
+                                                    renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][4+int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
+                                                    self.spikes = [sp for sp in self.spikes if sp != spike]
+                                                    renderer.queue[0].shapeshifts -= 1
                                     else:
-                                        renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
                                         
-                                    self.spikes = [sp for sp in self.spikes if sp != spike]
+                                        if renderer.queue[0].tile == 116:
+                                            if renderer.queue[0].shapeshifts >= 4:
+                                                renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
+                                                self.spikes = [sp for sp in self.spikes if sp != spike]
+                                                #renderer.queue[0].shapeshifts -= 1
+                                        else:
+                      
+                                                    renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = renderer.queue[0].tile
+                                                    self.spikes = [sp for sp in self.spikes if sp != spike]
+                                                    renderer.queue[0].shapeshifts -= 1
                                     if renderer.queue[0].tile == 116:
                                         if not spike[3]:
-                                            self.queue.append(FireBox([spike[8][0]+self.camera.cam_change[0], spike[8][1]+self.camera.cam_change[1]+8], True))
+                                            if renderer.queue[0].shapeshifts >= 4:
+                                                self.queue.append(FireBox([spike[8][0]+self.camera.cam_change[0], spike[8][1]+self.camera.cam_change[1]+8], True))
+                                            
+                                                renderer.queue[0].shapeshifts -= 4
                                         else:
-                                            self.queue.append(FireBox([spike[8][0], spike[8][1]+4], True, True))
+                                            if renderer.queue[0].shapeshifts >= 4:
+                                                self.queue.append(FireBox([spike[8][0], spike[8][1]+4], True, True))
+                                            
+                                                renderer.queue[0].shapeshifts -= 4
                                         renderer.queue[0].shapeshifting=False
                                         renderer.queue_updating = True
                         if self.rect_surf.get_alpha() != 50:
@@ -336,6 +359,10 @@ class LevelRenderer:
                                     if spike[3]:
                                         if spike in self.spikes:
                                             self.spikes.remove(spike)
+                                            if self.level != 0:
+                                                renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][4+int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = -1
+                                            else:
+                                                renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = -1
                                             return
                         else:
                             for obj in self.queue:
@@ -352,6 +379,10 @@ class LevelRenderer:
                                     if spike[3]:
                                         if spike in self.spikes:
                                             self.spikes.remove(spike)
+                                            if self.level != 0:
+                                                renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][4+int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = -1
+                                            else:
+                                                renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = -1
                                             return
                     else:
                         if spike[7]==90:
@@ -369,6 +400,10 @@ class LevelRenderer:
                                     if spike[3]:
                                         if spike in self.spikes:
                                             self.spikes.remove(spike)
+                                            if self.level != 0:
+                                                renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][4+int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = -1
+                                            else:
+                                                renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = -1
                                             return
                         else:
                             for obj in self.queue:
@@ -385,6 +420,10 @@ class LevelRenderer:
                                     if spike[3]:
                                         if spike in self.spikes:
                                             self.spikes.remove(spike)
+                                            if self.level != 0:
+                                                renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][4+int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = -1
+                                            else:
+                                                renderer.levels[renderer.level][int(spike[self.attr_dict["pos"]][1]/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int((spike[self.attr_dict["pos"]][0]+8-renderer.camera.cam_change[0])/renderer.tile_size[0])] = -1
                                             return
                     if not self.played:
                         if not web:
@@ -640,7 +679,7 @@ class LevelRenderer:
         self.bullet_manager.update_graphics(self)
         for notification in self.notifications:
             notification.update(self.dt)
-        if not web:
-            print(self.clock.get_fps())
+        #if not web:
+            #print(self.clock.get_fps())
 
         

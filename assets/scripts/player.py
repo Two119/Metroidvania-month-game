@@ -446,7 +446,7 @@ class Player:
         self.ang = 270-angle_between([self.staff_pos, pygame.mouse.get_pos()])
         self.staff = pygame.transform.rotate(self.orig_staff, ang)
         if self.has_staff:
-            if pygame.mouse.get_pressed()[0] and not self.just_shot and not renderer.button.rect.collidepoint(pygame.mouse.get_pos()) and self.shapeshifting:
+            if pygame.mouse.get_pressed()[0] and not self.just_shot and not renderer.button.rect.collidepoint(pygame.mouse.get_pos()):
                 self.shots.append(len(renderer.bullet_manager.bullets))
                 renderer.bullet_manager.add_bullet(self.staff_pos, 270-ang)
                 self.just_shot = True

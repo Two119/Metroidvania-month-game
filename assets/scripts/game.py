@@ -86,7 +86,9 @@ class Game:
         self.cursor_img_.set_colorkey([0, 0, 0])
         self.renderer.super = self
         self.auto_save = True
+        self.just_notified = False
         self.start_text = scale_image(self.ui_font.render("Start", False, (255, 255, 255), (0, 0, 0)), 1.5)
+        self.main_text = scale_image(self.ui_font.render("Shiftania", False, (255, 255, 255), (0, 0, 0)), 2)
         self.restart_text = scale_image(self.ui_font.render("Restart", False, (255, 255, 255), (0, 0, 0)), 1.1)
         self.vol_text = scale_image(self.ui_font.render("Volume", False, (255, 255, 255), (0, 0, 0)), 1.5)
         self.fps_text = scale_image(self.ui_font.render("Framerate", False, (255, 255, 255), (0, 0, 0)), 1.5)
@@ -97,6 +99,7 @@ class Game:
         self.renderer.font = self.ui_font
         self.start_text.set_colorkey((0, 0, 0))
         self.restart_text.set_colorkey((0, 0, 0))
+        self.main_text.set_colorkey((0, 0, 0))
         self.set_text.set_colorkey((0, 0, 0))
         self.spawn_positions = [[64, 5*64], [64, 1.5*64]]
         self.vol_text.set_colorkey((0, 0, 0))
@@ -175,7 +178,8 @@ class Game:
                     self.renderer.queue[0].levels_unlocked.append(self.renderer.level+1)
                     self.renderer.level+=1
                     self.screen = 0
-                
+                if not pygame.mouse.get_pressed()[2]:
+                    self.just_notified = False
                 if self.renderer.queue_updating == False:
                     for double_list in self.renderer.standing_masks:
                             if (self.cursor_mask.overlap(double_list[0], (double_list[1][0]-cursor_pos[0], double_list[1][1]-cursor_pos[1])) == None):
@@ -184,8 +188,18 @@ class Game:
                                 if double_list[2] != 122 and not isinstance(double_list[2], SpikeBall) and not ismovingfirebox(double_list[2]):
                                     if not isinstance(double_list[2], FireBox):
                                         if pygame.mouse.get_pressed()[2] and double_list[2] != self.renderer.queue[0].tile:
-                                            self.renderer.queue[0].shapeshifts -= 1
-                                            self.renderer.levels[self.renderer.level][double_list[3][1]][double_list[3][0]] = self.renderer.queue[0].tile
+                                            if self.renderer.queue[0].tile == 116:
+                                                if self.renderer.queue[0].shapeshifts >= 4:
+                                                    #self.renderer.queue[0].shapeshifts -= 1
+                                                    self.renderer.levels[self.renderer.level][double_list[3][1]][double_list[3][0]] = self.renderer.queue[0].tile
+                                            else:
+                                                if self.renderer.queue[0].tile == 121:
+                                                    if self.renderer.queue[0].shapeshifts >= 3:
+                                                        #self.renderer.queue[0].shapeshifts -= 1
+                                                        self.renderer.levels[self.renderer.level][double_list[3][1]][double_list[3][0]] = self.renderer.queue[0].tile
+                                                else:
+                                                    self.renderer.queue[0].shapeshifts -= 1
+                                                    self.renderer.levels[self.renderer.level][double_list[3][1]][double_list[3][0]] = self.renderer.queue[0].tile
                                             if self.renderer.level == 0:
                                                 if self.renderer.queue[0].tile == 117:
                                                     self.renderer.add_spike_u([double_list[3][0]*64+self.renderer.camera.cam_change[0], double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-4], True)
@@ -323,25 +337,59 @@ class Game:
                                                         self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-4-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, -90, True))
                                                         self.renderer.added_spikes_h += 1
                                             if self.renderer.queue[0].tile == 121:
-                                                self.renderer.queue.append(SwingingAxe([((int((double_list[1][0]-self.renderer.camera.cam_change[0])/self.renderer.tile_size[0]))*self.renderer.tile_size[0])+self.camera.cam_change[0], (int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1])))*self.renderer.tile_size[1]-self.level_spike_dicts[self.renderer.level]+self.camera.cam_change[1]], True))
+                                                if self.renderer.queue[0].shapeshifts >= 3:
+                                                    self.renderer.queue.append(SwingingAxe([((int((double_list[1][0]-self.renderer.camera.cam_change[0])/self.renderer.tile_size[0]))*self.renderer.tile_size[0])+self.camera.cam_change[0], (int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1])))*self.renderer.tile_size[1]-self.level_spike_dicts[self.renderer.level]+self.camera.cam_change[1]], True))
+                                                    self.renderer.queue[0].shapeshifts -= 3
+                                                else:
+                                                    if not self.just_notified:
+                                                        text = self.renderer.font.render("Not enough shapeshifts!", False, [255, 0, 0], [0, 0, 0])
+                                                        text.set_colorkey([0, 0, 0])
+                                                        self.renderer.notifications.append(Notification(text, 1))
+                                                        self.just_notified = True
                                             if self.renderer.queue[0].tile == 116:
-                                                self.renderer.queue.append(FireBox([double_list[3][0]*64+self.renderer.camera.cam_change[0]-self.x_level_dicts[self.renderer.level], double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]], True))
-                                                self.renderer.queue[0].shapeshifting=False
-                                                self.renderer.queue_updating = True
+                                                if self.renderer.queue[0].shapeshifts >= 4:
+                                                    self.renderer.queue.append(FireBox([double_list[3][0]*64+self.renderer.camera.cam_change[0]-self.x_level_dicts[self.renderer.level], double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]], True))
+                                                    self.renderer.queue[0].shapeshifting=False
+                                                    self.renderer.queue_updating = True
+                                                    self.renderer.queue[0].shapeshifts -= 4
+                                                else:
+                                                    if not self.just_notified:
+                                                        text = self.renderer.font.render("Not enough shapeshifts!", False, [255, 0, 0], [0, 0, 0])
+                                                        text.set_colorkey([0, 0, 0])
+                                                        self.renderer.notifications.append(Notification(text, 1))
+                                                        self.just_notified = True
                                             self.renderer.queue[0].shapeshifting=False
                                             self.renderer.queue_updating = True
                                         pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
                                         win.blit(self.rect_surf, [double_list[1][0]+4, double_list[1][1]+4])
                                     else:
                                         if pygame.mouse.get_pressed()[2] and not self.renderer.queue[0].tile==116:
-                                            self.renderer.queue[0].shapeshifts -= 1
-                                            old_value = self.renderer.levels[self.renderer.level][double_list[3][1]][double_list[3][0]]*2
+                                            #self.renderer.queue[0].shapeshifts -= 1
+                                            #old_value = self.renderer.levels[self.renderer.level][double_list[3][1]][double_list[3][0]]*2
                                             if self.renderer.level == 0:
-                                                self.renderer.levels[self.renderer.level][double_list[3][1]+4][double_list[3][0]] = self.renderer.queue[0].tile
+                                                if self.renderer.queue[0].tile == 121:
+                                                    pass
+                                                else:
+                                                    self.renderer.levels[self.renderer.level][double_list[3][1]+4][double_list[3][0]] = self.renderer.queue[0].tile
+                                                    self.renderer.queue[0].shapeshifts -= 1
                                             else:
-                                                self.renderer.levels[self.renderer.level][int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1]))+1][4+int((double_list[1][0]-self.camera.cam_change[0])/self.renderer.tile_size[0])] = self.renderer.queue[0].tile 
+                                                if self.renderer.queue[0].tile == 121:
+                                                    pass
+                                                        
+                                                else:
+                                                    self.renderer.queue[0].shapeshifts -= 1
+                                                    self.renderer.levels[self.renderer.level][int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1]))+1][4+int((double_list[1][0]-self.camera.cam_change[0])/self.renderer.tile_size[0])] = self.renderer.queue[0].tile
                                             if self.renderer.queue[0].tile == 121:
-                                                self.renderer.queue.append(SwingingAxe([(int((double_list[1][0]-self.renderer.camera.cam_change[0])/self.renderer.tile_size[0]))*self.renderer.tile_size[0]+self.camera.cam_change[0], (int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1])))*self.renderer.tile_size[1]-self.level_spike_dicts[self.renderer.level]+64+self.camera.cam_change[1]], 121))
+                                                if self.renderer.queue[0].shapeshifts >= 3:
+                                                    self.renderer.queue.append(SwingingAxe([(int((double_list[1][0]-self.renderer.camera.cam_change[0])/self.renderer.tile_size[0]))*self.renderer.tile_size[0]+self.camera.cam_change[0], (int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1])))*self.renderer.tile_size[1]-self.level_spike_dicts[self.renderer.level]+64+self.camera.cam_change[1]], 121))
+                                                    self.renderer.queue[0].shapeshifts -= 3
+                                                    self.renderer.levels[self.renderer.level][int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1]))+1][4+int((double_list[1][0]-self.camera.cam_change[0])/self.renderer.tile_size[0])] = self.renderer.queue[0].tile
+                                                else:
+                                                    if not self.just_notified:
+                                                        text = self.renderer.font.render("Not enough shapeshifts!", False, [255, 0, 0], [0, 0, 0])
+                                                        text.set_colorkey([0, 0, 0])
+                                                        self.renderer.notifications.append(Notification(text, 1))
+                                                        self.just_notified = True
                                             if self.renderer.queue[0].tile == 118:
                                                 if True:
                                                     self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-4, double_list[2].pos[1]+56], False, 0, True))
@@ -350,6 +398,7 @@ class Game:
                                                 if self.renderer.spike_h_count > self.renderer.added_spikes_h:
                                                     self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-4, double_list[2].pos[1]+56], False, 0, True))
                                                     self.renderer.added_spikes_h += 1
+                         
                                             if self.renderer.queue[0].tile == 135:
                                                 if True:
                                                     self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-4, double_list[2].pos[1]+60], True, 0, True))
@@ -358,10 +407,12 @@ class Game:
                                                 if self.renderer.spike_h_count > self.renderer.added_spikes_h:
                                                     self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-4, double_list[2].pos[1]+60], True, 0, True))
                                                     self.renderer.added_spikes_h += 1
+                                   
                                             if self.renderer.queue[0].tile == 136:
                                                 if True:
                                                     self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-18, double_list[2].pos[1]+56], False, 90, True))
                                                     self.renderer.added_spikes_h += 1
+                                             
                                                 self.renderer.spike_h_count += 1
                                                 if self.renderer.spike_h_count > self.renderer.added_spikes_h:
                                                     self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-18, double_list[2].pos[1]+56], False, 90, True))
@@ -369,6 +420,7 @@ class Game:
                                             if self.renderer.queue[0].tile == 137:
                                                 self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-8, double_list[2].pos[1]+56], False, -90, True))
                                                 self.renderer.added_spikes_h += 1
+                                                
                                                 self.renderer.spike_h_count += 1
                                                 if self.renderer.spike_h_count > self.renderer.added_spikes_h:
                                                     self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2][0]-8, double_list[2].pos[1]+56], False, -90, True))
@@ -453,6 +505,8 @@ class Game:
             win.blit(self.start_text, [self.buttons[0].pos[0]+10, self.buttons[0].pos[1]+10+(4*self.buttons[0].current)])
             win.blit(self.set_text, [self.buttons[1].pos[0]+5, self.buttons[1].pos[1]+15+(4*self.buttons[1].current)])
             win.blit(self.shop_text, [self.buttons[2].pos[0]+(self.buttons[2].textures[0].get_width()-self.shop_text.get_width())/2, self.buttons[2].pos[1]+15+(4*self.buttons[2].current)])
+            t = center_pos(self.main_text)
+            win.blit(self.main_text, [t[0], t[1]-64])
         elif self.screen == 2:
             #self.settings[len(self.settings)-1].pos = [center_pos(self.button_sprites.get([0, 0]))[0], center_pos(self.button_sprites.get([0, 0]))[1]+(3*self.button_sprites.get([0, 0]).get_height())]
             win.blit(self.renderer.background, (0, 0))

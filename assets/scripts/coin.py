@@ -25,6 +25,8 @@ class Coin:
             pygame.mixer.music.load("assets/Audio/coin.ogg")
             self.sound = (pygame.mixer.Sound("assets/Audio/coin.ogg"))
         self.level_spike_dicts = {0: 780, 1:-64, 2:-64, 3:-64, 4:-64}
+        self.just_notified = False
+        
     def update_animation(self, row, delay_wait, renderer):
         if hasattr(renderer, "dt"):
             if (renderer.dt) != 0:
@@ -57,9 +59,32 @@ class Coin:
         if self.is_hovered:
             if pygame.mouse.get_pressed()[2]:
                     if renderer.level == 0:
-                        renderer.levels[renderer.level][self.init_pos[1]-3][self.init_pos[0]] = renderer.queue[0].tile
+                        if renderer.queue[0].tile == 116:
+                            if renderer.queue[0].shapeshifts >= 4:
+                                #renderer.queue[0].shapeshifts -= 1
+                                renderer.levels[renderer.level][self.init_pos[1]-3][self.init_pos[0]] = renderer.queue[0].tile
+                        else:
+                            if renderer.queue[0].tile == 121:
+                                if renderer.queue[0].shapeshifts >= 3:
+                                    #renderer.queue[0].shapeshifts -= 1
+                                    renderer.levels[renderer.level][self.init_pos[1]-3][self.init_pos[0]] = renderer.queue[0].tile
+                            else:
+                                renderer.queue[0].shapeshifts -= 1
+                                renderer.levels[renderer.level][self.init_pos[1]-3][self.init_pos[0]] = renderer.queue[0].tile
                     else:
                         renderer.levels[renderer.level][self.init_pos[1]-1][self.init_pos[0]+4] = renderer.queue[0].tile
+                        if renderer.queue[0].tile == 116:
+                            if renderer.queue[0].shapeshifts >= 4:
+                                #renderer.queue[0].shapeshifts -= 1
+                                renderer.levels[renderer.level][self.init_pos[1]-1][self.init_pos[0]+4] = renderer.queue[0].tile
+                        else:
+                            if renderer.queue[0].tile == 121:
+                                if renderer.queue[0].shapeshifts >= 3:
+                                    #renderer.queue[0].shapeshifts -= 1
+                                    renderer.levels[renderer.level][self.init_pos[1]-1][self.init_pos[0]+4] = renderer.queue[0].tile
+                            else:
+                                renderer.queue[0].shapeshifts -= 1
+                                renderer.levels[renderer.level][self.init_pos[1]-1][self.init_pos[0]+4] = renderer.queue[0].tile
                     if renderer.queue[0].tile == 117:
                         renderer.add_spike_u(self.pos, True)
                         renderer.added_spikes += 1
@@ -69,6 +94,10 @@ class Coin:
                             renderer.added_spikes += 1
                         renderer.queue[0].shapeshifting=False
                         renderer.queue_updating = True
+                        renderer.queue[0].shapeshifts -= 1
+                        renderer.queue = [ob for ob in renderer.queue if ob != self]
+                        del self
+                        return
                     if renderer.queue[0].tile == 129:
                         renderer.add_spike_d(self.pos, True)
                         renderer.added_spikes += 1
@@ -78,6 +107,10 @@ class Coin:
                             renderer.added_spikes += 1
                         renderer.queue[0].shapeshifting=False
                         renderer.queue_updating = True
+                        renderer.queue[0].shapeshifts -= 1
+                        renderer.queue = [ob for ob in renderer.queue if ob != self]
+                        del self
+                        return
                     if renderer.queue[0].tile == 138:
                         renderer.add_spike_r(self.pos, True)
                         renderer.added_spikes += 1
@@ -87,6 +120,10 @@ class Coin:
                             renderer.added_spikes += 1
                         renderer.queue[0].shapeshifting=False
                         renderer.queue_updating = True
+                        renderer.queue[0].shapeshifts -= 1
+                        renderer.queue = [ob for ob in renderer.queue if ob != self]
+                        del self
+                        return
                     if renderer.queue[0].tile == 139:
                         renderer.add_spike_l(self.pos, True)
                         renderer.added_spikes += 1
@@ -96,6 +133,10 @@ class Coin:
                             renderer.added_spikes += 1
                         renderer.queue[0].shapeshifting=False
                         renderer.queue_updating = True
+                        renderer.queue[0].shapeshifts -= 1
+                        renderer.queue = [ob for ob in renderer.queue if ob != self]
+                        del self
+                        return
                     if renderer.queue[0].tile == 118:
                         if True:
                             renderer.queue.append(HiddenSpike(renderer.spike_image, [4, 1], [self.init_pos[0]*64+renderer.camera.cam_change[0], self.init_pos[1]*64+renderer.camera.cam_change[1]-64-self.level_spike_dicts[renderer.level]-4], False, 0, True))
@@ -104,6 +145,10 @@ class Coin:
                         if renderer.spike_h_count > renderer.added_spikes_h:
                             renderer.queue.append(HiddenSpike(renderer.spike_image, [4, 1], [self.init_pos[0]*64+renderer.camera.cam_change[0], self.init_pos[1]*64+renderer.camera.cam_change[1]-64-self.level_spike_dicts[renderer.level]-4], False, 0, True))
                             renderer.added_spikes_h += 1
+                        renderer.queue[0].shapeshifts -= 1
+                        renderer.queue = [ob for ob in renderer.queue if ob != self]
+                        del self
+                        return
                     if renderer.queue[0].tile == 135:
                         if True:
                             renderer.queue.append(HiddenSpike(renderer.spike_image, [4, 1], [self.init_pos[0]*64+renderer.camera.cam_change[0], self.init_pos[1]*64+renderer.camera.cam_change[1]-64-self.level_spike_dicts[renderer.level]+4], True, 0, True))
@@ -112,6 +157,10 @@ class Coin:
                         if renderer.spike_h_count > renderer.added_spikes_h:
                             renderer.queue.append(HiddenSpike(renderer.spike_image, [4, 1], [self.init_pos[0]*64+renderer.camera.cam_change[0], self.init_pos[1]*64+renderer.camera.cam_change[1]-64-self.level_spike_dicts[renderer.level]+4], True, 0, True))
                             renderer.added_spikes_h += 1
+                        renderer.queue[0].shapeshifts -= 1
+                        renderer.queue = [ob for ob in renderer.queue if ob != self]
+                        del self
+                        return
                     if renderer.queue[0].tile == 136:
                         if True:
                             renderer.queue.append(HiddenSpike(renderer.spike_image, [4, 1], [self.init_pos[0]*64+renderer.camera.cam_change[0]-12, self.init_pos[1]*64+renderer.camera.cam_change[1]-64-self.level_spike_dicts[renderer.level]-8], False, 90, True))
@@ -120,6 +169,10 @@ class Coin:
                         if renderer.spike_h_count > renderer.added_spikes_h:
                             renderer.queue.append(HiddenSpike(renderer.spike_image, [4, 1], [self.init_pos[0]*64+renderer.camera.cam_change[0]-12, self.init_pos[1]*64+renderer.camera.cam_change[1]-64-self.level_spike_dicts[renderer.level]-8], False, 90, True))
                             renderer.added_spikes_h += 1
+                        renderer.queue[0].shapeshifts -= 1
+                        renderer.queue = [ob for ob in renderer.queue if ob != self]
+                        del self
+                        return
                     if renderer.queue[0].tile == 137:
                         renderer.queue.append(HiddenSpike(renderer.spike_image, [4, 1], [self.init_pos[0]*64+renderer.camera.cam_change[0]-4, self.init_pos[1]*64+renderer.camera.cam_change[1]-64-self.level_spike_dicts[renderer.level]-8], False, -90, True))
                         renderer.added_spikes_h += 1
@@ -127,17 +180,47 @@ class Coin:
                         if renderer.spike_h_count > renderer.added_spikes_h:
                             renderer.queue.append(HiddenSpike(renderer.spike_image, [4, 1], [self.init_pos[0]*64+renderer.camera.cam_change[0]-4, self.init_pos[1]*64+renderer.camera.cam_change[1]-64-self.level_spike_dicts[renderer.level]-8], False, -90, True))
                             renderer.added_spikes_h += 1
+                        renderer.queue[0].shapeshifts -= 1
+                        renderer.queue = [ob for ob in renderer.queue if ob != self]
+                        del self
+                        return
                     #[self.init_pos[0]*64+renderer.camera.cam_change[0], self.init_pos[1]*64+renderer.camera.cam_change[1]-64]
                     if renderer.queue[0].tile == 121:
-                        renderer.queue.append(SwingingAxe(self.pos, True))
+                        if renderer.queue[0].shapeshifts >= 3:
+                            renderer.queue.append(SwingingAxe(self.pos, True))
+                            renderer.queue[0].shapeshifts -= 3
+             
+                            renderer.queue = [ob for ob in renderer.queue if ob != self]
+                            del self
+                            return
+                        else:
+                            if not self.just_notified:
+                                text = renderer.font.render("Not enough shapeshifts!", False, [255, 0, 0], [0, 0, 0])
+                                text.set_colorkey([0, 0, 0])
+                                renderer.notifications.append(Notification(text, 1))
+                                self.just_notified = True
+                            
                     if renderer.queue[0].tile == 116:
-                        renderer.queue.append(FireBox(self.pos, True))
-                    renderer.queue[0].shapeshifts -= 1
-                    renderer.queue = [ob for ob in renderer.queue if ob != self]
-                    del self
-                    return
+                        if renderer.queue[0].shapeshifts >= 4:
+                            renderer.queue.append(FireBox(self.pos, True))
+                            renderer.queue[0].shapeshifts -= 4
+
+                            renderer.queue = [ob for ob in renderer.queue if ob != self]
+                            del self
+                            return
+                        else:
+                            if not self.just_notified:
+                                text = renderer.font.render("Not enough shapeshifts!", False, [255, 0, 0], [0, 0, 0])
+                                text.set_colorkey([0, 0, 0])
+                                renderer.notifications.append(Notification(text, 1))
+                                self.just_notified = True
+                    renderer.queue[0].shapeshifting=False
+                    renderer.queue_updating = True
+            else:
+                self.just_notified = False
             pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
             win.blit(self.rect_surf, [self.pos[0]+4, self.pos[1]+4])
+            
     def update(self, renderer):
         if not self.collected:
             self.update_animation(0, 10, renderer)

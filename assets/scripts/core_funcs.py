@@ -24,7 +24,7 @@ global win_size
 win_size = [win.get_width(), win.get_height()]
 pygame.display.set_caption("Shiftania")
 global spawn_positions
-spawn_positions = [[64, -3*64], [64, 4.5*64], [2816, 5120]]
+spawn_positions = [[64, -3*64], [64, 4.5*64], [2816, 5120], [0, 0], [0, 0]]
 
 def max_height_vertical(u, g):
     return (u*u)/(2*g)
@@ -201,11 +201,11 @@ class Shield:
                         renderer.queue.append(DeathParticle(surf, [self.pos[0]+(i*4), self.pos[1]+(j*4)], renderer, [0, 0, 0]))
                 self.dead = True
 def reset(player, renderer, fell=False):
-        
-        renderer.levels = [json.load(open("levels.json", "r"))["level_1"], json.load(open("levels.json", "r"))["level_2"], json.load(open("levels.json", "r"))["level_3"]]
+        maps = json.load(open("levels.json", "r"))
+        renderer.levels = [maps["level_1"], maps["level_2"], maps["level_3"], maps["level_4"], maps["level_5"]]
         #renderer.level = 0
         renderer.side_rects = []
-        renderer.init_render_pos = [[-1, -13.2], [-5, 0], [-5, 0]]
+        renderer.init_render_pos = [[-1, -13.2], [-5, 0], [-5, 0], [-5, 0], [-5, 0]]
         #renderer.coin_channel = pygame.mixer.Channel(2)
         renderer.queue = [player]
         renderer.first_cycle = True
@@ -228,23 +228,34 @@ def reset(player, renderer, fell=False):
                     player.pos = [1604, -5*64]   
             case 1:
                 if not player.on_door:
-                    if not  (2 in player.levels_unlocked):
-                        player.pos = [2816, 5952]
-                    else:
-                        if not player.t:
-                            player.pos = [2816, 5152]
-                        else:
+                    
+                      
                             player.pos = [2816, 5952]
                 else:
                     player.pos = [2816, 5152]
             case 2:
                 if not player.on_door:
-                    if not  (3 in player.levels_unlocked):
-                        player.pos = [2846, 5952]
+                    if not(3 in player.levels_unlocked):
+                
+                            player.pos = [2816, 5952]
                     else:
-                        player.pos = [2846, 5152]
+                        player.pos = [5376, 5152]
                 else:
-                    player.pos = [2846, 5152]
+                    player.pos = [5376, 5152]
+            case 3:
+                if not player.on_door:
+                    
+                
+                            player.pos = [2816, 5952]
+                else:
+                    player.pos = [3328, 5152]
+            case 4:
+                if not player.on_door:
+                    
+                
+                            player.pos = [2816, 5952]
+                else:
+                    player.pos = [2816, 5152]
         #player.spritesheet = SpriteSheet(spritesheet, sheet_size)
         player.on_door = False
         player.t = False

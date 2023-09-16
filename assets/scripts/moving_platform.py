@@ -51,7 +51,12 @@ class MovingPlatform:
                         pass
                     else:
                         renderer.queue[0].pos[0]+=round(self.speed*self.dir*renderer.dt)
-                    
+                    for obj in renderer.queue:
+                        if obj.__class__.__name__ == "EnemySwordsman" or obj.__class__.__name__ == "EnemyWizard":
+                            if obj.is_alive:
+                                if hasattr(obj, "mask"):
+                                    if self.mask.overlap(obj.mask, (obj.pos[0]-(self.pos[0]), obj.pos[1]-(self.pos[1]))) != None:
+                                        obj.pos[0]+=round(self.speed*self.dir*renderer.dt)
                     for spike in self.spikes:
                         spike[renderer.attr_dict["pos"]][0]+=round(self.speed*self.dir*renderer.dt)
                     for obj in self.objects:

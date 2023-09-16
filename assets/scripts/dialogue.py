@@ -29,7 +29,7 @@ class Dialogue:
             if pygame.mouse.get_pressed()[0]:
                 self.char = len(self.text)
                 self.finished = True
-        if self.finished and pygame.key.get_pressed()[pygame.K_KP_ENTER]:
+        if self.finished and (pygame.key.get_pressed()[pygame.K_RCTRL] or pygame.key.get_pressed()[pygame.K_LCTRL]):
             self.done = True
         for i in range(0, self.char):
             string = string + self.text[i]    

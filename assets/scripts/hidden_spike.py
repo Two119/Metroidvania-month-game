@@ -142,6 +142,7 @@ class HiddenSpike:
                                         #return
                                 if self.shifted and self.enemies_destroyed > 1:
                                     renderer.queue = [ob for ob in renderer.queue if ob != self]
+                                    renderer.levels[renderer.level][int((self.pos[1]-28)/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int(((self.pos[0]-32)-renderer.camera.cam_change[0])/renderer.tile_size[0])+4] = -1
                                     return
                         else:
                             if self.mask.overlap(renderer.queue[0].mask, (renderer.queue[0].pos[0]-(self.pos[0]-int(self.spritesheet.get(self.frame).get_width()/2)), renderer.queue[0].pos[1]-(self.pos[1]-int(self.spritesheet.get(self.frame).get_height()/2)))) == None:
@@ -164,6 +165,7 @@ class HiddenSpike:
                                         self.enemies_destroyed+=1
                                 if self.shifted and self.enemies_destroyed > 1:
                                     renderer.queue = [ob for ob in renderer.queue if ob != self]
+                                    renderer.levels[renderer.level][int((self.pos[1]-28)/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int(((self.pos[0]-32)-renderer.camera.cam_change[0])/renderer.tile_size[0])+4] = -1
                                     return
                     if not self.just_spawned == None:
                         if self.ang == 0:
@@ -181,7 +183,10 @@ class HiddenSpike:
                                     
                                     renderer.levels[renderer.level][int((self.pos[1]-28)/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int(((self.pos[0]-32)-renderer.camera.cam_change[0])/renderer.tile_size[0])+4] = renderer.queue[0].tile
                                     renderer.queue = [ob for ob in renderer.queue if ob != self]
+                                    renderer.queue[0].shapeshifting=False
+                                    renderer.queue_updating = True
                                     return
+                                    
                                 pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
                                 win.blit(self.rect_surf, [self.pos[0]-32, self.pos[1]-28])
                             else:
@@ -190,6 +195,8 @@ class HiddenSpike:
                                     
                                     renderer.levels[renderer.level][int((self.pos[1]-28)/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int(((self.pos[0]-36)-renderer.camera.cam_change[0])/renderer.tile_size[0])+4] = renderer.queue[0].tile
                                     renderer.queue = [ob for ob in renderer.queue if ob != self]
+                                    renderer.queue[0].shapeshifting=False
+                                    renderer.queue_updating = True
                                     return
                                 pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
                                 win.blit(self.rect_surf, [self.pos[0]-36, self.pos[1]-28])
@@ -199,6 +206,8 @@ class HiddenSpike:
                                 
                                 renderer.levels[renderer.level][int((self.pos[1]+4)/renderer.tile_size[1])+(0-int(renderer.init_render_pos[renderer.level][1]))][int(((self.pos[0]+8)-renderer.camera.cam_change[0])/renderer.tile_size[0])+4] = renderer.queue[0].tile
                                 renderer.queue = [ob for ob in renderer.queue if ob != self]
+                                renderer.queue[0].shapeshifting=False
+                                renderer.queue_updating = True
                                 return
                             pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
                             win.blit(self.rect_surf, [self.pos[0]+8, self.pos[1]+8])

@@ -58,11 +58,6 @@ class SwingingAxe:
                         #renderer.queue = [ob for ob in renderer.queue if ob != self]
                 if self.e_d >= 3 and self.shifted:
                     renderer.queue = [ob for ob in renderer.queue if ob != self]
-                    particle_sheet = SpriteSheet(self.img, [self.img.get_width()//4, self.img.get_height()//4], [0, 0, 0])
-                    for j, sheet in enumerate(particle_sheet.sheet):
-                        for i, surf in enumerate(sheet):
-                            if not isequal(surf.get_at([0, 0]), [0, 0, 0]):
-                                renderer.queue.append(DeathParticle(surf, [self.pos[0]+(i*4), self.pos[1]+(j*4)], renderer, [0, 0, 0]))
                     del self
                     return
                 if int(self.angle) == 0:

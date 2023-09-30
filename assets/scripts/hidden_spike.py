@@ -129,8 +129,7 @@ class HiddenSpike:
                                 renderer.queue[0].deaths += 1
                                 #del self
                                 #return
-                            for enemy in renderer.enemies:
-                                e = renderer.queue[enemy]
+                            for e in renderer.queue:
                                 if (e.__class__.__name__ == "EnemySwordsman" or e.__class__.__name__ == "EnemyWizard"):
                                     if self.mask.overlap(e.mask, (e.pos[0]-self.pos[0], e.pos[1]-self.pos[1])) == None:
                                         pass

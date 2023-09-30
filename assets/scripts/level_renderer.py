@@ -141,7 +141,7 @@ class LevelRenderer:
         self.decorative_tiles = [74, 75, 76, 87, 89, 100, 101, 102, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 104, 105, 106, 107, 108, 110, 112, 113, 114, 123, 124, 125, 126, 127]
         self.changed = []
         self.deleted = []
-        self.player_death_limit = [1500, 10000, 10000, 10000, 10000]
+        self.player_death_limit = [1500, 7000, 7000, 7000, 7000]
         self.first_tile_pos = []
         self.queue_updating = True
         self.first_cycle = True
@@ -659,9 +659,8 @@ class LevelRenderer:
             for obj in self.queue:
                 if obj.__class__.__name__ in self.ground:
                     obj.update(self)
-                if obj.__class__.__name__ == "EnemySwordsman" or obj.__class__.__name__ == "EnemyWizard":
-                    if obj.is_alive:
-                        self.enemies.append(self.queue.index(obj))
+                    continue
+              
             self.spike_update()
             for obj in self.queue:
                 if obj != None:
@@ -673,7 +672,6 @@ class LevelRenderer:
                 if isinstance(obj, DeathParticle):
                     if obj.alpha <= 0:
                         self.queue.remove(obj)
-            
         
         self.bullet_manager.update_physics(self)
         self.bullet_manager.update_graphics(self)

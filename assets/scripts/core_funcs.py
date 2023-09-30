@@ -235,11 +235,9 @@ def reset(player, renderer, fell=False):
                     player.pos = [2816, 5152]
             case 2:
                 if not player.on_door:
-                    if not(3 in player.levels_unlocked):
-                
+
                             player.pos = [2816, 5952]
-                    else:
-                        player.pos = [5376, 5152]
+
                 else:
                     player.pos = [5376, 5152]
             case 3:

@@ -20,8 +20,8 @@ class BulletManager:
         self.renderer = renderer
         self.remove = False
         self.channel = pygame.mixer.Channel(3)
-    def add_bullet(self, pos, angle):
-        self.bullets.append([pos, angle, None, False, 0])
+    def add_bullet(self, pos, angle, adder=False):
+        self.bullets.append([pos, angle, None, False, 0, adder])
         self.channel.set_volume(self.renderer.coin_channel.get_volume())
         if not self.remove:
             self.channel.play(self.bullet_sound)
@@ -65,7 +65,7 @@ class BulletManager:
                     bullet_pos = [bullet[0][0]-(bullet_sprite.get_width()/2), bullet[0][1]-(bullet_sprite.get_height()/2)]
                     win.blit(bullet_sprite, bullet_pos)
                     bullet_mask = pygame.mask.from_surface(bullet_sprite)
-                    if not self.bullets.index(bullet) in renderer.queue[0].shots:
+                    if not bullet[len(bullet)-1]:
                         
                         if bullet_mask.overlap(renderer.queue[0].shield.mask, [renderer.queue[0].shield.pos[0]-bullet_pos[0], renderer.queue[0].shield.pos[1]-bullet_pos[1]]) == None:
                             if bullet_mask.overlap(renderer.queue[0].mask, [renderer.queue[0].pos[0]-bullet_pos[0], renderer.queue[0].pos[1]-bullet_pos[1]])!=None:
@@ -87,11 +87,12 @@ class BulletManager:
                                     
                                     renderer.queue[0].deaths += 1
                             
-                    if self.bullets.index(bullet) in renderer.queue[0].shots:
-                        for e in renderer.enemies:
-                            if bullet_mask.overlap(renderer.queue[e].mask, (renderer.queue[e].pos[0]-bullet_pos[0], renderer.queue[e].pos[1]-bullet_pos[1])) != None:
-                                renderer.queue[e].is_alive = False
-                                bullet[3] = True
+                    if bullet[len(bullet)-1]:
+                        for e in renderer.queue:
+                            if (e.__class__.__name__ == "EnemySwordsman" or e.__class__.__name__ == "EnemyWizard"):
+                                if bullet_mask.overlap(e.mask, (e.pos[0]-bullet_pos[0], e.pos[1]-bullet_pos[1])) != None:
+                                    e.is_alive = False
+                                    bullet[3] = True
                     if bullet[2] != None:
                         if not renderer.camera.rect.colliderect(bullet[2]):
                             self.bullets.remove(bullet)

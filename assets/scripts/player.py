@@ -448,7 +448,7 @@ class Player:
         if self.has_staff:
             if pygame.mouse.get_pressed()[0] and not self.just_shot and not renderer.button.rect.collidepoint(pygame.mouse.get_pos()):
                 self.shots.append(len(renderer.bullet_manager.bullets))
-                renderer.bullet_manager.add_bullet(self.staff_pos, 270-ang)
+                renderer.bullet_manager.add_bullet(self.staff_pos, 270-ang, True)
                 self.just_shot = True
         if not pygame.mouse.get_pressed()[0]:
             self.just_shot = False

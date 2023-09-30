@@ -13,7 +13,7 @@ class MovingPlatform:
         self.image.set_colorkey((0, 0, 0))
         self.spikes = []
         self.objects = []
-        self.rect = pygame.Rect(self.pos[0]-72, self.pos[1]-64, ((self.l+1)*64)+72, 192)
+        self.rect = pygame.Rect(self.pos[0]-72, self.pos[1]-64, ((self.l+1)*64)+48, 192)
     def update(self, renderer):
         if hasattr(renderer, "dt"):
             self.cycles += 1
@@ -62,8 +62,8 @@ class MovingPlatform:
                     for obj in self.objects:
                         obj.pos[0]+=round(self.speed*self.dir*renderer.dt)
             renderer.standing_masks.append([self.mask, self.pos, 122, self.init_tile_pos])
-            self.rect = pygame.Rect(self.pos[0]-72, self.pos[1]-64, ((self.l+1)*64)+72, 192)
-            #pygame.draw.rect(win, [255, 0, 0], self.rect)
+            self.rect = pygame.Rect(self.pos[0]-72, self.pos[1]-64, ((self.l+1)*64)+48, 192)
+            pygame.draw.rect(win, [255, 0, 0], self.rect)
             win.blit(self.image, self.pos)
             
             

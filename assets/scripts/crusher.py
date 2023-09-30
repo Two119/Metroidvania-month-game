@@ -56,8 +56,7 @@ class Crusher:
                 self.rect = pygame.Rect(self.pos[0]+(16*4), self.pos[1], 32*4, 64*4)
                 if self.rect.colliderect(renderer.queue[0].rect):
                     self.falling = True
-                for enemy in renderer.enemies:
-                    e = renderer.queue[enemy]
+                for e in renderer.queue:
                     if (e.__class__.__name__ == "EnemySwordsman" or e.__class__.__name__ == "EnemyWizard") and hasattr(e, "rect"):
                         if self.rect.colliderect(e.rect):
                             self.falling = True

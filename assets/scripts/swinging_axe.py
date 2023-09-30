@@ -49,12 +49,14 @@ class SwingingAxe:
                     #reset(renderer.queue[0], renderer)
                     renderer.queue[0].deaths += 1
                     #del self
-                for enemy in renderer.enemies:
-                    if self.mask.overlap(renderer.queue[enemy].mask, (renderer.queue[enemy].pos[0]-(self.pos[0]-(self.img.get_width()/2)), renderer.queue[enemy].pos[1]-(self.pos[1]-(self.img.get_height()/2)))) == None:
-                        pass
-                    else:
-                        renderer.queue[enemy].is_alive = False
-                        self.e_d += 1
+                for enemy in renderer.queue:
+                    #if hasattr(enemy, 'mask') and hasattr(enemy, 'is_alive'):
+                    if (enemy.__class__.__name__ == "EnemySwordsman" or enemy.__class__.__name__ == "EnemyWizard"):
+                        if self.mask.overlap(enemy.mask, (enemy.pos[0]-(self.pos[0]-(self.img.get_width()/2)), enemy.pos[1]-(self.pos[1]-(self.img.get_height()/2)))) == None:
+                            pass
+                        else:
+                            enemy.is_alive = False
+                            self.e_d += 1
                         #renderer.queue = [ob for ob in renderer.queue if ob != self]
                 if self.e_d >= 3 and self.shifted:
                     renderer.queue = [ob for ob in renderer.queue if ob != self]

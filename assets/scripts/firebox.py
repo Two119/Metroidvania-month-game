@@ -67,11 +67,12 @@ class FireBox:
                                 renderer.queue[0].is_alive = False
                                 renderer.queue[0].deaths += 1
                                 
-                    for enemy in renderer.enemies:
-                        if (hasattr(renderer.queue[enemy], "rect")):
-                            if (self.rect.colliderect(renderer.queue[enemy].rect)):
-                                if (self.mask.overlap(renderer.queue[enemy].mask, (renderer.queue[enemy].pos[0]-self.pos[0], renderer.queue[enemy].pos[1]-(self.pos[1])))!=None):
-                                    renderer.queue[enemy].is_alive = False
+                    for e in renderer.queue:
+                        if (e.__class__.__name__ == "EnemySwordsman" or e.__class__.__name__ == "EnemyWizard"):
+                            if (hasattr(e, "rect")):
+                                if (self.rect.colliderect(e.rect)):
+                                    if (self.mask.overlap(e.mask, (e.pos[0]-self.pos[0], e.pos[1]-(self.pos[1])))!=None):
+                                        e.is_alive = False
                     if renderer.firebox_frame in range(4, 9):
                         if not renderer.firebox_channel.get_busy():
                             renderer.firebox_channel.play(self.sfx)

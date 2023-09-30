@@ -63,28 +63,46 @@ class Coin:
                             if renderer.queue[0].shapeshifts >= 4:
                                 #renderer.queue[0].shapeshifts -= 1
                                 renderer.levels[renderer.level][self.init_pos[1]-3][self.init_pos[0]] = renderer.queue[0].tile
+                                renderer.queue = [ob for ob in renderer.queue if ob != self]
+                                del self
+                                return
                         else:
                             if renderer.queue[0].tile == 121:
                                 if renderer.queue[0].shapeshifts >= 3:
                                     #renderer.queue[0].shapeshifts -= 1
                                     renderer.levels[renderer.level][self.init_pos[1]-3][self.init_pos[0]] = renderer.queue[0].tile
+                                    renderer.queue = [ob for ob in renderer.queue if ob != self]
+                                    del self
+                                    return
                             else:
                                 renderer.queue[0].shapeshifts -= 1
                                 renderer.levels[renderer.level][self.init_pos[1]-3][self.init_pos[0]] = renderer.queue[0].tile
+                                renderer.queue = [ob for ob in renderer.queue if ob != self]
+                                del self
+                                return
                     else:
                         renderer.levels[renderer.level][self.init_pos[1]-1][self.init_pos[0]+4] = renderer.queue[0].tile
                         if renderer.queue[0].tile == 116:
                             if renderer.queue[0].shapeshifts >= 4:
                                 #renderer.queue[0].shapeshifts -= 1
                                 renderer.levels[renderer.level][self.init_pos[1]-1][self.init_pos[0]+4] = renderer.queue[0].tile
+                                renderer.queue = [ob for ob in renderer.queue if ob != self]
+                                del self
+                                return
                         else:
                             if renderer.queue[0].tile == 121:
                                 if renderer.queue[0].shapeshifts >= 3:
                                     #renderer.queue[0].shapeshifts -= 1
                                     renderer.levels[renderer.level][self.init_pos[1]-1][self.init_pos[0]+4] = renderer.queue[0].tile
+                                    renderer.queue = [ob for ob in renderer.queue if ob != self]
+                                    del self
+                                    return
                             else:
                                 renderer.queue[0].shapeshifts -= 1
                                 renderer.levels[renderer.level][self.init_pos[1]-1][self.init_pos[0]+4] = renderer.queue[0].tile
+                                renderer.queue = [ob for ob in renderer.queue if ob != self]
+                                del self
+                                return
                     if renderer.queue[0].tile == 117:
                         renderer.add_spike_u(self.pos, True)
                         renderer.added_spikes += 1

@@ -67,7 +67,7 @@ class Game:
         self.menu_song = pygame.mixer.Sound("assets/Audio/MainTheme_Loop.ogg")
         self.menu_channel = pygame.mixer.Channel(7)
         self.combat_song = pygame.mixer.Sound("assets/Audio/combat_music_loop.ogg")
-        self.combat_channel = pygame.mixer.find_channel(8)
+
         self.bg_song_1 = pygame.mixer.Sound("assets/Audio/Background_Loop.ogg")
         self.bg_channel = pygame.mixer.find_channel(9)
         self.bg_song_2 = pygame.mixer.Sound("assets/Audio/background_loop_2.ogg")
@@ -148,27 +148,21 @@ class Game:
         self.cycles += 1
         cursor_pos = pygame.mouse.get_pos()
         win.fill((12, 12, 12))
-        self.combat_channel.set_volume(self.renderer.coin_channel.get_volume())
+
         self.menu_channel.set_volume(self.renderer.coin_channel.get_volume())
         self.bg_channel.set_volume(self.renderer.coin_channel.get_volume())
         if self.screen == 1:
             if self.menu_channel.get_busy():
                 self.menu_channel.fadeout(5000)
-            if self.player.combat:
-                #
-                if not self.combat_channel.get_busy():
-                    self.bg_channel.fadeout(2000)
-                    self.combat_channel.play(self.combat_song, -1)
-            else:
+       
                 #num = randint(0, 1)
-                #self.combat_channel.fadeout(2000)
-                if not self.bg_channel.get_busy():
-                    self.combat_channel.fadeout(2000)
-                    num = randint(0, 1)
-                    if num:
-                        self.bg_channel.play(self.bg_song_1, -1)
-                    else:
-                        self.bg_channel.play(self.bg_song_2, -1)
+            #self.combat_channel.fadeout(2000)
+            if not self.bg_channel.get_busy():
+                num = randint(0, 1)
+                if num:
+                    self.bg_channel.play(self.bg_song_1, -1)
+                else:
+                    self.bg_channel.play(self.bg_song_2, -1)
             if self.playing and self.renderer.queue[0].is_alive:
                 self.renderer.update()
                 
@@ -474,6 +468,7 @@ class Game:
                 if self.radius == 0:
                     pygame.image.save(win, "win.png")
                     self.spare_surf = pygame.image.load("win.png").convert()
+                    self.bg_channel.fadeout(2000)
                 if self.finished:
                     win.blit(self.cursor_img_, cursor_pos)
                     start(self)
@@ -499,7 +494,7 @@ class Game:
             for button in self.buttons:
                 button.update(self.renderer)
             self.bg_channel.stop()
-            self.combat_channel.stop()
+
             if not self.menu_channel.get_busy():
                 self.menu_channel.play(self.menu_song, -1)
             win.blit(self.start_text, [self.buttons[0].pos[0]+10, self.buttons[0].pos[1]+10+(4*self.buttons[0].current)])

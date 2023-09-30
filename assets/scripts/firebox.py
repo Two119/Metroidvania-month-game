@@ -114,6 +114,9 @@ class FireBox:
                                         renderer.added_spikes += 1
                                     renderer.queue[0].shapeshifting=False
                                     renderer.queue_updating = True
+                                    renderer.queue.remove(self)
+                                    del self
+                                    return 
                                 if renderer.queue[0].tile == 129:
                                     renderer.add_spike_d([self.init_tile_pos[0]*64+renderer.camera.cam_change[0], self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-1], True)
                                     renderer.added_spikes += 1
@@ -123,6 +126,9 @@ class FireBox:
                                         renderer.added_spikes += 1
                                     renderer.queue[0].shapeshifting=False
                                     renderer.queue_updating = True
+                                    renderer.queue.remove(self)
+                                    del self
+                                    return 
                                 if renderer.queue[0].tile == 138:
                                     renderer.add_spike_r([self.init_tile_pos[0]*64+renderer.camera.cam_change[0]+1, self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-4], True)
                                     renderer.added_spikes += 1
@@ -132,6 +138,9 @@ class FireBox:
                                         renderer.added_spikes += 1
                                     renderer.queue[0].shapeshifting=False
                                     renderer.queue_updating = True
+                                    renderer.queue.remove(self)
+                                    del self
+                                    return 
                                 if renderer.queue[0].tile == 139:
                                     renderer.add_spike_l([self.init_tile_pos[0]*64+renderer.camera.cam_change[0]-1, self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-1], True)
                                     renderer.added_spikes += 1
@@ -141,6 +150,9 @@ class FireBox:
                                         renderer.added_spikes += 1
                                     renderer.queue[0].shapeshifting=False
                                     renderer.queue_updating = True
+                                    renderer.queue.remove(self)
+                                    del self
+                                    return 
                             elif self.spike_shifted:
                                 if renderer.queue[0].tile == 117:
                                     renderer.add_spike_u([(self.init_tile_pos[0])*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
@@ -151,6 +163,9 @@ class FireBox:
                                         renderer.added_spikes += 1
                                     renderer.queue[0].shapeshifting=False
                                     renderer.queue_updating = True
+                                    renderer.queue.remove(self)
+                                    del self
+                                    return 
                                 if renderer.queue[0].tile == 129:
                                     renderer.add_spike_d([(self.init_tile_pos[0])*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
                                     renderer.added_spikes += 1
@@ -160,6 +175,9 @@ class FireBox:
                                         renderer.added_spikes += 1
                                     renderer.queue[0].shapeshifting=False
                                     renderer.queue_updating = True
+                                    renderer.queue.remove(self)
+                                    del self
+                                    return 
                                 if renderer.queue[0].tile == 138:
                                     renderer.add_spike_r([(self.init_tile_pos[0])*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
                                     renderer.added_spikes += 1
@@ -169,6 +187,9 @@ class FireBox:
                                         renderer.added_spikes += 1
                                     renderer.queue[0].shapeshifting=False
                                     renderer.queue_updating = True
+                                    renderer.queue.remove(self)
+                                    del self
+                                    return 
                                 if renderer.queue[0].tile == 139:
                                     renderer.add_spike_l([(self.init_tile_pos[0])*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
                                     renderer.added_spikes += 1
@@ -178,6 +199,9 @@ class FireBox:
                                         renderer.added_spikes += 1
                                     renderer.queue[0].shapeshifting=False
                                     renderer.queue_updating = True
+                                    renderer.queue.remove(self)
+                                    del self
+                                    return 
                             else:
                                 if renderer.queue[0].tile == 117:
                                     renderer.add_spike_u([(self.init_tile_pos[0]+1)*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
@@ -188,6 +212,9 @@ class FireBox:
                                         renderer.added_spikes += 1
                                     renderer.queue[0].shapeshifting=False
                                     renderer.queue_updating = True
+                                    renderer.queue.remove(self)
+                                    del self
+                                    return 
                                 if renderer.queue[0].tile == 129:
                                     renderer.add_spike_d([(self.init_tile_pos[0]+1)*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
                                     renderer.added_spikes += 1
@@ -197,6 +224,9 @@ class FireBox:
                                         renderer.added_spikes += 1
                                     renderer.queue[0].shapeshifting=False
                                     renderer.queue_updating = True
+                                    renderer.queue.remove(self)
+                                    del self
+                                    return 
                                 if renderer.queue[0].tile == 138:
                                     renderer.add_spike_r([(self.init_tile_pos[0]+1)*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
                                     renderer.added_spikes += 1
@@ -206,6 +236,9 @@ class FireBox:
                                         renderer.added_spikes += 1
                                     renderer.queue[0].shapeshifting=False
                                     renderer.queue_updating = True
+                                    renderer.queue.remove(self)
+                                    del self
+                                    return 
                                 if renderer.queue[0].tile == 139:
                                     renderer.add_spike_l([(self.init_tile_pos[0]+1)*64, self.init_tile_pos[1]*64-self.level_spike_dicts[renderer.level]-24], True)
                                     renderer.added_spikes += 1
@@ -215,6 +248,9 @@ class FireBox:
                                         renderer.added_spikes += 1
                                     renderer.queue[0].shapeshifting=False
                                     renderer.queue_updating = True
+                                    renderer.queue.remove(self)
+                                    del self
+                                    return 
                         else:
                             if renderer.queue[0].tile == 117:
                                 renderer.add_spike_u([self.init_tile_pos[0]*64+renderer.camera.cam_change[0], self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-4], True)
@@ -225,6 +261,9 @@ class FireBox:
                                     renderer.added_spikes += 1
                                 renderer.queue[0].shapeshifting=False
                                 renderer.queue_updating = True
+                                renderer.queue.remove(self)
+                                del self
+                                return 
                             if renderer.queue[0].tile == 129:
                                 renderer.add_spike_d([self.init_tile_pos[0]*64+renderer.camera.cam_change[0], self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-1], True)
                                 renderer.added_spikes += 1
@@ -234,6 +273,9 @@ class FireBox:
                                     renderer.added_spikes += 1
                                 renderer.queue[0].shapeshifting=False
                                 renderer.queue_updating = True
+                                renderer.queue.remove(self)
+                                del self
+                                return 
                             if renderer.queue[0].tile == 138:
                                 renderer.add_spike_r([self.init_tile_pos[0]*64+renderer.camera.cam_change[0]+1, self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-4], True)
                                 renderer.added_spikes += 1
@@ -243,6 +285,9 @@ class FireBox:
                                     renderer.added_spikes += 1
                                 renderer.queue[0].shapeshifting=False
                                 renderer.queue_updating = True
+                                renderer.queue.remove(self)
+                                del self
+                                return 
                             if renderer.queue[0].tile == 139:
                                 renderer.add_spike_l([self.init_tile_pos[0]*64+renderer.camera.cam_change[0]-1, self.init_tile_pos[1]*64+renderer.camera.cam_change[1]-self.level_spike_dicts[renderer.level]-1], True)
                                 renderer.added_spikes += 1
@@ -252,10 +297,9 @@ class FireBox:
                                     renderer.added_spikes += 1
                                 renderer.queue[0].shapeshifting=False
                                 renderer.queue_updating = True
+                                renderer.queue.remove(self)
+                                del self
+                                return 
                         renderer.queue[0].shapeshifting=False
                         renderer.queue_updating = True
-                        if renderer.queue[0].tile != 116 and not (renderer.queue[0].tile == 121 and renderer.queue[0].shapeshifts < 3):
-                            renderer.queue.remove(self)
-                            del self
-                            return 
 

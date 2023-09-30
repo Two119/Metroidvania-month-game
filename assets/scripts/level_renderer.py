@@ -73,6 +73,7 @@ class LevelRenderer:
         self.shop = None
         self.font = None
         self.delay = 0
+        self.just_spike_notified = False
         if not web:
             self.spike_image = pygame.image.load("assets\Spritesheets\spikes.png").convert()
             self.button_sprites = SpriteSheet(scale_image(pygame.image.load("assets\Spritesheets\\buttons.png").convert()), [2, 1], [255, 255, 255])
@@ -251,7 +252,7 @@ class LevelRenderer:
                                         spike[self.attr_dict["is_hovered"]] = False
                     if spike[self.attr_dict["is_hovered"]]:
                         if pygame.mouse.get_pressed()[2]:
-                            if not (renderer.queue[0].tile in [117, 129, 138, 139, 121]):
+                            if not (renderer.queue[0].tile in [117, 129, 138, 139, 118, 135, 136, 137, 121]):
                                 shiftable = True
                                 for obj in renderer.queue:
                                     if isinstance(obj, MovingPlatform):
@@ -295,6 +296,15 @@ class LevelRenderer:
                                                 renderer.queue[0].shapeshifts -= 4
                                         renderer.queue[0].shapeshifting=False
                                         renderer.queue_updating = True
+                            else:
+                                if renderer.queue[0].tile != 121:
+                                    if not self.just_spike_notified:
+                                        text = self.font.render("Why are you trying to shapeshift spikes into other spikes?", False, [255, 0, 0], [0, 0, 0])
+                                        text.set_colorkey([0, 0, 0])
+                                        self.notifications.append(Notification(text, 1))
+                                        self.just_spike_notified = True
+                        else:
+                            self.just_spike_notified = False
                         if self.rect_surf.get_alpha() != 50:
                             self.rect_surf.set_alpha(50)
                         shiftable = True

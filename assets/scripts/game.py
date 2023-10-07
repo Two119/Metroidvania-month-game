@@ -186,14 +186,20 @@ class Game:
                                                 if self.renderer.queue[0].shapeshifts >= 4:
                                                     #self.renderer.queue[0].shapeshifts -= 1
                                                     self.renderer.levels[self.renderer.level][double_list[3][1]][double_list[3][0]] = self.renderer.queue[0].tile
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                             else:
                                                 if self.renderer.queue[0].tile == 121:
                                                     if self.renderer.queue[0].shapeshifts >= 3:
                                                         #self.renderer.queue[0].shapeshifts -= 1
                                                         self.renderer.levels[self.renderer.level][double_list[3][1]][double_list[3][0]] = self.renderer.queue[0].tile
+                                                        if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                            self.renderer.queue.remove(double_list[2])
                                                 else:
                                                     self.renderer.queue[0].shapeshifts -= 1
                                                     self.renderer.levels[self.renderer.level][double_list[3][1]][double_list[3][0]] = self.renderer.queue[0].tile
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                             if self.renderer.level == 0:
                                                 if self.renderer.queue[0].tile == 117:
                                                     self.renderer.add_spike_u([double_list[3][0]*64+self.renderer.camera.cam_change[0], double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-4], True)
@@ -204,6 +210,8 @@ class Game:
                                                         self.renderer.added_spikes += 1
                                                     self.renderer.queue[0].shapeshifting=False
                                                     self.renderer.queue_updating = True
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 if self.renderer.queue[0].tile == 129:
                                                     self.renderer.add_spike_d([double_list[3][0]*64+self.renderer.camera.cam_change[0], double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-1], True)
                                                     self.renderer.added_spikes += 1
@@ -213,6 +221,8 @@ class Game:
                                                         self.renderer.added_spikes += 1
                                                     self.renderer.queue[0].shapeshifting=False
                                                     self.renderer.queue_updating = True
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 if self.renderer.queue[0].tile == 138:
                                                     self.renderer.add_spike_r([double_list[3][0]*64+self.renderer.camera.cam_change[0]+1, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-4], True)
                                                     self.renderer.added_spikes += 1
@@ -222,6 +232,8 @@ class Game:
                                                         self.renderer.added_spikes += 1
                                                     self.renderer.queue[0].shapeshifting=False
                                                     self.renderer.queue_updating = True
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 if self.renderer.queue[0].tile == 139:
                                                     self.renderer.add_spike_l([double_list[3][0]*64+self.renderer.camera.cam_change[0]-1, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-1], True)
                                                     self.renderer.added_spikes += 1
@@ -231,6 +243,8 @@ class Game:
                                                         self.renderer.added_spikes += 1
                                                     self.renderer.queue[0].shapeshifting=False
                                                     self.renderer.queue_updating = True
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 if self.renderer.queue[0].tile == 118:
                                                     if True:
                                                         self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0], double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-4], False, 0, True))
@@ -239,6 +253,8 @@ class Game:
                                                     if self.renderer.spike_h_count > self.renderer.added_spikes_h:
                                                         self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0], double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-4], False, 0, True))
                                                         self.renderer.added_spikes_h += 1
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 if self.renderer.queue[0].tile == 135:
                                                     if True:
                                                         self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0], double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]+4], True, 0, True))
@@ -247,6 +263,8 @@ class Game:
                                                     if self.renderer.spike_h_count > self.renderer.added_spikes_h:
                                                         self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0], double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]+4], True, 0, True))
                                                         self.renderer.added_spikes_h += 1
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 if self.renderer.queue[0].tile == 136:
                                                     if True:
                                                         self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-12, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, 90, True))
@@ -255,6 +273,8 @@ class Game:
                                                     if self.renderer.spike_h_count > self.renderer.added_spikes_h:
                                                         self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-12, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, 90, True))
                                                         self.renderer.added_spikes_h += 1
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 if self.renderer.queue[0].tile == 137:
                                                     self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-4, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, -90, True))
                                                     self.renderer.added_spikes_h += 1
@@ -262,6 +282,8 @@ class Game:
                                                     if self.renderer.spike_h_count > self.renderer.added_spikes_h:
                                                         self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-4, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, -90, True))
                                                         self.renderer.added_spikes_h += 1
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                             else:
                                                 if self.renderer.queue[0].tile == 117:
                                                     self.renderer.add_spike_u([double_list[3][0]*64+self.renderer.camera.cam_change[0]-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-4], True)
@@ -272,6 +294,8 @@ class Game:
                                                         self.renderer.added_spikes += 1
                                                     self.renderer.queue[0].shapeshifting=False
                                                     self.renderer.queue_updating = True
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 if self.renderer.queue[0].tile == 129:
                                                     self.renderer.add_spike_d([double_list[3][0]*64+self.renderer.camera.cam_change[0]-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-1], True)
                                                     self.renderer.added_spikes += 1
@@ -281,6 +305,8 @@ class Game:
                                                         self.renderer.added_spikes += 1
                                                     self.renderer.queue[0].shapeshifting=False
                                                     self.renderer.queue_updating = True
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 if self.renderer.queue[0].tile == 138:
                                                     self.renderer.add_spike_r([double_list[3][0]*64+self.renderer.camera.cam_change[0]+1-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-4], True)
                                                     self.renderer.added_spikes += 1
@@ -290,6 +316,8 @@ class Game:
                                                         self.renderer.added_spikes += 1
                                                     self.renderer.queue[0].shapeshifting=False
                                                     self.renderer.queue_updating = True
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 if self.renderer.queue[0].tile == 139:
                                                     self.renderer.add_spike_l([double_list[3][0]*64+self.renderer.camera.cam_change[0]-1-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-1], True)
                                                     self.renderer.added_spikes += 1
@@ -299,6 +327,8 @@ class Game:
                                                         self.renderer.added_spikes += 1
                                                     self.renderer.queue[0].shapeshifting=False
                                                     self.renderer.queue_updating = True
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 if self.renderer.queue[0].tile == 118:
                                                     if True:
                                                         self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-4], False, 0, True))
@@ -307,6 +337,8 @@ class Game:
                                                     if self.renderer.spike_h_count > self.renderer.added_spikes_h:
                                                         self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-4], False, 0, True))
                                                         self.renderer.added_spikes_h += 1
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 if self.renderer.queue[0].tile == 135:
                                                     if True:
                                                         self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]+4], True, 0, True))
@@ -315,6 +347,8 @@ class Game:
                                                     if self.renderer.spike_h_count > self.renderer.added_spikes_h:
                                                         self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]+4], True, 0, True))
                                                         self.renderer.added_spikes_h += 1
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 if self.renderer.queue[0].tile == 136:
                                                     if True:
                                                         self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-12-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, 90, True))
@@ -323,6 +357,8 @@ class Game:
                                                     if self.renderer.spike_h_count > self.renderer.added_spikes_h:
                                                         self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-12-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, 90, True))
                                                         self.renderer.added_spikes_h += 1
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 if self.renderer.queue[0].tile == 137:
                                                     self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-4-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, -90, True))
                                                     self.renderer.added_spikes_h += 1
@@ -330,10 +366,14 @@ class Game:
                                                     if self.renderer.spike_h_count > self.renderer.added_spikes_h:
                                                         self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[3][0]*64+self.renderer.camera.cam_change[0]-4-256, double_list[3][1]*64+self.renderer.camera.cam_change[1]-self.level_spike_dicts[self.renderer.level]-8], False, -90, True))
                                                         self.renderer.added_spikes_h += 1
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                             if self.renderer.queue[0].tile == 121:
                                                 if self.renderer.queue[0].shapeshifts >= 3:
                                                     self.renderer.queue.append(SwingingAxe([((int((double_list[1][0]-self.renderer.camera.cam_change[0])/self.renderer.tile_size[0]))*self.renderer.tile_size[0])+self.camera.cam_change[0], (int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1])))*self.renderer.tile_size[1]-self.level_spike_dicts[self.renderer.level]+self.camera.cam_change[1]], True))
                                                     self.renderer.queue[0].shapeshifts -= 3
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 else:
                                                     if not self.just_notified:
                                                         text = self.renderer.font.render("Not enough shapeshifts!", False, [255, 0, 0], [0, 0, 0])
@@ -346,6 +386,8 @@ class Game:
                                                     self.renderer.queue[0].shapeshifting=False
                                                     self.renderer.queue_updating = True
                                                     self.renderer.queue[0].shapeshifts -= 4
+                                                    if isinstance(double_list[2], FallingBlock) and double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 else:
                                                     if not self.just_notified:
                                                         text = self.renderer.font.render("Not enough shapeshifts!", False, [255, 0, 0], [0, 0, 0])
@@ -355,7 +397,11 @@ class Game:
                                             self.renderer.queue[0].shapeshifting=False
                                             self.renderer.queue_updating = True
                                         pygame.draw.rect(self.rect_surf, (255, 0, 0), pygame.Rect(0, 0, 64, 64))
-                                        win.blit(self.rect_surf, [double_list[1][0]+4, double_list[1][1]+4])
+                                        if not isinstance(double_list[2], FallingBlock):
+                                            win.blit(self.rect_surf, [double_list[1][0]+4, double_list[1][1]+4])
+                                        else:
+                                            if double_list[2].standing:
+                                                win.blit(self.rect_surf, [double_list[1][0]+4, double_list[1][1]+4])
                                     else:
                                         if pygame.mouse.get_pressed()[2] and not self.renderer.queue[0].tile==116:
                                             #self.renderer.queue[0].shapeshifts -= 1
@@ -366,7 +412,8 @@ class Game:
                                                 else:
                                                     self.renderer.levels[self.renderer.level][double_list[3][1]+4][double_list[3][0]] = self.renderer.queue[0].tile
                                                     self.renderer.queue[0].shapeshifts -= 1
-                                                    self.renderer.queue.remove(double_list[2])
+                                                    if double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                     del double_list[2]
                                             else:
                                                 if self.renderer.queue[0].tile == 121:
@@ -375,14 +422,16 @@ class Game:
                                                 else:
                                                     self.renderer.queue[0].shapeshifts -= 1
                                                     self.renderer.levels[self.renderer.level][int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1]))+1][4+int((double_list[1][0]-self.camera.cam_change[0])/self.renderer.tile_size[0])] = self.renderer.queue[0].tile
-                                                    self.renderer.queue.remove(double_list[2])
+                                                    if double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                     del double_list[2]
                                             if self.renderer.queue[0].tile == 121:
                                                 if self.renderer.queue[0].shapeshifts >= 3:
                                                     self.renderer.queue.append(SwingingAxe([(int((double_list[1][0]-self.renderer.camera.cam_change[0])/self.renderer.tile_size[0]))*self.renderer.tile_size[0]+self.camera.cam_change[0], (int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1])))*self.renderer.tile_size[1]-self.level_spike_dicts[self.renderer.level]+64+self.camera.cam_change[1]], 121))
                                                     self.renderer.queue[0].shapeshifts -= 3
                                                     self.renderer.levels[self.renderer.level][int((double_list[1][1])/self.renderer.tile_size[1])+(0-int(self.renderer.init_render_pos[self.renderer.level][1]))+1][4+int((double_list[1][0]-self.camera.cam_change[0])/self.renderer.tile_size[0])] = self.renderer.queue[0].tile
-                                                    self.renderer.queue.remove(double_list[2])
+                                                    if double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                     del double_list[2]
                                                 else:
                                                     if not self.just_notified:
@@ -398,7 +447,8 @@ class Game:
                                                 if self.renderer.spike_h_count > self.renderer.added_spikes_h:
                                                     self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-4, double_list[2].pos[1]+56], False, 0, True))
                                                     self.renderer.added_spikes_h += 1
-                                                self.renderer.queue.remove(double_list[2])
+                                                if double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 del double_list[2]
                                             if self.renderer.queue[0].tile == 135:
                                                 if True:
@@ -408,7 +458,8 @@ class Game:
                                                 if self.renderer.spike_h_count > self.renderer.added_spikes_h:
                                                     self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-4, double_list[2].pos[1]+60], True, 0, True))
                                                     self.renderer.added_spikes_h += 1
-                                                self.renderer.queue.remove(double_list[2])
+                                                if double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 del double_list[2]
                                             if self.renderer.queue[0].tile == 136:
                                                 if True:
@@ -419,7 +470,8 @@ class Game:
                                                 if self.renderer.spike_h_count > self.renderer.added_spikes_h:
                                                     self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-18, double_list[2].pos[1]+56], False, 90, True))
                                                     self.renderer.added_spikes_h += 1
-                                                self.renderer.queue.remove(double_list[2])
+                                                if double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 del double_list[2]
                                             if self.renderer.queue[0].tile == 137:
                                                 self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2].pos[0]-8, double_list[2].pos[1]+56], False, -90, True))
@@ -429,7 +481,8 @@ class Game:
                                                 if self.renderer.spike_h_count > self.renderer.added_spikes_h:
                                                     self.renderer.queue.append(HiddenSpike(self.renderer.spike_image, [4, 1], [double_list[2][0]-8, double_list[2].pos[1]+56], False, -90, True))
                                                     self.renderer.added_spikes_h += 1
-                                                self.renderer.queue.remove(double_list[2])
+                                                if double_list[2] in self.renderer.queue:
+                                                        self.renderer.queue.remove(double_list[2])
                                                 del double_list[2]
                                             self.renderer.queue[0].shapeshifting=False
                                             self.renderer.queue_updating = True

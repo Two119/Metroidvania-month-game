@@ -247,6 +247,9 @@ class Player:
             self.deaths += 1
             self.fell = True
             return
+        if self.shapeshifts <= 0:
+            self.shapeshifting = False
+            renderer.queue_updating = True
         if not self.shapeshifting and self.is_alive:
             if (pygame.key.get_pressed()[pygame.K_LSHIFT] or pygame.key.get_pressed()[pygame.K_RSHIFT]) and not(pygame.key.get_pressed()[pygame.K_LCTRL] or pygame.key.get_pressed()[pygame.K_RCTRL]) and self.shapeshifts > 0:
                     self.shapeshifting = True

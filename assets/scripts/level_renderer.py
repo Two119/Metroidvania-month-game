@@ -7,6 +7,7 @@ from assets.scripts.button import *
 from assets.scripts.moving_platform import *
 from assets.scripts.swinging_axe import *
 from assets.scripts.firebox import *
+from assets.scripts.falling_block import *
 from assets.scripts.enemy import *
 from assets.scripts.shop import *
 from assets.scripts.bullet_manager import *
@@ -139,7 +140,7 @@ class LevelRenderer:
         self.x = self.init_render_pos[self.level][0]
         self.y = self.init_render_pos[self.level][1]
         self.queue = []
-        self.decorative_tiles = [74, 75, 76, 87, 89, 100, 101, 102, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 104, 105, 106, 107, 108, 110, 112, 113, 114, 123, 124, 125, 126, 127]
+        self.decorative_tiles = [74, 75, 76, 87, 89, 100, 101, 102, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 104, 105, 106, 107, 108, 109, 110, 112, 113, 114, 123, 124, 125, 126, 127]
         self.changed = []
         self.deleted = []
         self.player_death_limit = [1500, 7000, 7000, 7000, 7000]
@@ -156,8 +157,8 @@ class LevelRenderer:
         self.added_spikes_h = 0
         self.firebox_in_cam = False
         self.camera = None
-        self.exceptions = [60, 88, 111, 116, 117, 118, 119, 120, 121, 122, 129, 135, 136, 137, 138, 139, 140, 141, 142]
-        self.ground = ["SpikeBall", "MovingPlatform", "FireBox"]
+        self.exceptions = [32, 60, 88, 111, 116, 117, 118, 119, 120, 121, 122, 129, 135, 136, 137, 138, 139, 140, 141, 142]
+        self.ground = ["SpikeBall", "MovingPlatform", "FireBox", "FallingBlock"]
         self.bullet_manager = BulletManager(self)
         self.cycles = 0 
         self.cur_cycle = -1
@@ -635,6 +636,20 @@ class LevelRenderer:
                 elif tile == 111:
                     if self.coin_appending:
                         self.queue.append(CheckPoint([self.x*self.tile_size[0], self.y*self.tile_size[1]], 1))
+                elif tile == 32:
+                    if self.coin_appending:
+                        length = 1
+                        final_tile = [abs_x, 0]
+                        for i in range(abs_j+1, abs_j+25):
+                            if i in range(len(tilemap)):
+                                if (tilemap[i][abs_x] in [-1, 60, 111, 88]) or (tilemap[i][abs_x] in self.decorative_tiles):
+                                    length += 1
+                                    final_tile[1] = i 
+                                else:
+                                    break
+                            else:
+                                break
+                        self.queue.append(FallingBlock([self.x*self.tile_size[0], self.y*self.tile_size[1]], self.images[79], final_tile, [abs_x, abs_j], length))
         self.first_cycle = False
         self.coin_appending = False
     def update(self):

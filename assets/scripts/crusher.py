@@ -25,24 +25,25 @@ class Crusher:
         self.rect = pygame.Rect(self.pos[0]+(16*4), self.pos[1], 32*4, 64*4)
         self.falling = False
         self.adder = 1
-        self.delay = 0
         self.cycles = 0
-    def update_animation(self, delay_wait, renderer):
-        if hasattr(renderer, "dt"):
-            if round(delay_wait/renderer.dt) != 0:
-                self.delay += (1)
-                if int(self.delay) % round(delay_wait/renderer.dt) == 0:
-                    self.frame[0] += self.adder
-                if self.frame[0] > 11:
-                    self.frame[0] = 11
-                    self.adder=-1
-                    renderer.coin_channel.play(self.sound)
-                if self.frame[0] < 0:
-                    self.frame[0] = 0
-                    self.adder=1
-                    self.falling = False
-                if self.frame[0] >= 10 and self.adder == 1:
-                    self.dust_blowing = True
+        self.time = time.time()
+        self.dust_time = time.time()
+    def update_animation(self, renderer):
+
+        if time.time() - self.time >= 0.09:
+            self.frame[0] += self.adder
+            self.time = time.time()
+        if self.frame[0] > 11:
+            self.frame[0] = 11
+            self.adder=-1
+            renderer.coin_channel.play(self.sound)
+        if self.frame[0] < 0:
+            self.frame[0] = 0
+            self.adder=1
+            self.falling = False
+        if self.frame[0] >= 10 and self.adder == 1:
+            self.dust_blowing = True
+            #self.dust_time = time.time()
         self.mask = pygame.mask.from_surface(self.spritesheet.get(self.frame))
     def update(self, renderer):
         self.cycles += 1
@@ -51,7 +52,7 @@ class Crusher:
                 if obj.__class__.__name__ == "MovingPlatform":
                     if obj.rect.collidepoint(self.pos):
                         obj.objects.append(self)
-        if hasattr(renderer, "dt") and hasattr(renderer.queue[0], "rect"):
+        if hasattr(renderer.queue[0], "rect"):
             if renderer.camera.bigger_window_rect.collidepoint(self.pos):
                 self.rect = pygame.Rect(self.pos[0]+(16*4), self.pos[1], 32*4, 64*4)
                 if self.rect.colliderect(renderer.queue[0].rect):
@@ -61,10 +62,11 @@ class Crusher:
                         if self.rect.colliderect(e.rect):
                             self.falling = True
                 if self.falling:
-                    self.update_animation(6, renderer)
+                    self.update_animation(renderer)
                 if self.dust_blowing:
-                    if self.delay%(round(8/renderer.dt)) == 0:
+                    if time.time() - self.dust_time >= 0.1:
                         self.dust_frame += 1
+                        self.dust_time = time.time()
                         if self.dust_frame > 6:
                             self.dust_frame = 0
                             self.dust_blowing = False

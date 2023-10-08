@@ -11,7 +11,6 @@ class Coin:
         self.frame = [0, 0]
         self.pos = pos
         self.init_pos = [int(pos[0]/64), int(pos[1]/64)]
-        self.delay = 0
         self.collected = False
         self.rect_surf = pygame.Surface((64, 64))
         self.rect_surf.set_alpha(50)
@@ -26,15 +25,14 @@ class Coin:
             self.sound = (pygame.mixer.Sound("assets/Audio/coin.ogg"))
         self.level_spike_dicts = {0: 780, 1:-64, 2:-64, 3:-64, 4:-64}
         self.just_notified = False
+        self.time = time.time()
+    def update_animation(self, row):
         
-    def update_animation(self, row, delay_wait, renderer):
-        if hasattr(renderer, "dt"):
-            if (renderer.dt) != 0:
-                if round(delay_wait/(renderer.dt)) != 0:
+                
                     self.frame[1] = row
-                    self.delay += (1)
-                    if int(self.delay) % round(delay_wait/(renderer.dt)) == 0:
+                    if time.time() - self.time >= 0.2:
                         self.frame[0] += 1
+                        self.time = time.time()
                     if self.frame[0] > 11:
                         self.frame[0] = 0
     def update_physics(self, renderer):
@@ -241,7 +239,7 @@ class Coin:
             
     def update(self, renderer):
         if not self.collected:
-            self.update_animation(0, 10, renderer)
+            self.update_animation(0)
             self.mask = pygame.mask.from_surface(self.spritesheet.get(self.frame))
             win.blit(self.spritesheet.get(self.frame), self.pos)
             self.update_physics(renderer)

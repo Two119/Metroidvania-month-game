@@ -90,6 +90,7 @@ class LevelRenderer:
         self.button = None
         #spike[self.attr_dict["pos"]] = pos
         #self.delay = 0
+        self.fire_time = time.time()
         self.def_frame = 60
         self.enemies = []
         self.notifications = []
@@ -165,10 +166,10 @@ class LevelRenderer:
     def spawn_animation(self, delay_wait, spike):
         renderer = self
         if (renderer.clock.get_fps()) != 0 and spike[self.attr_dict["just_spawned"]]:
-                spike[self.attr_dict["delay"]] += 1
-                if round(delay_wait/renderer.dt) != 0:
-                    if spike[self.attr_dict["delay"]] % round(delay_wait/renderer.dt) == 0:
+                #spike[self.attr_dict["delay"]] += 1
+                if time.time() - spike[self.attr_dict["delay"]] >= 0.08:
                         self.frame[0] += 1
+                        spike[self.attr_dict["delay"]] = time.time()
                 if self.frame[0] > 3:
                     self.frame[0] = 3
                     spike[self.attr_dict["just_spawned"]] = False
@@ -443,15 +444,15 @@ class LevelRenderer:
                             renderer.coin_channel.play(pygame.mixer.Sound("assets/Audio/spike_spawn.ogg"))
                     self.played = True
     def add_spike_u(self, pos, shifted=False):
-        self.spikes.append([[pos[0], pos[1]], 0, True, shifted, False, False, False, 0, pos])
+        self.spikes.append([[pos[0], pos[1]], time.time(), True, shifted, False, False, False, 0, pos])
     def add_spike_d(self, pos, shifted=False):
-        self.spikes.append([[pos[0], pos[1]+4], 0, True, shifted, False, False, True, 0, pos])
+        self.spikes.append([[pos[0], pos[1]+4], time.time(), True, shifted, False, False, True, 0, pos])
     def add_spike_r(self, pos, shifted=False):
         selfpos = [pos[0]+((16*90)/90)+((20*90)/90)-int(self.spikesheet.get([3, 0]).get_width()/2)-8, pos[1]+44-int(self.spikesheet.get([3, 0]).get_height()/2)]
-        self.spikes.append([selfpos, 0, True, shifted, False, False, True, 90, pos])
+        self.spikes.append([selfpos, time.time(), True, shifted, False, False, True, 90, pos])
     def add_spike_l(self, pos, shifted=False):
         selfpos = [pos[0]+((16*-90)/-90)+((26*-90)/-90)-int(self.spikesheet.get([3, 0]).get_width()/2)-4, pos[1]+38-int(self.spikesheet.get([3, 0]).get_height()/2)]
-        self.spikes.append([selfpos, 0, True, shifted, False, False, True, -90, pos])
+        self.spikes.append([selfpos, time.time(), True, shifted, False, False, True, -90, pos])
     def render(self):
         self.rects = []
         self.coin_count = 0
@@ -659,12 +660,12 @@ class LevelRenderer:
             self.dt = 1
         if self.dt > 1.5:
             self.dt = 1
-        self.delay += (1)
-        if round(16/self.dt) != 0:
-            if (int(self.delay)%round(16/self.dt)==0):
-                self.firebox_frame+=1
-                if (self.firebox_frame>12):
-                    self.firebox_frame = 0
+   
+        if time.time() - self.fire_time >= 0.3:
+            self.firebox_frame+=1
+            if (self.firebox_frame>12):
+                self.firebox_frame = 0
+            self.fire_time = time.time()
         if not self.firebox_in_cam:
             self.firebox_channel.fadeout(2000)
         self.firebox_channel.set_volume(self.coin_channel.get_volume())

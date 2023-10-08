@@ -15,17 +15,16 @@ class SpikeBall:
         self.init_tile_pos = [int(pos[0]/64), int(pos[1]/64)]
         self.pos = [pos[0]+32, pos[1]+32]
         self.cur_img = self.spikeball_spikes.get(self.frame)
-        self.delay = 0
+        self.time = time.time()
         self.standing = False
         self.just_spawned = True
         self.rect = self.cur_img.get_rect(topleft=self.pos)
-    def spawn_animation(self, row, delay_wait, renderer):
-        if (renderer.dt) != 0 and self.just_spawned:
-            self.delay += (1)
+    def spawn_animation(self, row):
+        if self.just_spawned:
             self.frame[1] = row
-            if round(delay_wait/renderer.dt) != 0:
-                if int(self.delay) % round(delay_wait/renderer.dt) == 0:
-                    self.frame[0] += 1
+            if time.time() - self.time >= 0.1:
+                self.frame[0] += 1
+                self.time = time.time()
             if self.frame[0] > 3:
                 self.frame[0] = 3
                 self.just_spawned = False
@@ -40,7 +39,7 @@ class SpikeBall:
                 img_ = pygame.transform.rotate(self.cur_img, self.angle)
                 self.mask = pygame.mask.from_surface(img_)
                 if self.just_spawned:
-                    self.spawn_animation(0, 4, renderer)
+                    self.spawn_animation(0)
                 if hasattr(self, "mask"):
                     if self.mask.overlap(renderer.queue[0].mask, (renderer.queue[0].pos[0]-(self.pos[0]-(img_.get_width()/2)), renderer.queue[0].pos[1]-(self.pos[1]-(img_.get_height()/2)))) == None:
                         pass

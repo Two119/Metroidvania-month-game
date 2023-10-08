@@ -202,30 +202,32 @@ class Player:
         self.just_shot = False
         self.shield = None
         self.inventory = Inventory(5)
+        self.time = time.time()
+        self.dust_time = time.time()
     def update_animation(self, row, delay_wait, dt):
-        if dt != 0:
-            if round(delay_wait/(dt)) != 0:
-                self.frame[1] = row
-                if self.just_spawned:
-                    self.frame[1] == 0
-                    self.delay += (1)
-                    if int(self.delay) % round(delay_wait/(dt)) == 0:
-                        self.frame[0] += 1
-                    
-                    if self.frame[0] > 3:
-                        self.frame[1] = 0
-                        self.frame[0] = 0
-                        self.just_spawned = False
-                        if not self.channel.get_busy():
-                            self.channel.play(self.sounds[self.sounds_dict["land"]])
-                            self.dust_blowing = True
-                            self.dust_pos = [self.pos[0], self.pos[1]+self.dust_sheet.size[1]-16]
-                else:
-                    self.delay += (1)
-                    if int(self.delay) % round(delay_wait/(dt)) == 0:
-                        self.frame[0] += 1
-                    if self.frame[0] > 3:
-                        self.frame[0] = 0
+ 
+        self.frame[1] = row
+        if self.just_spawned:
+            self.frame[1] == 0
+            self.delay += (1)
+            if time.time() - self.time >= (0.0166667*delay_wait):
+                self.frame[0] += 1
+                self.time = time.time()
+            if self.frame[0] > 3:
+                self.frame[1] = 0
+                self.frame[0] = 0
+                self.just_spawned = False
+                if not self.channel.get_busy():
+                    self.channel.play(self.sounds[self.sounds_dict["land"]])
+                    self.dust_blowing = True
+                    self.dust_pos = [self.pos[0], self.pos[1]+self.dust_sheet.size[1]-16]
+        else:
+            self.delay += (1)
+            if time.time() - self.time >= (0.0166667*delay_wait):
+                self.frame[0] += 1
+                self.time = time.time()
+            if self.frame[0] > 3:
+                self.frame[0] = 0
     def update_physics(self, renderer, dt):
         for obj in renderer.queue:
             if obj.__class__.__name__ in self.harmful:
@@ -366,6 +368,7 @@ class Player:
                             if not self.channel.get_busy():
                                 self.channel.play(self.sounds[self.sounds_dict["land"]])
                                 self.dust_blowing = True
+                                self.dust_time = time.time()
                                 self.dust_pos = [self.pos[0], self.pos[1]+self.dust_sheet.size[1]-16]
                         if not double_list[2] in renderer.queue:
                             self.pos[1] = double_list[1][1]-self.spritesheet.get(self.frame).get_height()+24
@@ -485,11 +488,12 @@ class Player:
                 self.top_rect = pygame.Rect(self.pos[0]+(22*2)-8-5, self.pos[1]-20+(17*3), (12*4)+15, 1)
             #pygame.draw.rect(win, [255, 0, 0], self.rect)
             if self.dust_blowing:
-                if self.delay%(round(8/renderer.dt)) == 0:
+                if time.time() - self.dust_time >= (0.0166667*8):
                     self.dust_frame += 1
                     if self.dust_frame > 6:
                         self.dust_frame = 0
                         self.dust_blowing = False
+                    self.dust_time = time.time()
             if self.dust_blowing:
                 surf_ = self.dust_sheet.get([self.dust_frame, 0])
                 win.blit(surf_, self.dust_pos)

@@ -27,6 +27,7 @@ class EnemyWizard:
         self.jumping = False
         self.coins = 0
         self.moving = True
+        self.shoot_delay = time.time()
         self.chasing = False
         self.sounds = []
         self.sounds_dict = {"land":0, "jump":1}
@@ -72,30 +73,31 @@ class EnemyWizard:
         self.staff.set_colorkey([255, 255, 255])
         self.orig_staff = self.staff.copy()
         self.just_shot = False
+        self.time = time.time()
         self.renderer = renderer
         self.mask = pygame.mask.from_surface(self.spritesheet.get(self.frame))
     def update_animation(self, row, delay_wait, dt):
-        if dt != 0:
-            if round(delay_wait/(dt)) != 0:
-                self.frame[1] = row
-                if self.just_spawned:
-                    self.frame[1] == 0
-                    self.delay += (1)
-                    if int(self.delay) % round(delay_wait/(dt)) == 0:
-                        self.frame[0] += 1
-                    
-                    if self.frame[0] > 3:
-                        self.frame[1] = 0
-                        self.frame[0] = 0
-                        self.just_spawned = False
-                        if not self.renderer.coin_channel.get_busy():
-                            self.renderer.coin_channel.play(self.sounds[self.sounds_dict["land"]])
-                else:
-                    self.delay += (1)
-                    if int(self.delay) % round(delay_wait/(dt)) == 0:
-                        self.frame[0] += 1
-                    if self.frame[0] > 3:
-                        self.frame[0] = 0
+
+        self.frame[1] = row
+        if self.just_spawned:
+            self.frame[1] == 0
+            self.delay += (1)
+            if time.time() - self.time >= (0.0166667*delay_wait):
+                self.frame[0] += 1
+                self.time = time.time()
+            if self.frame[0] > 3:
+                self.frame[1] = 0
+                self.frame[0] = 0
+                self.just_spawned = False
+                if not self.renderer.coin_channel.get_busy():
+                    self.renderer.coin_channel.play(self.sounds[self.sounds_dict["land"]])
+        else:
+            self.delay += (1)
+            if time.time() - self.time >= (0.0166667*delay_wait):
+                self.frame[0] += 1
+                self.time = time.time()
+            if self.frame[0] > 3:
+                self.frame[0] = 0
     def update_physics(self, renderer, dt):
 
         if self.pos[1] > (renderer.player_death_limit[renderer.level]+renderer.camera.cam_change[1]):
@@ -182,11 +184,10 @@ class EnemyWizard:
             self.shots.append(len(renderer.bullet_manager.bullets))
             renderer.bullet_manager.add_bullet(self.staff_pos, 270-ang)
             self.just_shot = True
-        if self.just_shot:
-            self.shoot_delay += (1)
-        if int(self.shoot_delay)%round(60/dt)==0:
+            self.shoot_delay = time.time()
+        if time.time()-self.shoot_delay >= 1:
             self.just_shot = False
-            self.shoot_delay = 0
+            self.shoot_delay = time.time()
         self.staff_pos = [self.staff_pos[0]-(self.staff.get_width()/2), self.staff_pos[1]-(self.staff.get_height()/2)]
         if not self.is_alive:
             if renderer.queue.index(self) in renderer.enemies:
@@ -241,21 +242,21 @@ class Sword:
         self.attacking = False
         self.attack = None
         self.frame = [0, 0]
-        self.delay = 0
         self.dir = 0
         self.level = level
         self.just_hit = False
         self.hit_delay = 1
+        self.time = time.time()
     def update(self, renderer):
         
         if not self.attacking:
             win.blit(pygame.transform.flip(self.spritesheet.get([0, 1]), self.dir, False), self.pos)
             self.rect = pygame.transform.flip(self.spritesheet.get([0, 1]), self.dir, False).get_rect(topleft=self.pos)
         else:
-            self.delay += (1)
-            if round(10/renderer.dt) != 0:
-                if (int(self.delay) % round(10/renderer.dt))==0:
+  
+            if time.time() - self.time >= (0.0166667*10):
                     self.frame[0] += 1
+                    self.time = time.time()
             if self.frame[0] > 6:
                 self.frame[0] = 0
                 self.just_hit = False
@@ -372,28 +373,28 @@ class EnemySwordsman:
         if renderer.level == 4:
             p = [3, 4, 4]
             self.weapon = Sword(self.pos, p[randint(0, len(p)-1)])
+        self.time = time.time()
     def update_animation(self, row, delay_wait, dt):
-        if dt != 0:
-            if round(delay_wait/(dt)) != 0:
-                self.frame[1] = row
-                if self.just_spawned:
-                    self.frame[1] == 0
-                    self.delay += (1)
-                    if int(self.delay) % round(delay_wait/(dt)) == 0:
-                        self.frame[0] += 1
-                    
-                    if self.frame[0] > 3:
-                        self.frame[1] = 0
-                        self.frame[0] = 0
-                        self.just_spawned = False
-                        if not self.renderer.coin_channel.get_busy():
-                            self.renderer.coin_channel.play(self.sounds[self.sounds_dict["land"]])
-                else:
-                    self.delay += (1)
-                    if int(self.delay) % round(delay_wait/(dt)) == 0:
-                        self.frame[0] += 1
-                    if self.frame[0] > 3:
-                        self.frame[0] = 0
+        self.frame[1] = row
+        if self.just_spawned:
+            self.frame[1] == 0
+            self.delay += (1)
+            if time.time() - self.time >= (0.0166667*delay_wait):
+                self.frame[0] += 1
+                self.time = time.time()
+            if self.frame[0] > 3:
+                self.frame[1] = 0
+                self.frame[0] = 0
+                self.just_spawned = False
+                if not self.renderer.coin_channel.get_busy():
+                    self.renderer.coin_channel.play(self.sounds[self.sounds_dict["land"]])
+        else:
+            self.delay += (1)
+            if time.time() - self.time >= (0.0166667*delay_wait):
+                self.frame[0] += 1
+                self.time = time.time()
+            if self.frame[0] > 3:
+                self.frame[0] = 0
     def update_physics(self, renderer, dt):
         for obj in renderer.queue:
             if obj.__class__.__name__ in self.harmful:

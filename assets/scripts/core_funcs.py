@@ -8,7 +8,7 @@ if __import__("sys").platform == "emscripten":
     import platform
 pygame.init()
 global web
-web =  False
+web =  True
 global cursor_mask
 global cursor_img
 global button_sound
@@ -19,7 +19,8 @@ else:
     cursor_img = pygame.image.load("assets/Spritesheets//cursor.png")
     button_sound = pygame.mixer.Sound("assets/Audio/click.ogg")
 cursor_mask = pygame.mask.from_surface(cursor_img)
-win = pygame.display.set_mode((1280, 720))
+flags = pygame.RESIZABLE | pygame.SCALED
+win = pygame.display.set_mode((1280, 720), flags)
 global win_size
 win_size = [win.get_width(), win.get_height()]
 pygame.display.set_caption("Shiftania")
@@ -220,10 +221,8 @@ def reset(player, renderer, fell=False):
         match renderer.level:
             case 0:
                 if not player.on_door:
-                    if not  (1 in player.levels_unlocked):
-                        player.pos = [64, -3*64]
-                    else:
-                        player.pos = [1604, -5*64]   
+                    player.pos = [64, -3*64]
+                
                 else:
                     player.pos = [1604, -5*64]   
             case 1:

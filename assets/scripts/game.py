@@ -11,6 +11,11 @@ def ismovingfirebox(box):
         if box.on_platform:
             return True
     return False
+def isfallingblock(block):
+    if isinstance(block, FallingBlock):
+        if block.falling and not block.standing:
+            return True
+    return False
 def start(args):
     if hasattr(args.renderer, "camera"):
         reset(args.renderer.queue[0], args.renderer)
@@ -179,7 +184,7 @@ class Game:
                             if (self.cursor_mask.overlap(double_list[0], (double_list[1][0]-cursor_pos[0], double_list[1][1]-cursor_pos[1])) == None):
                                 pass
                             else:
-                                if double_list[2] != 122 and not isinstance(double_list[2], SpikeBall) and not ismovingfirebox(double_list[2]):
+                                if double_list[2] != 122 and not isinstance(double_list[2], SpikeBall) and not ismovingfirebox(double_list[2]) and not isfallingblock(double_list[2]):
                                     if not isinstance(double_list[2], FireBox):
                                         if pygame.mouse.get_pressed()[2] and double_list[2] != self.renderer.queue[0].tile:
                                             if self.renderer.queue[0].tile == 116:

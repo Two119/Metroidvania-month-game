@@ -20,7 +20,7 @@ class FallingBlock:
         self.dust_sheet = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/smoke.png").convert()), [7, 1], [255, 255, 255])
         self.dust_frame = 0
         self.dust = False
-        self.delay = 0
+
         self.rumble_range = [-4, 0, 4]
         self.fall_time = time.time()
         self.offset = [randint(0, 2), randint(0, 2)]
@@ -28,8 +28,10 @@ class FallingBlock:
         self.spike_mask = pygame.mask.from_surface(self.spikes)
         self.displacement = 0
         self.is_hovered = False
+        self.time = time.time()
+        self.dust_time = time.time()
     def update(self, renderer):
-        self.delay += 1
+
         #self.standing = False
         self.falling_rect = pygame.Rect(self.pos[0]+4, self.pos[1]+4, 64, 64*self.l)
         #pygame.draw.rect(win, [255, 0, 0], self.falling_rect)
@@ -37,6 +39,17 @@ class FallingBlock:
             if self.falling_rect.colliderect(renderer.queue[0].rect) and not self.about_to_fall:
                 self.about_to_fall = True
                 self.fall_time = time.time()
+            pos = [self.pos[0]+4, self.pos[1]+64]
+            for obj in renderer.queue:
+                if obj.__class__.__name__ == "EnemySwordsman" or obj.__class__.__name__ == "EnemyWizard":
+                    if hasattr(obj, "rect"):
+                        if self.spike_mask.overlap(obj.mask, (obj.pos[0]-pos[0], obj.pos[1]-pos[1])) != None:
+                            obj.is_alive = False
+                        if obj.rect.colliderect(self.falling_rect):
+                            self.about_to_fall = True
+                            self.fall_time = time.time()
+                            self.time = time.time()
+                            self.offset = [randint(0, 2), randint(0, 2)]
             if not self.about_to_fall:
                 win.blit(self.main_img, self.pos)
                 win.blit(self.spikes, [self.pos[0]+4, self.pos[1]+64])
@@ -44,8 +57,9 @@ class FallingBlock:
                 if not self.falling:
                     if round(time.time())-round(self.fall_time) == 1:
                         self.falling = True
-                    if self.delay % round(3/renderer.dt) == 0:
+                    if time.time() - self.time >= 0.05:
                         self.offset = [randint(0, 2), randint(0, 2)]
+                        self.time = time.time()
                     win.blit(self.main_img, [self.pos[0]+self.rumble_range[self.offset[0]], self.pos[1]+self.rumble_range[self.offset[1]]])
                     win.blit(self.spikes, [self.pos[0]+4+self.rumble_range[self.offset[0]], self.pos[1]+64+self.rumble_range[self.offset[1]]])
                     pos = [self.pos[0]+4+self.rumble_range[self.offset[0]], self.pos[1]+64+self.rumble_range[self.offset[1]]]
@@ -57,10 +71,11 @@ class FallingBlock:
                         if (self.mask.overlap(double_list[0], (double_list[1][0]-self.pos[0], double_list[1][1]-self.pos[1])) != None) and double_list[2] != self:
                             if not self.standing:
                                 self.dust = True
+                                self.dust_time = time.time()
                             self.standing = True 
                             self.pos[1]=double_list[1][1]-64                           
                     if not self.standing:
-                        self.vel += self.gravity
+                        self.vel += (self.gravity*renderer.dt)
                         self.displacement += self.vel
                         self.pos[1] += self.vel
                         win.blit(self.main_img, self.pos)
@@ -68,15 +83,17 @@ class FallingBlock:
                         pos = [self.pos[0]+4, self.pos[1]+64]
                         if self.spike_mask.overlap(renderer.queue[0].mask, (renderer.queue[0].pos[0]-pos[0], renderer.queue[0].pos[1]-pos[1])) != None:
                             renderer.queue[0].is_alive = False
-                    else:
+                        
+                    else:   
                         renderer.standing_masks.append([self.mask, self.pos, self, [self.tile_num[0], self.tile_num[1]+round(self.displacement/64)]])
                         win.blit(self.main_img, self.pos)
                         self.vel = 0
                         
             if self.dust:
                 
-                if self.delay % round(8/renderer.dt) == 0:
+                if time.time() - self.dust_time >= 0.2:
                     self.dust_frame += 1
+                    self.dust_time = time.time()
                 if self.dust_frame > 6:
                     self.dust_frame = 0
                     self.dust = False

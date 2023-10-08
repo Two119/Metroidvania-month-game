@@ -18,9 +18,10 @@ class Dialogue:
         self.p_rect = pygame.Rect(self.pos[0]-6, self.pos[1]-6, wraplimit+6, h+6)
         self.done = False
         self.finished = False
+        self.time = time.time()
     def update(self, renderer):
         self.delay += 1
-        if (self.delay % round(self.speed/renderer.dt) == 0) and self.char < len(self.text):
+        if (time.time() - self.time >= (0.0166667*self.speed)) and self.char < len(self.text):
             self.char += 1
         if self.char >= len(self.text):
             self.finished = True

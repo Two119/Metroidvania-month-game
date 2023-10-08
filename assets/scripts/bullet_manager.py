@@ -15,11 +15,13 @@ class BulletManager:
             img = scale_image(self.orig_img, 4)
             #img.set_colorkey([0, 0, 0])
             self.bullet_spritesheet = SpriteSheet(img, [11, 1], [255, 255, 255])
-        self.delay = 0
+
         self.frame = 0
         self.renderer = renderer
         self.remove = False
         self.channel = pygame.mixer.Channel(3)
+        self.time = time.time()
+        self.othertime = time.time()
     def add_bullet(self, pos, angle, adder=False):
         self.bullets.append([pos, angle, None, False, 0, adder])
         self.channel.set_volume(self.renderer.coin_channel.get_volume())
@@ -28,15 +30,13 @@ class BulletManager:
     def remove_bullet(self, index):
         self.bullets.pop(index)
     def update_physics(self, renderer):
-        if hasattr(renderer, "dt"):
-            if renderer.dt != 0:
-                self.delay += (1)
-                if round(8/(renderer.dt)) != 0:
-                    if int(self.delay) % round(8/(renderer.dt)) == 0:
-                        self.frame += 1
-                        if self.frame > 3:
-                            self.frame = 0
-                
+       
+            
+                if round(time.time(), 3)-self.time >= 0.2:
+                    self.frame += 1
+                    if self.frame > 3:
+                        self.frame = 0
+                    self.time = round(time.time(), 3)
                 if self.remove:
                     if len(self.bullets) > 0:
                         self.bullets.pop(len(self.bullets)-1)
@@ -46,16 +46,15 @@ class BulletManager:
                         bullet[0][0] += self.bullet_vel*math.cos(radians(bullet[1]))*renderer.dt
                         bullet[0][1] += self.bullet_vel*math.sin(radians(bullet[1]))*renderer.dt
                     else:
-                        if round(8/(renderer.dt)) != 0:
-                            if int(self.delay) % round(8/(renderer.dt)) == 0:
-                                bullet[4] += 1
-                                if bullet[4] > 4:
-                                    bullet[4] = 0
-                                    self.bullets.remove(bullet)
-                                    
+            
+                        if round(time.time(), 3)-self.othertime >= 0.15:
+                            bullet[4] += 1
+                            if bullet[4] > 4:
+                                bullet[4] = 0
+                                self.bullets.remove(bullet)
+                            self.othertime = time.time()        
     def update_graphics(self, renderer):
-        if hasattr(renderer, "dt"):
-            if renderer.dt != 0:
+      
                 for bullet in self.bullets:
                     if not bullet[3]:
                         bullet_sprite = pygame.transform.rotate(self.bullet_spritesheet.get([self.frame, 0]), 360-bullet[1])

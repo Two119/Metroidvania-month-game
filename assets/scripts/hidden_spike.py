@@ -22,7 +22,7 @@ class HiddenSpike:
                 self.pos = [pos[0]+((16*ang)/90)+((62*ang)/90)-int(self.spritesheet.get(self.frame).get_width()/2), pos[1]+72-int(self.spritesheet.get(self.frame).get_height()/2)]
         self.down = down
         self.ang = ang
-        self.delay = 0
+        self.time = time.time()
         self.just_spawned = None
         self.rect_surf = pygame.Surface((64, 64))
         self.rect_surf.set_alpha(50)
@@ -34,13 +34,13 @@ class HiddenSpike:
         for img in self.spritesheet.sheet[0]:
             self.spritesheet.sheet[0][self.i] = pygame.transform.rotate(img, self.ang)
             self.i+=1
-    def spawn_animation(self, row, delay_wait, renderer):
-        if (renderer.clock.get_fps()) != 0 and self.just_spawned:
+    def spawn_animation(self, row, renderer):
+        if self.just_spawned:
             self.frame[1] = row
-            self.delay += 1
-            if round(delay_wait/renderer.dt) != 0:
-                if self.delay % round(delay_wait/renderer.dt) == 0:
-                    self.frame[0] += 1
+            
+            if time.time() - self.time >= 0.08:
+                self.frame[0] += 1
+                self.time = time.time()
             if self.frame[0] > 3:
                 self.frame[0] = 3
                 self.just_spawned = False
@@ -106,7 +106,7 @@ class HiddenSpike:
                                     self.just_spawned = True
                     if not self.just_spawned == None:
                         if self.just_spawned:
-                            self.spawn_animation(0, 4, renderer)
+                            self.spawn_animation(0, renderer)
                     else:
                         if self.ang == 0 and not self.down:
                             win.blit(self.spritesheet.get([4, 0]), [self.pos[0]+4, self.pos[1]])

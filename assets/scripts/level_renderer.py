@@ -11,6 +11,8 @@ from assets.scripts.falling_block import *
 from assets.scripts.enemy import *
 from assets.scripts.shop import *
 from assets.scripts.bullet_manager import *
+from assets.scripts.psycho import *
+from assets.scripts.jumper import *
 class CheckPoint:
     def __init__(self, position:tuple, type_of:int):
         self.type_of = type_of
@@ -158,7 +160,7 @@ class LevelRenderer:
         self.added_spikes_h = 0
         self.firebox_in_cam = False
         self.camera = None
-        self.exceptions = [32, 60, 88, 111, 116, 117, 118, 119, 120, 121, 122, 129, 135, 136, 137, 138, 139, 140, 141, 142]
+        self.exceptions = [32, 33, 60, 88, 111, 116, 117, 118, 119, 120, 121, 122, 129, 135, 136, 137, 138, 139, 140, 141, 142, 103]
         self.ground = ["SpikeBall", "MovingPlatform", "FireBox", "FallingBlock"]
         self.bullet_manager = BulletManager(self)
         self.cycles = 0 
@@ -651,6 +653,12 @@ class LevelRenderer:
                             else:
                                 break
                         self.queue.append(FallingBlock([self.x*self.tile_size[0], self.y*self.tile_size[1]], self.images[79], final_tile, [abs_x, abs_j], length))
+                elif tile == 103:
+                    if self.coin_appending:
+                        self.queue.append(Psycho([self.x*self.tile_size[0], self.y*self.tile_size[1]]))
+                elif tile == 33:
+                    if self.coin_appending:
+                        self.queue.append(Jumper([self.x*self.tile_size[0], self.y*self.tile_size[1]]))
         self.first_cycle = False
         self.coin_appending = False
     def update(self):

@@ -74,7 +74,7 @@ class Game:
         self.combat_song = pygame.mixer.Sound("assets/Audio/combat_music_loop.ogg")
 
         self.bg_song_1 = pygame.mixer.Sound("assets/Audio/Background_Loop.ogg")
-        self.bg_channel = pygame.mixer.find_channel(9)
+        self.bg_channel = pygame.mixer.find_channel(8)
         self.bg_song_2 = pygame.mixer.Sound("assets/Audio/background_loop_2.ogg")
         self.camera = Camera()
         self.cursor_img_ = scale_image(cursor_img, 2)

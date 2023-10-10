@@ -8,7 +8,7 @@ if __import__("sys").platform == "emscripten":
     import platform
 pygame.init()
 global web
-web =  True
+web =  False
 global cursor_mask
 global cursor_img
 global button_sound
@@ -20,6 +20,8 @@ else:
     button_sound = pygame.mixer.Sound("assets/Audio/click.ogg")
 cursor_mask = pygame.mask.from_surface(cursor_img)
 flags = pygame.RESIZABLE | pygame.SCALED
+if web:
+    flags = pygame.SHOWN
 win = pygame.display.set_mode((1280, 720), flags)
 global win_size
 win_size = [win.get_width(), win.get_height()]

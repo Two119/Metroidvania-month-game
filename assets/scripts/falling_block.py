@@ -65,6 +65,7 @@ class FallingBlock:
                     pos = [self.pos[0]+4+self.rumble_range[self.offset[0]], self.pos[1]+64+self.rumble_range[self.offset[1]]]
                     if self.spike_mask.overlap(renderer.queue[0].mask, (renderer.queue[0].pos[0]-pos[0], renderer.queue[0].pos[1]-pos[1])) != None:
                         renderer.queue[0].is_alive = False
+                        renderer.queue[0].deaths += 1
                     renderer.standing_masks.append([self.mask, [self.pos[0]+self.rumble_range[self.offset[0]], self.pos[1]+self.rumble_range[self.offset[1]]], self])
                 else:
                     for double_list in renderer.standing_masks:
@@ -83,7 +84,7 @@ class FallingBlock:
                         pos = [self.pos[0]+4, self.pos[1]+64]
                         if self.spike_mask.overlap(renderer.queue[0].mask, (renderer.queue[0].pos[0]-pos[0], renderer.queue[0].pos[1]-pos[1])) != None:
                             renderer.queue[0].is_alive = False
-                        
+                            renderer.queue[0].deaths += 1
                     else:   
                         renderer.standing_masks.append([self.mask, self.pos, self, [self.tile_num[0], self.tile_num[1]+round(self.displacement/64)]])
                         win.blit(self.main_img, self.pos)

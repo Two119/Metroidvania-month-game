@@ -15,6 +15,8 @@ def isfallingblock(block):
     if isinstance(block, FallingBlock):
         if block.falling and not block.standing:
             return True
+    if isinstance(block, Jumper):
+        return True
     return False
 def start(args):
     if hasattr(args.renderer, "camera"):

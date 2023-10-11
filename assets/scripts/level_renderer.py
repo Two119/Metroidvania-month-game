@@ -161,7 +161,7 @@ class LevelRenderer:
         self.firebox_in_cam = False
         self.camera = None
         self.exceptions = [32, 33, 60, 88, 111, 116, 117, 118, 119, 120, 121, 122, 129, 135, 136, 137, 138, 139, 140, 141, 142, 103]
-        self.ground = ["SpikeBall", "MovingPlatform", "FireBox", "FallingBlock"]
+        self.ground = ["SpikeBall", "MovingPlatform", "FireBox", "FallingBlock", "Jumper"]
         self.bullet_manager = BulletManager(self)
         self.cycles = 0 
         self.cur_cycle = -1
@@ -686,7 +686,7 @@ class LevelRenderer:
         self.firebox_in_cam = False
         if self.queue != []:
             for obj in self.queue:
-                if isinstance(obj, FireBox):
+                if isinstance(obj, FireBox) or isinstance(obj, Jumper):
                     obj.append_rects(self)
                 if obj.__class__.__name__ ==  "CheckPoint":
                     obj.update(self)

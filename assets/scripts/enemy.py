@@ -13,7 +13,7 @@ class EnemyWizard:
         self.levels_unlocked = [0]
         self.shoot_delay = 0
         self.vel = [0, 0]
-        self.gravity = 0.24
+        self.gravity = 0.48
         self.just_spawned = True
         self.delay = 0
         self.deaths = 0
@@ -303,7 +303,7 @@ class EnemySwordsman:
         self.is_alive = True
         self.levels_unlocked = [0]
         self.vel = [0, 0]
-        self.gravity = 0.24
+        self.gravity = 0.48
         self.just_spawned = True
         self.delay = 0
         self.deaths = 0

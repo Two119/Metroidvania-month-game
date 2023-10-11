@@ -37,7 +37,7 @@ class Jumper:
         self.rects = [pygame.Rect(self.pos[0], self.pos[1]+40, 1, 28), pygame.Rect(self.pos[0]+64, self.pos[1]+40, 1, 28)]
         renderer.side_rects.append([self.rects[0], -1])
         renderer.side_rects.append([self.rects[1], 1])
-        [pygame.draw.rect(win, [255, 0, 0], r) for r in self.rects]
+        #[pygame.draw.rect(win, [255, 0, 0], r) for r in self.rects]
     def update(self, renderer):
         self.jump_rect = self.spritesheet.get([self.frame, 0]).get_rect(topleft=self.pos)
         self.jump_rect.x += 4

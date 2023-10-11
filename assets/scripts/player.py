@@ -126,7 +126,7 @@ class Player:
         self.t = False
         self.levels_unlocked = [0]
         self.vel = [0, 0]
-        self.gravity = 0.24
+        self.gravity = 0.48
         self.shapeshifts = 3
         self.just_spawned = True
         self.delay = 0

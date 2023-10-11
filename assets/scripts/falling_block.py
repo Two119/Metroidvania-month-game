@@ -1,7 +1,7 @@
 from assets.scripts.core_funcs import *
 class FallingBlock:
     def __init__(self, position, main_img:pygame.Surface, final_tile, tile_num, length=5):
-        self.gravity = 0.24
+        self.gravity = 0.48
         self.final_tile = final_tile
         self.vel = 0
         self.pos = position

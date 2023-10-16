@@ -19,7 +19,7 @@ class BulletManager:
         self.frame = 0
         self.renderer = renderer
         self.remove = False
-        self.channel = pygame.mixer.Channel(3)
+        self.channel = pygame.mixer.Channel(0)
         self.time = time.time()
         self.othertime = time.time()
     def add_bullet(self, pos, angle, adder=False):

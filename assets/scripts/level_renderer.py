@@ -128,11 +128,12 @@ class LevelRenderer:
         self.side_rects = []
         self.enemies = []
         self.special_blocks = []
-        self.coin_channel = pygame.mixer.Channel(6)
-        self.firebox_channel = pygame.mixer.Channel(5)
-        self.thwack_channel = pygame.mixer.Channel(4)
-        self.swoosh_channel = pygame.mixer.Channel(3)
-        self.axe_channel = pygame.mixer.Channel(2)
+        self.axe_channel = pygame.mixer.Channel(1)
+        self.swoosh_channel = pygame.mixer.Channel(2)
+        self.thwack_channel = pygame.mixer.Channel(3)
+        self.firebox_channel = pygame.mixer.Channel(4)
+        self.coin_channel = pygame.mixer.Channel(5)
+        
         self.coin_channel.set_volume(0.5)
         self.thwack_channel.set_volume(0.5)
         self.swoosh_channel.set_volume(0.5)

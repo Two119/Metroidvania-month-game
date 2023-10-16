@@ -130,6 +130,7 @@ class Player:
         self.shapeshifts = 3
         self.just_spawned = True
         self.delay = 0
+        self.on_booster = False
         self.deaths = 0
         self.ang = 0
         self.combat = False
@@ -284,8 +285,9 @@ class Player:
                             if not self.channel.get_busy():
                                 self.channel.play(self.sounds[self.sounds_dict["land"]])
                                 self.dust_blowing = True
+                                self.dust_time = time.time()
                                 self.dust_pos = [self.pos[0], self.pos[1]+self.dust_sheet.size[1]-16]
-                        if not double_list[2] in renderer.queue:
+                        if not double_list[2] in renderer.queue and not self.on_booster:
                             self.pos[1] = double_list[1][1]-self.spritesheet.get(self.frame).get_height()+24
                         self.jumping = False
                         
@@ -370,7 +372,7 @@ class Player:
                                 self.dust_blowing = True
                                 self.dust_time = time.time()
                                 self.dust_pos = [self.pos[0], self.pos[1]+self.dust_sheet.size[1]-16]
-                        if not double_list[2] in renderer.queue:
+                        if not double_list[2] in renderer.queue and not self.on_booster:
                             self.pos[1] = double_list[1][1]-self.spritesheet.get(self.frame).get_height()+24
                         self.jumping = False
       
@@ -520,3 +522,9 @@ class Player:
                 if i in self.inventory.items:
                     self.inventory.items.remove(i)
             self.inventory.update(renderer)
+            self.on_booster = False
+            for obj in renderer.queue:
+                if obj.__class__.__name__ == "Jumper":
+                    if hasattr(obj, "mask"):
+                        if self.mask.overlap(obj.mask, (obj.pos[0]-self.pos[0], obj.pos[1]-self.pos[1])) != None:
+                            self.on_booster = True

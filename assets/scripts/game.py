@@ -24,12 +24,14 @@ def start(args):
         args.spare_surf = None
     args.screen = 1
     args.playing  = True
+    args.bg_channel.fadeout(5000)
 def back_to_game(args):
     args.screen = 1
     args.playing = True
     args.renderer.bullet_manager.remove = True
 def back_to_menu(args):
     args.screen = 1
+    args.bg_channel.fadeout(5000)
 def settings(args):
     args.screen = 2
 def settings_2(args):
@@ -72,11 +74,11 @@ class Game:
             self.button_sprites = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/buttons.png")), [2, 1], [255, 255, 255])
             self.small_button_sprites = SpriteSheet(scale_image(pygame.image.load("assets/Spritesheets/small_buttons.png")), [2, 1], [255, 255, 255])
         self.menu_song = pygame.mixer.Sound("assets/Audio/MainTheme_Loop.ogg")
-        self.menu_channel = pygame.mixer.Channel(7)
+        self.bg_channel = pygame.mixer.Channel(7)
         self.combat_song = pygame.mixer.Sound("assets/Audio/combat_music_loop.ogg")
 
         self.bg_song_1 = pygame.mixer.Sound("assets/Audio/Background_Loop.ogg")
-        self.bg_channel = pygame.mixer.find_channel(8)
+
         self.bg_song_2 = pygame.mixer.Sound("assets/Audio/background_loop_2.ogg")
         self.camera = Camera()
         self.cursor_img_ = scale_image(cursor_img, 2)
@@ -156,11 +158,10 @@ class Game:
         cursor_pos = pygame.mouse.get_pos()
         win.fill((12, 12, 12))
 
-        self.menu_channel.set_volume(self.renderer.coin_channel.get_volume())
         self.bg_channel.set_volume(self.renderer.coin_channel.get_volume())
         if self.screen == 1:
-            if self.menu_channel.get_busy():
-                self.menu_channel.fadeout(5000)
+            #if self.menu_channel.get_busy():
+            #    self.menu_channel.fadeout(5000)
        
                 #num = randint(0, 1)
             #self.combat_channel.fadeout(2000)
@@ -565,10 +566,10 @@ class Game:
             win.blit(self.renderer.background, (0, 0))
             for button in self.buttons:
                 button.update(self.renderer)
-            self.bg_channel.stop()
+            #self.bg_channel.stop()
 
-            if not self.menu_channel.get_busy():
-                self.menu_channel.play(self.menu_song, -1)
+            if not self.bg_channel.get_busy():
+                self.bg_channel.play(self.menu_song, -1)
             win.blit(self.start_text, [self.buttons[0].pos[0]+10, self.buttons[0].pos[1]+10+(4*self.buttons[0].current)])
             win.blit(self.set_text, [self.buttons[1].pos[0]+5, self.buttons[1].pos[1]+15+(4*self.buttons[1].current)])
             win.blit(self.shop_text, [self.buttons[2].pos[0]+(self.buttons[2].textures[0].get_width()-self.shop_text.get_width())/2, self.buttons[2].pos[1]+15+(4*self.buttons[2].current)])
